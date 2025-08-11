@@ -1,9 +1,9 @@
 # Project-Urban-Airflow-Pipeline
 End-to-end data pipeline project on urban mobility and weather condition.
 
-# CityPulse Platform
+# Urban Airflow Pipeline
 
-**CityPulse Platform** is a modern, end-to-end **data engineering & analytics engineering** project that ingests, processes, and visualises real-time urban mobility, weather, and air quality data.
+**Urban Airflow Pipeline** is a modern, end-to-end **data engineering & analytics engineering** project that ingests, processes, and visualises real-time urban mobility, weather, and air quality data.
 
 This repository is designed as a **portfolio-quality example** of a production-style data platform — but fully runnable locally and cost-free — while mirroring cloud-native best practices.
 
@@ -11,7 +11,7 @@ This repository is designed as a **portfolio-quality example** of a production-s
 
 ## 🎯 Scope
 
-CityPulse covers the full lifecycle of a modern data product:
+Urban Airflow Pipeline covers the full lifecycle of a modern data product:
 
 1. **Streaming ingestion**  
    - Real-time bike-sharing station status via Kafka/Redpanda.
@@ -82,7 +82,7 @@ bi/powerbi/ # PBIX files and dataset docs
 
 ## 🔗 Related
 
-- **CityPulse Analytics** (optional separate repo): dbt + BI only, for teams splitting DE/AE workflows.
+- **Urban Airflow Analytics** (optional separate repo): dbt + BI only, for teams splitting DE/AE workflows.
 - Public API sources: GBFS (bike sharing), OpenWeather, OpenAQ.
 
 ---
