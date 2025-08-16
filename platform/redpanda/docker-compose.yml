@@ -1,0 +1,32 @@
+services:
+  redpanda:
+    image: redpandadata/redpanda:v24.1.5
+    container_name: redpanda
+    command:
+      - redpanda
+      - start
+      - --overprovisioned
+      - --smp 1
+      - --memory
+      - 512M
+      - --reserve-memory
+      - 0M
+      - --node-id
+      - '0'
+      - --check=false
+      - --kafka-addr
+      - PLAINTEXT://0.0.0.0:9092
+      - --advertise-kafka-addr
+      - PLAINTEXT://redpanda:9092
+    ports: ['9092:9092', '9644:9644']
+  console:
+    image: redpandadata/console:latest
+    container_name: redpanda-console
+    ports:
+      - '8080:8080'
+    environment:
+      - CONFIG_FILEPATH=/etc/console/config.yaml
+    volumes:
+      - ./console-config.yaml:/etc/console/config.yaml
+    depends_on:
+      - redpanda
