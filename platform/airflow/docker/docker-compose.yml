@@ -12,6 +12,8 @@ services:
       retries: 30
     volumes:
       - pg_data:/var/lib/postgresql/data
+    networks:
+      - data-platform
 
   airflow-webserver:
     build:
@@ -38,6 +40,8 @@ services:
       airflow users create --username ${AIRFLOW_ADMIN_USERNAME} --password ${AIRFLOW_ADMIN_PASSWORD} \
       --firstname a --lastname d --role Admin --email ${AIRFLOW_ADMIN_EMAIL} || true && \
       exec airflow webserver"
+    networks:
+      - data-platform
 
   airflow-scheduler:
     build:
@@ -54,6 +58,12 @@ services:
       airflow-webserver:
         condition: service_started
     command: bash -lc "exec airflow scheduler"
+    networks:
+      - data-platform
+
+networks:
+  data-platform:
+    external: true
 
 volumes:
   pg_data: {}

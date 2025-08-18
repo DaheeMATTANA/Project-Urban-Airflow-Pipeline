@@ -7,5 +7,11 @@ services:
       MINIO_ROOT_PASSWORD: minio12345
     ports: ['9000:9000', '9001:9001']
     volumes: ['minio_data:/data']
+    networks:
+      - data-platform
     
 volumes: { minio_data: {} }
+
+networks:
+  data-platform:
+    external: true

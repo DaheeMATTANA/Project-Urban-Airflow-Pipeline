@@ -30,3 +30,9 @@ services:
       - ./console-config.yaml:/etc/console/config.yaml
     depends_on:
       - redpanda
+    networks:
+      - data-platform
+      
+networks:
+  data-platform:
+    external: true
