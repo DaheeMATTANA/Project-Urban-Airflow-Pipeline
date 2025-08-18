@@ -4,4 +4,4 @@ from datetime import datetime
 with DAG('healthcheck',
          start_date=datetime(2025, 1, 1),
          schedule=None,
-         catchup=False): EmptyOperator(task_id='up')
+         catchup=False) as dag:EmptyOperator(task_id='up')
