@@ -14,3 +14,6 @@ venv/
 
 # IDE settings
 .vscode/
+
+# Airflow runtime logs
+platform/airflow/docker/platform/airflow/logs/

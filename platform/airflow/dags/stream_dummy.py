@@ -15,7 +15,7 @@ def produce():
                 bootstrap_servers='redpanda:9092',
                 value_serializer=lambda v: json.dumps(v).encode('utf-8'),
                 linger_ms=10,
-                acks='all'
+                acks='all',
             )
 
             message = {
@@ -31,7 +31,7 @@ def produce():
                 f'[partition {record_metadata.partition}, offset {record_metadata.offset}]'
             )
 
-            producer.fluch()
+            producer.flush()
             producer.close()
             break # success, exit loop
 
@@ -40,7 +40,11 @@ def produce():
             if attempt < retries:
                 time.sleep(backoff * attempt)
             else:
-                raise e
+                raise
+
+        except Exception as e:
+            print(f'Unexpected error: {e}')
+            raise
             
 # ---- Airflow DAG ----
 with DAG(
