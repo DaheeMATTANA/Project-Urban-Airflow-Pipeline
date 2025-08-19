@@ -19,6 +19,9 @@ services:
       - --advertise-kafka-addr
       - PLAINTEXT://redpanda:9092
     ports: ['9092:9092', '9644:9644']
+    networks:
+      - data-platform
+
   console:
     image: redpandadata/console:latest
     container_name: redpanda-console

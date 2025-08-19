@@ -1,18 +1,4 @@
-FROM apache/airflow:2.8.4-python3.11
+FROM apache/airflow:2.9.0
 
-ARG AIRFLOW_VERSION=2.8.4
-ARG PYTHON_VERSION=3.11
-ARG CONSTRAINTS_URL="https://raw.githubusercontent.com/apache/airflow/constraints-${AIRFLOW_VERSION}/constraints-${PYTHON_VERSION}.txt"
-
-ENV PATH="/home/airflow/.local/bin:${PATH}"
-USER airflow
-
-# Install Airflow + Kafka provider under constraints
-RUN pip install --no-cache-dir -c ${CONSTRAINTS_URL} \
-      "apache-airflow-providers-apache-kafka==1.*"
-
-# Then install dbt + others separately (no constraints)
-RUN pip install --no-cache-dir \
-      "dbt-duckdb==1.7.*" \
-      "pandas" "pyarrow" \
-      "great-expectations==0.18.*"
+COPY requirements.txt /
+RUN pip install --no-cache-dir -r /requirements.txt
