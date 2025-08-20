@@ -22,3 +22,8 @@ platform/airflow/docker/platform/airflow/logs/
 *.duckdb
 *.duckdb.wal
 .duckdb
+
+# DBT build artifacts
+target/
+dbt_packages/
+logs/
