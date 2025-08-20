@@ -1,0 +1,421 @@
+[0m11:44:21.649895 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000023E45351BD0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000023E4509E090>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000023E4534BED0>]}
+
+
+============================== 11:44:21.653728 | c1ddd7b7-3a76-4a97-bc5a-484dacc83b89 ==============================
+[0m11:44:21.653728 [info ] [MainThread]: Running with dbt=1.10.9
+[0m11:44:21.654728 [debug] [MainThread]: running dbt with arguments {'partial_parse': 'True', 'profiles_dir': 'C:\\Users\\Dahee\\.dbt', 'send_anonymous_usage_stats': 'True', 'use_colors': 'True', 'cache_selected_only': 'False', 'target_path': 'None', 'warn_error': 'None', 'invocation_command': 'dbt init urban_airflow_analytics', 'log_format': 'default', 'version_check': 'True', 'introspect': 'True', 'debug': 'False', 'log_cache_events': 'False', 'fail_fast': 'False', 'no_print': 'None', 'quiet': 'False', 'printer_width': '80', 'empty': 'None', 'use_experimental_parser': 'False', 'log_path': 'logs', 'indirect_selection': 'eager', 'write_json': 'True', 'static_parser': 'True', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])'}
+[0m11:44:21.669087 [debug] [MainThread]: Starter project path: C:\Users\Dahee\Project-Urban-Airflow-Pipeline\.venv\Lib\site-packages\dbt\include\starter_project
+[0m11:44:21.713538 [info ] [MainThread]: 
+Your new dbt project "urban_airflow_analytics" was created!
+
+For more information on how to configure the profiles.yml file,
+please consult the dbt documentation here:
+
+  https://docs.getdbt.com/docs/configure-your-profile
+
+One more thing:
+
+Need help? Don't hesitate to reach out to us via GitHub issues or on Slack:
+
+  https://community.getdbt.com/
+
+Happy modeling!
+
+[0m11:44:21.713538 [info ] [MainThread]: Setting up your profile.
+[0m11:44:33.199450 [error] [MainThread]: Encountered an error:
+
+[0m11:44:33.202447 [error] [MainThread]: Traceback (most recent call last):
+  File "C:\Users\Dahee\Project-Urban-Airflow-Pipeline\.venv\Lib\site-packages\dbt\cli\requires.py", line 178, in wrapper
+    result, success = func(*args, **kwargs)
+                      ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Dahee\Project-Urban-Airflow-Pipeline\.venv\Lib\site-packages\dbt\cli\requires.py", line 128, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Dahee\Project-Urban-Airflow-Pipeline\.venv\Lib\site-packages\dbt\cli\main.py", line 483, in init
+    results = task.run()
+              ^^^^^^^^^^
+  File "C:\Users\Dahee\Project-Urban-Airflow-Pipeline\.venv\Lib\site-packages\dbt\task\init.py", line 346, in run
+    self.setup_profile(profile_name)
+  File "C:\Users\Dahee\Project-Urban-Airflow-Pipeline\.venv\Lib\site-packages\dbt\task\init.py", line 261, in setup_profile
+    adapter = self.ask_for_adapter_choice()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Dahee\Project-Urban-Airflow-Pipeline\.venv\Lib\site-packages\dbt\task\init.py", line 242, in ask_for_adapter_choice
+    numeric_choice = click.prompt(prompt_msg, type=click.INT)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Dahee\Project-Urban-Airflow-Pipeline\.venv\Lib\site-packages\click\termui.py", line 168, in prompt
+    value = prompt_func(prompt)
+            ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Dahee\Project-Urban-Airflow-Pipeline\.venv\Lib\site-packages\click\termui.py", line 151, in prompt_func
+    raise Abort() from None
+click.exceptions.Abort
+
+[0m11:44:33.203450 [debug] [MainThread]: Command `dbt init` failed at 11:44:33.203450 after 11.62 seconds
+[0m11:44:33.204449 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000023E45370690>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000023E452EF610>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000023E452E3B10>]}
+[0m11:44:33.205044 [debug] [MainThread]: Flushing usage events
+[0m11:44:33.824237 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m11:44:43.720748 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000023C22612E50>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000023C25C13750>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000023C22607650>]}
+
+
+============================== 11:44:43.724099 | 7efc25ca-5d3f-447e-8384-2b9befb7f7fc ==============================
+[0m11:44:43.724099 [info ] [MainThread]: Running with dbt=1.10.9
+[0m11:44:43.725099 [debug] [MainThread]: running dbt with arguments {'partial_parse': 'True', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'send_anonymous_usage_stats': 'True', 'use_colors': 'True', 'cache_selected_only': 'False', 'target_path': 'None', 'warn_error': 'None', 'invocation_command': 'dbt init urban_airflow_analytics --profiles-dir analytics/dbt', 'log_format': 'default', 'version_check': 'True', 'introspect': 'True', 'debug': 'False', 'log_cache_events': 'False', 'fail_fast': 'False', 'no_print': 'None', 'quiet': 'False', 'use_experimental_parser': 'False', 'printer_width': '80', 'empty': 'None', 'indirect_selection': 'eager', 'log_path': 'logs', 'profiles_dir': 'analytics/dbt', 'static_parser': 'True', 'write_json': 'True'}
+[0m11:44:43.739514 [info ] [MainThread]: A project called urban_airflow_analytics already exists here.
+[0m11:44:43.740513 [debug] [MainThread]: Command `dbt init` succeeded at 11:44:43.740513 after 0.08 seconds
+[0m11:44:43.740513 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000023C24DAD590>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000023C25C13510>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000023C25C11B90>]}
+[0m11:44:43.741512 [debug] [MainThread]: Flushing usage events
+[0m11:44:44.290624 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m11:45:50.560102 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001F736D83B90>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001F736D834D0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001F736D83E10>]}
+
+
+============================== 11:45:50.563102 | 0402be06-b605-46b6-bee1-74563a2664fe ==============================
+[0m11:45:50.563102 [info ] [MainThread]: Running with dbt=1.10.9
+[0m11:45:50.563102 [debug] [MainThread]: running dbt with arguments {'partial_parse': 'True', 'static_parser': 'True', 'send_anonymous_usage_stats': 'True', 'version_check': 'True', 'cache_selected_only': 'False', 'target_path': 'None', 'use_colors': 'True', 'invocation_command': 'dbt init urban_airflow_analytics --profiles-dir analytics/dbt', 'log_format': 'default', 'warn_error': 'None', 'introspect': 'True', 'debug': 'False', 'log_cache_events': 'False', 'fail_fast': 'False', 'no_print': 'None', 'quiet': 'False', 'printer_width': '80', 'use_experimental_parser': 'False', 'empty': 'None', 'indirect_selection': 'eager', 'log_path': 'logs', 'write_json': 'True', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'profiles_dir': 'analytics/dbt'}
+[0m11:45:50.577722 [debug] [MainThread]: Starter project path: C:\Users\Dahee\Project-Urban-Airflow-Pipeline\.venv\Lib\site-packages\dbt\include\starter_project
+[0m11:45:50.590716 [info ] [MainThread]: 
+Your new dbt project "urban_airflow_analytics" was created!
+
+For more information on how to configure the profiles.yml file,
+please consult the dbt documentation here:
+
+  https://docs.getdbt.com/docs/configure-your-profile
+
+One more thing:
+
+Need help? Don't hesitate to reach out to us via GitHub issues or on Slack:
+
+  https://community.getdbt.com/
+
+Happy modeling!
+
+[0m11:45:50.590716 [info ] [MainThread]: Setting up your profile.
+[0m11:45:55.329953 [error] [MainThread]: Encountered an error:
+[Errno 2] No such file or directory: 'analytics\\dbt\\profiles.yml'
+[0m11:45:55.331953 [error] [MainThread]: Traceback (most recent call last):
+  File "C:\Users\Dahee\Project-Urban-Airflow-Pipeline\.venv\Lib\site-packages\dbt\cli\requires.py", line 178, in wrapper
+    result, success = func(*args, **kwargs)
+                      ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Dahee\Project-Urban-Airflow-Pipeline\.venv\Lib\site-packages\dbt\cli\requires.py", line 128, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Dahee\Project-Urban-Airflow-Pipeline\.venv\Lib\site-packages\dbt\cli\main.py", line 483, in init
+    results = task.run()
+              ^^^^^^^^^^
+  File "C:\Users\Dahee\Project-Urban-Airflow-Pipeline\.venv\Lib\site-packages\dbt\task\init.py", line 346, in run
+    self.setup_profile(profile_name)
+  File "C:\Users\Dahee\Project-Urban-Airflow-Pipeline\.venv\Lib\site-packages\dbt\task\init.py", line 262, in setup_profile
+    self.create_profile_from_target(adapter, profile_name=profile_name)
+  File "C:\Users\Dahee\Project-Urban-Airflow-Pipeline\.venv\Lib\site-packages\dbt\task\init.py", line 189, in create_profile_from_target
+    self.create_profile_from_sample(adapter, profile_name)
+  File "C:\Users\Dahee\Project-Urban-Airflow-Pipeline\.venv\Lib\site-packages\dbt\task\init.py", line 96, in create_profile_from_sample
+    with open(profiles_filepath, "w") as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'analytics\\dbt\\profiles.yml'
+
+[0m11:45:55.333949 [debug] [MainThread]: Command `dbt init` failed at 11:45:55.332953 after 4.83 seconds
+[0m11:45:55.333949 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001F736D1F610>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001F736E51A90>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001F736D13210>]}
+[0m11:45:55.334954 [debug] [MainThread]: Flushing usage events
+[0m11:45:55.943321 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m11:57:04.885627 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000223CACEF810>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000223CACEFB10>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000223CAC82390>]}
+
+
+============================== 11:57:04.888959 | f1a8393e-6b5d-495f-b6c0-39dd772b594f ==============================
+[0m11:57:04.888959 [info ] [MainThread]: Running with dbt=1.10.9
+[0m11:57:04.889991 [debug] [MainThread]: running dbt with arguments {'partial_parse': 'True', 'static_parser': 'True', 'send_anonymous_usage_stats': 'True', 'version_check': 'True', 'cache_selected_only': 'False', 'target_path': 'None', 'use_colors': 'True', 'invocation_command': 'dbt init urban_airflow_analytics --profiles-dir analytics/dbt', 'log_format': 'default', 'warn_error': 'None', 'introspect': 'True', 'debug': 'False', 'printer_width': '80', 'fail_fast': 'False', 'no_print': 'None', 'quiet': 'False', 'use_experimental_parser': 'False', 'empty': 'None', 'log_cache_events': 'False', 'indirect_selection': 'eager', 'log_path': 'logs', 'profiles_dir': 'analytics/dbt', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'write_json': 'True'}
+[0m11:57:04.904286 [debug] [MainThread]: Starter project path: C:\Users\Dahee\Project-Urban-Airflow-Pipeline\.venv\Lib\site-packages\dbt\include\starter_project
+[0m11:57:04.917257 [info ] [MainThread]: 
+Your new dbt project "urban_airflow_analytics" was created!
+
+For more information on how to configure the profiles.yml file,
+please consult the dbt documentation here:
+
+  https://docs.getdbt.com/docs/configure-your-profile
+
+One more thing:
+
+Need help? Don't hesitate to reach out to us via GitHub issues or on Slack:
+
+  https://community.getdbt.com/
+
+Happy modeling!
+
+[0m11:57:04.918258 [info ] [MainThread]: Setting up your profile.
+[0m11:57:06.566309 [error] [MainThread]: Encountered an error:
+[Errno 2] No such file or directory: 'analytics\\dbt\\profiles.yml'
+[0m11:57:06.567311 [error] [MainThread]: Traceback (most recent call last):
+  File "C:\Users\Dahee\Project-Urban-Airflow-Pipeline\.venv\Lib\site-packages\dbt\cli\requires.py", line 178, in wrapper
+    result, success = func(*args, **kwargs)
+                      ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Dahee\Project-Urban-Airflow-Pipeline\.venv\Lib\site-packages\dbt\cli\requires.py", line 128, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Dahee\Project-Urban-Airflow-Pipeline\.venv\Lib\site-packages\dbt\cli\main.py", line 483, in init
+    results = task.run()
+              ^^^^^^^^^^
+  File "C:\Users\Dahee\Project-Urban-Airflow-Pipeline\.venv\Lib\site-packages\dbt\task\init.py", line 346, in run
+    self.setup_profile(profile_name)
+  File "C:\Users\Dahee\Project-Urban-Airflow-Pipeline\.venv\Lib\site-packages\dbt\task\init.py", line 262, in setup_profile
+    self.create_profile_from_target(adapter, profile_name=profile_name)
+  File "C:\Users\Dahee\Project-Urban-Airflow-Pipeline\.venv\Lib\site-packages\dbt\task\init.py", line 189, in create_profile_from_target
+    self.create_profile_from_sample(adapter, profile_name)
+  File "C:\Users\Dahee\Project-Urban-Airflow-Pipeline\.venv\Lib\site-packages\dbt\task\init.py", line 96, in create_profile_from_sample
+    with open(profiles_filepath, "w") as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'analytics\\dbt\\profiles.yml'
+
+[0m11:57:06.568308 [debug] [MainThread]: Command `dbt init` failed at 11:57:06.568308 after 1.74 seconds
+[0m11:57:06.569309 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000223CAC8F810>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000223CADBD810>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000223CAD0E290>]}
+[0m11:57:06.569309 [debug] [MainThread]: Flushing usage events
+[0m11:57:07.284809 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m11:58:14.270727 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000021A1675FF90>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000021A16735310>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000021A16761D50>]}
+
+
+============================== 11:58:14.274078 | 6beb8535-5b21-4c7e-b170-889229dd806c ==============================
+[0m11:58:14.274078 [info ] [MainThread]: Running with dbt=1.10.9
+[0m11:58:14.275077 [debug] [MainThread]: running dbt with arguments {'partial_parse': 'True', 'profiles_dir': 'C:\\Users\\Dahee\\.dbt', 'send_anonymous_usage_stats': 'True', 'warn_error': 'None', 'cache_selected_only': 'False', 'target_path': 'None', 'use_colors': 'True', 'invocation_command': 'dbt debug', 'log_format': 'default', 'version_check': 'True', 'introspect': 'True', 'debug': 'False', 'log_cache_events': 'False', 'fail_fast': 'False', 'no_print': 'None', 'empty': 'None', 'printer_width': '80', 'use_experimental_parser': 'False', 'quiet': 'False', 'log_path': 'logs', 'indirect_selection': 'eager', 'write_json': 'True', 'static_parser': 'True', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])'}
+[0m11:58:14.289382 [info ] [MainThread]: dbt version: 1.10.9
+[0m11:58:14.289382 [info ] [MainThread]: python version: 3.11.9
+[0m11:58:14.290533 [info ] [MainThread]: python path: C:\Users\Dahee\Project-Urban-Airflow-Pipeline\.venv\Scripts\python.exe
+[0m11:58:14.290533 [info ] [MainThread]: os info: Windows-10-10.0.26100-SP0
+[0m11:58:14.294535 [info ] [MainThread]: Error importing adapter: No module named 'dbt.adapters.snowflake'
+[0m11:58:14.295534 [info ] [MainThread]: Using profiles dir at C:\Users\Dahee\.dbt
+[0m11:58:14.295534 [info ] [MainThread]: Using profiles.yml file at C:\Users\Dahee\.dbt\profiles.yml
+[0m11:58:14.296534 [info ] [MainThread]: Using dbt_project.yml file at C:\Users\Dahee\Project-Urban-Airflow-Pipeline\dbt_project.yml
+[0m11:58:14.296534 [info ] [MainThread]: Configuration:
+[0m11:58:14.296534 [info ] [MainThread]:   profiles.yml file [[31mERROR invalid[0m]
+[0m11:58:14.297854 [info ] [MainThread]:   dbt_project.yml file [[31mERROR not found[0m]
+[0m11:58:14.297854 [info ] [MainThread]: Required dependencies:
+[0m11:58:14.297854 [debug] [MainThread]: Executing "git --help"
+[0m11:58:14.313849 [debug] [MainThread]: STDOUT: "b"usage: git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]\n           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]\n           [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--bare]\n           [--git-dir=<path>] [--work-tree=<path>] [--namespace=<name>]\n           [--config-env=<name>=<envvar>] <command> [<args>]\n\nThese are common Git commands used in various situations:\n\nstart a working area (see also: git help tutorial)\n   clone     Clone a repository into a new directory\n   init      Create an empty Git repository or reinitialize an existing one\n\nwork on the current change (see also: git help everyday)\n   add       Add file contents to the index\n   mv        Move or rename a file, a directory, or a symlink\n   restore   Restore working tree files\n   rm        Remove files from the working tree and from the index\n\nexamine the history and state (see also: git help revisions)\n   bisect    Use binary search to find the commit that introduced a bug\n   diff      Show changes between commits, commit and working tree, etc\n   grep      Print lines matching a pattern\n   log       Show commit logs\n   show      Show various types of objects\n   status    Show the working tree status\n\ngrow, mark and tweak your common history\n   branch    List, create, or delete branches\n   commit    Record changes to the repository\n   merge     Join two or more development histories together\n   rebase    Reapply commits on top of another base tip\n   reset     Reset current HEAD to the specified state\n   switch    Switch branches\n   tag       Create, list, delete or verify a tag object signed with GPG\n\ncollaborate (see also: git help workflows)\n   fetch     Download objects and refs from another repository\n   pull      Fetch from and integrate with another repository or a local branch\n   push      Update remote refs along with associated objects\n\n'git help -a' and 'git help -g' list available subcommands and some\nconcept guides. See 'git help <command>' or 'git help <concept>'\nto read about a specific subcommand or concept.\nSee 'git help git' for an overview of the system.\n""
+[0m11:58:14.314852 [debug] [MainThread]: STDERR: "b''"
+[0m11:58:14.314852 [info ] [MainThread]:  - git [[32mOK found[0m]
+
+[0m11:58:14.315849 [info ] [MainThread]: Connection test skipped since no profile was found
+[0m11:58:14.315849 [info ] [MainThread]: [31m2 checks failed:[0m
+[0m11:58:14.316850 [info ] [MainThread]: Could not load dbt_project.yml
+Profile loading failed for the following reason:
+Runtime Error
+  Credentials in profile "dbtlearn", target "dev" invalid: Runtime Error
+    Could not find adapter type snowflake!
+
+
+[0m11:58:14.316850 [info ] [MainThread]: Project loading failed for the following reason:
+ project path <C:\Users\Dahee\Project-Urban-Airflow-Pipeline\dbt_project.yml> not found
+
+[0m11:58:14.317850 [debug] [MainThread]: Command `dbt debug` failed at 11:58:14.317850 after 0.10 seconds
+[0m11:58:14.318850 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000021A0FDA3A90>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000021A164A5CD0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000021A164B1F90>]}
+[0m11:58:14.318850 [debug] [MainThread]: Flushing usage events
+[0m11:58:14.945219 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m11:59:32.142708 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001C7DB7B4050>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001C7DCB7F610>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001C7D6478690>]}
+
+
+============================== 11:59:32.145708 | 9ee092a6-98aa-4fef-91c0-a9e004d5ae52 ==============================
+[0m11:59:32.145708 [info ] [MainThread]: Running with dbt=1.10.9
+[0m11:59:32.146708 [debug] [MainThread]: running dbt with arguments {'partial_parse': 'True', 'write_json': 'True', 'send_anonymous_usage_stats': 'True', 'use_colors': 'True', 'cache_selected_only': 'False', 'target_path': 'None', 'warn_error': 'None', 'invocation_command': 'dbt debug --profiles-dir analytics/dbt', 'log_format': 'default', 'version_check': 'True', 'introspect': 'True', 'debug': 'False', 'printer_width': '80', 'fail_fast': 'False', 'no_print': 'None', 'quiet': 'False', 'use_experimental_parser': 'False', 'empty': 'None', 'log_cache_events': 'False', 'indirect_selection': 'eager', 'log_path': 'logs', 'profiles_dir': 'analytics/dbt', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'static_parser': 'True'}
+[0m11:59:32.161384 [info ] [MainThread]: dbt version: 1.10.9
+[0m11:59:32.161384 [info ] [MainThread]: python version: 3.11.9
+[0m11:59:32.162383 [info ] [MainThread]: python path: C:\Users\Dahee\Project-Urban-Airflow-Pipeline\.venv\Scripts\python.exe
+[0m11:59:32.162383 [info ] [MainThread]: os info: Windows-10-10.0.26100-SP0
+[0m11:59:32.221627 [info ] [MainThread]: Using profiles dir at analytics/dbt
+[0m11:59:32.222629 [info ] [MainThread]: Using profiles.yml file at analytics/dbt\profiles.yml
+[0m11:59:32.223632 [info ] [MainThread]: Using dbt_project.yml file at C:\Users\Dahee\Project-Urban-Airflow-Pipeline\dbt_project.yml
+[0m11:59:32.225628 [info ] [MainThread]: adapter type: duckdb
+[0m11:59:32.225628 [info ] [MainThread]: adapter version: 1.9.4
+[0m11:59:32.225628 [info ] [MainThread]: Configuration:
+[0m11:59:32.226628 [info ] [MainThread]:   profiles.yml file [[32mOK found and valid[0m]
+[0m11:59:32.226628 [info ] [MainThread]:   dbt_project.yml file [[31mERROR not found[0m]
+[0m11:59:32.227628 [info ] [MainThread]: Required dependencies:
+[0m11:59:32.227628 [debug] [MainThread]: Executing "git --help"
+[0m11:59:32.242628 [debug] [MainThread]: STDOUT: "b"usage: git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]\n           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]\n           [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--bare]\n           [--git-dir=<path>] [--work-tree=<path>] [--namespace=<name>]\n           [--config-env=<name>=<envvar>] <command> [<args>]\n\nThese are common Git commands used in various situations:\n\nstart a working area (see also: git help tutorial)\n   clone     Clone a repository into a new directory\n   init      Create an empty Git repository or reinitialize an existing one\n\nwork on the current change (see also: git help everyday)\n   add       Add file contents to the index\n   mv        Move or rename a file, a directory, or a symlink\n   restore   Restore working tree files\n   rm        Remove files from the working tree and from the index\n\nexamine the history and state (see also: git help revisions)\n   bisect    Use binary search to find the commit that introduced a bug\n   diff      Show changes between commits, commit and working tree, etc\n   grep      Print lines matching a pattern\n   log       Show commit logs\n   show      Show various types of objects\n   status    Show the working tree status\n\ngrow, mark and tweak your common history\n   branch    List, create, or delete branches\n   commit    Record changes to the repository\n   merge     Join two or more development histories together\n   rebase    Reapply commits on top of another base tip\n   reset     Reset current HEAD to the specified state\n   switch    Switch branches\n   tag       Create, list, delete or verify a tag object signed with GPG\n\ncollaborate (see also: git help workflows)\n   fetch     Download objects and refs from another repository\n   pull      Fetch from and integrate with another repository or a local branch\n   push      Update remote refs along with associated objects\n\n'git help -a' and 'git help -g' list available subcommands and some\nconcept guides. See 'git help <command>' or 'git help <concept>'\nto read about a specific subcommand or concept.\nSee 'git help git' for an overview of the system.\n""
+[0m11:59:32.243629 [debug] [MainThread]: STDERR: "b''"
+[0m11:59:32.243629 [info ] [MainThread]:  - git [[32mOK found[0m]
+
+[0m11:59:32.244629 [info ] [MainThread]: Connection:
+[0m11:59:32.244629 [info ] [MainThread]:   database: warehouse
+[0m11:59:32.245628 [info ] [MainThread]:   schema: main
+[0m11:59:32.245628 [info ] [MainThread]:   path: ./warehouse.duckdb
+[0m11:59:32.245628 [info ] [MainThread]:   config_options: None
+[0m11:59:32.246628 [info ] [MainThread]:   extensions: None
+[0m11:59:32.246628 [info ] [MainThread]:   settings: {}
+[0m11:59:32.246628 [info ] [MainThread]:   external_root: .
+[0m11:59:32.247628 [info ] [MainThread]:   use_credential_provider: None
+[0m11:59:32.247628 [info ] [MainThread]:   attach: None
+[0m11:59:32.248631 [info ] [MainThread]:   filesystems: None
+[0m11:59:32.248631 [info ] [MainThread]:   remote: None
+[0m11:59:32.249629 [info ] [MainThread]:   plugins: None
+[0m11:59:32.249629 [info ] [MainThread]:   disable_transactions: False
+[0m11:59:32.250628 [info ] [MainThread]: Registered adapter: duckdb=1.9.4
+[0m11:59:32.543661 [debug] [MainThread]: Acquiring new duckdb connection 'debug'
+[0m11:59:33.916805 [debug] [MainThread]: Using duckdb connection "debug"
+[0m11:59:33.916805 [debug] [MainThread]: On debug: select 1 as id
+[0m11:59:33.917805 [debug] [MainThread]: Opening a new connection, currently in state init
+[0m11:59:33.931123 [debug] [MainThread]: SQL status: OK in 0.013 seconds
+[0m11:59:33.932123 [debug] [MainThread]: On debug: Close
+[0m11:59:33.932123 [info ] [MainThread]:   Connection test: [[32mOK connection ok[0m]
+
+[0m11:59:33.933359 [info ] [MainThread]: [31m1 check failed:[0m
+[0m11:59:33.933359 [info ] [MainThread]: Project loading failed for the following reason:
+ project path <C:\Users\Dahee\Project-Urban-Airflow-Pipeline\dbt_project.yml> not found
+
+[0m11:59:33.934359 [debug] [MainThread]: Command `dbt debug` failed at 11:59:33.934359 after 1.85 seconds
+[0m11:59:33.934359 [debug] [MainThread]: Connection 'debug' was properly closed.
+[0m11:59:33.935359 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001C7DCB1F610>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001C7DCC628D0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001C7DCBA00D0>]}
+[0m11:59:33.935359 [debug] [MainThread]: Flushing usage events
+[0m11:59:34.767697 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m12:00:53.376826 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000260545A0D90>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000026054575090>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000026054533F50>]}
+
+
+============================== 12:00:53.380825 | 14b19b48-4924-428f-b6bc-5ff22e10bb70 ==============================
+[0m12:00:53.380825 [info ] [MainThread]: Running with dbt=1.10.9
+[0m12:00:53.381826 [debug] [MainThread]: running dbt with arguments {'partial_parse': 'True', 'write_json': 'True', 'send_anonymous_usage_stats': 'True', 'version_check': 'True', 'cache_selected_only': 'False', 'target_path': 'None', 'use_colors': 'True', 'invocation_command': 'dbt debug', 'log_format': 'default', 'warn_error': 'None', 'introspect': 'True', 'debug': 'False', 'log_cache_events': 'False', 'fail_fast': 'False', 'no_print': 'None', 'quiet': 'False', 'empty': 'None', 'use_experimental_parser': 'False', 'printer_width': '80', 'log_path': 'logs', 'indirect_selection': 'eager', 'profiles_dir': 'analytics/dbt', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'static_parser': 'True'}
+[0m12:00:53.399473 [info ] [MainThread]: dbt version: 1.10.9
+[0m12:00:53.400756 [info ] [MainThread]: python version: 3.11.9
+[0m12:00:53.401754 [info ] [MainThread]: python path: C:\Users\Dahee\Project-Urban-Airflow-Pipeline\.venv\Scripts\python.exe
+[0m12:00:53.401754 [info ] [MainThread]: os info: Windows-10-10.0.26100-SP0
+[0m12:00:53.475016 [info ] [MainThread]: Using profiles dir at analytics/dbt
+[0m12:00:53.483065 [info ] [MainThread]: Using profiles.yml file at analytics/dbt\profiles.yml
+[0m12:00:53.484073 [info ] [MainThread]: Using dbt_project.yml file at C:\Users\Dahee\Project-Urban-Airflow-Pipeline\dbt_project.yml
+[0m12:00:53.486072 [info ] [MainThread]: adapter type: duckdb
+[0m12:00:53.487072 [info ] [MainThread]: adapter version: 1.9.4
+[0m12:00:53.487072 [info ] [MainThread]: Configuration:
+[0m12:00:53.488072 [info ] [MainThread]:   profiles.yml file [[32mOK found and valid[0m]
+[0m12:00:53.488072 [info ] [MainThread]:   dbt_project.yml file [[31mERROR not found[0m]
+[0m12:00:53.489071 [info ] [MainThread]: Required dependencies:
+[0m12:00:53.489071 [debug] [MainThread]: Executing "git --help"
+[0m12:00:53.509073 [debug] [MainThread]: STDOUT: "b"usage: git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]\n           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]\n           [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--bare]\n           [--git-dir=<path>] [--work-tree=<path>] [--namespace=<name>]\n           [--config-env=<name>=<envvar>] <command> [<args>]\n\nThese are common Git commands used in various situations:\n\nstart a working area (see also: git help tutorial)\n   clone     Clone a repository into a new directory\n   init      Create an empty Git repository or reinitialize an existing one\n\nwork on the current change (see also: git help everyday)\n   add       Add file contents to the index\n   mv        Move or rename a file, a directory, or a symlink\n   restore   Restore working tree files\n   rm        Remove files from the working tree and from the index\n\nexamine the history and state (see also: git help revisions)\n   bisect    Use binary search to find the commit that introduced a bug\n   diff      Show changes between commits, commit and working tree, etc\n   grep      Print lines matching a pattern\n   log       Show commit logs\n   show      Show various types of objects\n   status    Show the working tree status\n\ngrow, mark and tweak your common history\n   branch    List, create, or delete branches\n   commit    Record changes to the repository\n   merge     Join two or more development histories together\n   rebase    Reapply commits on top of another base tip\n   reset     Reset current HEAD to the specified state\n   switch    Switch branches\n   tag       Create, list, delete or verify a tag object signed with GPG\n\ncollaborate (see also: git help workflows)\n   fetch     Download objects and refs from another repository\n   pull      Fetch from and integrate with another repository or a local branch\n   push      Update remote refs along with associated objects\n\n'git help -a' and 'git help -g' list available subcommands and some\nconcept guides. See 'git help <command>' or 'git help <concept>'\nto read about a specific subcommand or concept.\nSee 'git help git' for an overview of the system.\n""
+[0m12:00:53.510071 [debug] [MainThread]: STDERR: "b''"
+[0m12:00:53.510071 [info ] [MainThread]:  - git [[32mOK found[0m]
+
+[0m12:00:53.511072 [info ] [MainThread]: Connection:
+[0m12:00:53.511072 [info ] [MainThread]:   database: warehouse
+[0m12:00:53.511072 [info ] [MainThread]:   schema: main
+[0m12:00:53.512072 [info ] [MainThread]:   path: ./warehouse.duckdb
+[0m12:00:53.512072 [info ] [MainThread]:   config_options: None
+[0m12:00:53.512072 [info ] [MainThread]:   extensions: None
+[0m12:00:53.512072 [info ] [MainThread]:   settings: {}
+[0m12:00:53.513576 [info ] [MainThread]:   external_root: .
+[0m12:00:53.513576 [info ] [MainThread]:   use_credential_provider: None
+[0m12:00:53.514580 [info ] [MainThread]:   attach: None
+[0m12:00:53.514580 [info ] [MainThread]:   filesystems: None
+[0m12:00:53.514580 [info ] [MainThread]:   remote: None
+[0m12:00:53.515581 [info ] [MainThread]:   plugins: None
+[0m12:00:53.515581 [info ] [MainThread]:   disable_transactions: False
+[0m12:00:53.516581 [info ] [MainThread]: Registered adapter: duckdb=1.9.4
+[0m12:00:53.719584 [debug] [MainThread]: Acquiring new duckdb connection 'debug'
+[0m12:00:53.770606 [debug] [MainThread]: Using duckdb connection "debug"
+[0m12:00:53.771606 [debug] [MainThread]: On debug: select 1 as id
+[0m12:00:53.771606 [debug] [MainThread]: Opening a new connection, currently in state init
+[0m12:00:53.789347 [debug] [MainThread]: SQL status: OK in 0.017 seconds
+[0m12:00:53.790347 [debug] [MainThread]: On debug: Close
+[0m12:00:53.790347 [info ] [MainThread]:   Connection test: [[32mOK connection ok[0m]
+
+[0m12:00:53.791347 [info ] [MainThread]: [31m1 check failed:[0m
+[0m12:00:53.791347 [info ] [MainThread]: Project loading failed for the following reason:
+ project path <C:\Users\Dahee\Project-Urban-Airflow-Pipeline\dbt_project.yml> not found
+
+[0m12:00:53.792615 [debug] [MainThread]: Command `dbt debug` failed at 12:00:53.792615 after 0.48 seconds
+[0m12:00:53.792615 [debug] [MainThread]: Connection 'debug' was properly closed.
+[0m12:00:53.792615 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002605453F550>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000260545A13D0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000260545A1990>]}
+[0m12:00:53.793616 [debug] [MainThread]: Flushing usage events
+[0m12:00:54.436669 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m12:02:45.293863 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001DB993B2B90>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001DB9916DFD0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001DB993B28D0>]}
+
+
+============================== 12:02:45.296863 | 7f90e0f7-e2f9-499e-aa68-13597e4f17c3 ==============================
+[0m12:02:45.296863 [info ] [MainThread]: Running with dbt=1.10.9
+[0m12:02:45.297864 [debug] [MainThread]: running dbt with arguments {'partial_parse': 'True', 'profiles_dir': 'analytics/dbt', 'send_anonymous_usage_stats': 'True', 'use_colors': 'True', 'cache_selected_only': 'False', 'target_path': 'None', 'warn_error': 'None', 'invocation_command': 'dbt init urban_airflow_analytics --profiles-dir analytics/dbt', 'log_format': 'default', 'version_check': 'True', 'introspect': 'True', 'debug': 'False', 'log_cache_events': 'False', 'fail_fast': 'False', 'no_print': 'None', 'empty': 'None', 'quiet': 'False', 'use_experimental_parser': 'False', 'printer_width': '80', 'indirect_selection': 'eager', 'log_path': 'logs', 'write_json': 'True', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'static_parser': 'True'}
+[0m12:02:45.311535 [debug] [MainThread]: Starter project path: C:\Users\Dahee\Project-Urban-Airflow-Pipeline\.venv\Lib\site-packages\dbt\include\starter_project
+[0m12:02:45.324752 [info ] [MainThread]: 
+Your new dbt project "urban_airflow_analytics" was created!
+
+For more information on how to configure the profiles.yml file,
+please consult the dbt documentation here:
+
+  https://docs.getdbt.com/docs/configure-your-profile
+
+One more thing:
+
+Need help? Don't hesitate to reach out to us via GitHub issues or on Slack:
+
+  https://community.getdbt.com/
+
+Happy modeling!
+
+[0m12:02:45.325753 [info ] [MainThread]: Setting up your profile.
+[0m12:02:51.023014 [error] [MainThread]: Encountered an error:
+[Errno 2] No such file or directory: 'analytics\\dbt\\profiles.yml'
+[0m12:02:51.025013 [error] [MainThread]: Traceback (most recent call last):
+  File "C:\Users\Dahee\Project-Urban-Airflow-Pipeline\.venv\Lib\site-packages\dbt\cli\requires.py", line 178, in wrapper
+    result, success = func(*args, **kwargs)
+                      ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Dahee\Project-Urban-Airflow-Pipeline\.venv\Lib\site-packages\dbt\cli\requires.py", line 128, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Dahee\Project-Urban-Airflow-Pipeline\.venv\Lib\site-packages\dbt\cli\main.py", line 483, in init
+    results = task.run()
+              ^^^^^^^^^^
+  File "C:\Users\Dahee\Project-Urban-Airflow-Pipeline\.venv\Lib\site-packages\dbt\task\init.py", line 346, in run
+    self.setup_profile(profile_name)
+  File "C:\Users\Dahee\Project-Urban-Airflow-Pipeline\.venv\Lib\site-packages\dbt\task\init.py", line 262, in setup_profile
+    self.create_profile_from_target(adapter, profile_name=profile_name)
+  File "C:\Users\Dahee\Project-Urban-Airflow-Pipeline\.venv\Lib\site-packages\dbt\task\init.py", line 189, in create_profile_from_target
+    self.create_profile_from_sample(adapter, profile_name)
+  File "C:\Users\Dahee\Project-Urban-Airflow-Pipeline\.venv\Lib\site-packages\dbt\task\init.py", line 96, in create_profile_from_sample
+    with open(profiles_filepath, "w") as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'analytics\\dbt\\profiles.yml'
+
+[0m12:02:51.026013 [debug] [MainThread]: Command `dbt init` failed at 12:02:51.026013 after 5.79 seconds
+[0m12:02:51.027013 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001DB993BF910>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001DB994E2090>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001DB993F4A10>]}
+[0m12:02:51.028014 [debug] [MainThread]: Flushing usage events
+[0m12:02:51.665721 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m12:06:47.575846 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002CF9F7CC5D0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002CF9F7C2990>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002CF9F82FC90>]}
+
+
+============================== 12:06:47.578846 | 790ad28a-2ac9-4100-bcba-67f599eef584 ==============================
+[0m12:06:47.578846 [info ] [MainThread]: Running with dbt=1.10.9
+[0m12:06:47.578846 [debug] [MainThread]: running dbt with arguments {'partial_parse': 'True', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'send_anonymous_usage_stats': 'True', 'warn_error': 'None', 'cache_selected_only': 'False', 'target_path': 'None', 'use_colors': 'True', 'invocation_command': 'dbt init urban_airflow_analytics --profiles-dir analytics/dbt', 'log_format': 'default', 'version_check': 'True', 'introspect': 'True', 'debug': 'False', 'printer_width': '80', 'fail_fast': 'False', 'no_print': 'None', 'quiet': 'False', 'empty': 'None', 'use_experimental_parser': 'False', 'log_cache_events': 'False', 'indirect_selection': 'eager', 'log_path': 'logs', 'write_json': 'True', 'static_parser': 'True', 'profiles_dir': 'analytics/dbt'}
+[0m12:06:47.593002 [debug] [MainThread]: Starter project path: C:\Users\Dahee\Project-Urban-Airflow-Pipeline\.venv\Lib\site-packages\dbt\include\starter_project
+[0m12:06:47.606191 [info ] [MainThread]: 
+Your new dbt project "urban_airflow_analytics" was created!
+
+For more information on how to configure the profiles.yml file,
+please consult the dbt documentation here:
+
+  https://docs.getdbt.com/docs/configure-your-profile
+
+One more thing:
+
+Need help? Don't hesitate to reach out to us via GitHub issues or on Slack:
+
+  https://community.getdbt.com/
+
+Happy modeling!
+
+[0m12:06:47.607192 [info ] [MainThread]: Setting up your profile.
+[0m12:06:52.609126 [error] [MainThread]: Encountered an error:
+[Errno 2] No such file or directory: 'analytics\\dbt\\profiles.yml'
+[0m12:06:52.611127 [error] [MainThread]: Traceback (most recent call last):
+  File "C:\Users\Dahee\Project-Urban-Airflow-Pipeline\.venv\Lib\site-packages\dbt\cli\requires.py", line 178, in wrapper
+    result, success = func(*args, **kwargs)
+                      ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Dahee\Project-Urban-Airflow-Pipeline\.venv\Lib\site-packages\dbt\cli\requires.py", line 128, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Dahee\Project-Urban-Airflow-Pipeline\.venv\Lib\site-packages\dbt\cli\main.py", line 483, in init
+    results = task.run()
+              ^^^^^^^^^^
+  File "C:\Users\Dahee\Project-Urban-Airflow-Pipeline\.venv\Lib\site-packages\dbt\task\init.py", line 346, in run
+    self.setup_profile(profile_name)
+  File "C:\Users\Dahee\Project-Urban-Airflow-Pipeline\.venv\Lib\site-packages\dbt\task\init.py", line 262, in setup_profile
+    self.create_profile_from_target(adapter, profile_name=profile_name)
+  File "C:\Users\Dahee\Project-Urban-Airflow-Pipeline\.venv\Lib\site-packages\dbt\task\init.py", line 189, in create_profile_from_target
+    self.create_profile_from_sample(adapter, profile_name)
+  File "C:\Users\Dahee\Project-Urban-Airflow-Pipeline\.venv\Lib\site-packages\dbt\task\init.py", line 96, in create_profile_from_sample
+    with open(profiles_filepath, "w") as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'analytics\\dbt\\profiles.yml'
+
+[0m12:06:52.612126 [debug] [MainThread]: Command `dbt init` failed at 12:06:52.612126 after 5.09 seconds
+[0m12:06:52.613131 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002CF9F84CB50>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002CF9F82FC10>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002CF9F916850>]}
+[0m12:06:52.613131 [debug] [MainThread]: Flushing usage events
+[0m12:06:53.267556 [debug] [MainThread]: An error was encountered while trying to flush usage events
