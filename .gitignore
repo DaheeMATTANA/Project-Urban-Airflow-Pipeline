@@ -5,6 +5,7 @@ npm-debug.log
 # Python
 __pycache__/
 venv/
+.venv/
 
 # Environment variables
 .env
