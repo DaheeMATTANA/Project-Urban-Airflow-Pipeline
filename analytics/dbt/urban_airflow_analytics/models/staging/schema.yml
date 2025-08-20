@@ -1,0 +1,16 @@
+
+version: 2
+
+models:
+  - name: stg_hello
+    description: "First trivial staging model"
+    columns:
+      - name: id
+        description: "The primary key for this table"
+        data_tests:
+          - not_null
+
+      - name: message
+        description : "Message details"
+        data_tests:
+          - unique
