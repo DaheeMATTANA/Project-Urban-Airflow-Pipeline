@@ -6,9 +6,30 @@ npm-debug.log
 __pycache__/
 venv/
 .venv/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+.eggs/
+dist/
+build/
+MANIFEST
+
+# Testing & type checking
+.pytest_cache/
+.mypy_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+nosetests.xml
+coverage.xml
 
 # Environment variables
 .env
+env/
 
 # macOS
 .DS_Store
@@ -28,3 +49,15 @@ platform/airflow/docker/platform/airflow/logs/
 target/
 dbt_packages/
 logs/
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# VS Code
+.vscode/
+.history/
+
+# Misc
+*.log
