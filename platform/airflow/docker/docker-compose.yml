@@ -1,3 +1,5 @@
+version: "3.9"
+
 services:
   postgres:
     image: postgres:15
@@ -36,7 +38,7 @@ services:
       postgres:
         condition: service_healthy
     command: >
-      bash -lc "until pg_isready -h postgres -U airflow -d airflow; do echo 'waiting for db'; sleep 2; done && \
+      bash -lc "until pg_isready -h postgres -U ${POSTGRES_USER} -d ${POSTGRES_DB}; do echo 'waiting for db'; sleep 2; done && \
       airflow db upgrade && (airflow users delete -u ${AIRFLOW_ADMIN_USERNAME} || true) && \
       airflow users create --username ${AIRFLOW_ADMIN_USERNAME} --password ${AIRFLOW_ADMIN_PASSWORD} \
       --firstname a --lastname d --role Admin --email ${AIRFLOW_ADMIN_EMAIL} || true && \
