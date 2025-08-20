@@ -17,3 +17,8 @@ venv/
 
 # Airflow runtime logs
 platform/airflow/docker/platform/airflow/logs/
+
+# DuckDB
+*.duckdb
+*.duckdb.wal
+.duckdb
