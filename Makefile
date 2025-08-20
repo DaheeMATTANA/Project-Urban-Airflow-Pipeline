@@ -1,27 +1,25 @@
 # Airflow
 airflow-up:
-	docker-compose up -d airflow
+	docker compose -f platform/airflow/docker/docker-compose.yml up -d
 
 airflow-down:
-	docker-compose down airflow
+	docker compose -f platform/airflow/docker/docker-compose.yml down
 
 # Redpanda (Kafka replacement)
 redpanda-up:
-	docker-compose up -d redpanda
+	docker compose -f platform/redpanda/docker-compose.yml up -d
 
 redpanda-down:
-	docker-compose down redpanda
+	docker compose -f platform/redpanda/docker-compose.yml down
 
 # MinIO
 minio-up:
-	docker-compose up -d minio
+	docker compose -f platform/minio/docker-compose.yml up -d
 
 minio-down:
-	docker-compose down minio
+	docker compose -f platform/minio/docker-compose.yml down
 
 # Optional: bring everything up/down
-all-up:
-	docker-compose up -d
+all-up: airflow-up redpanda-up minio-up
 
-all-down:
-	docker-compose down
+all-down: airflow-down redpanda-down minio-down
