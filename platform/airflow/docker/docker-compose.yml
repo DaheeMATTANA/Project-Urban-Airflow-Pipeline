@@ -1,6 +1,8 @@
 services:
   postgres:
     image: postgres:15
+    env_file:
+      - .env
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -19,6 +21,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.airflow
+    env_file:
+      - .env
     environment:
       AIRFLOW__CORE__EXECUTOR: LocalExecutor
       AIRFLOW__CORE__LOAD_EXAMPLES: "False"
@@ -36,7 +40,7 @@ services:
       postgres:
         condition: service_healthy
     command: >
-      bash -lc "until pg_isready -h postgres -U airflow -d airflow; do echo 'waiting for db'; sleep 2; done && \
+      bash -lc "until pg_isready -h postgres -U ${POSTGRES_USER} -d ${POSTGRES_DB}; do echo 'waiting for db'; sleep 2; done && \
       airflow db upgrade && (airflow users delete -u ${AIRFLOW_ADMIN_USERNAME} || true) && \
       airflow users create --username ${AIRFLOW_ADMIN_USERNAME} --password ${AIRFLOW_ADMIN_PASSWORD} \
       --firstname a --lastname d --role Admin --email ${AIRFLOW_ADMIN_EMAIL} || true && \
@@ -48,6 +52,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.airflow
+    env_file:
+      - .env
     environment:
       AIRFLOW__CORE__EXECUTOR: LocalExecutor
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres/${POSTGRES_DB}
