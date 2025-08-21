@@ -1,0 +1,16 @@
+[tool.ruff]
+line-length = 79
+target-version = "py311"
+
+exclude = [
+    ".venv",
+    "target",
+    "dbt_packages",
+    "logs",
+]
+
+[tool.ruff.lint]
+
+select = ["E", "F", "I", "B", "UP"]
+
+ignore = ["E501"]
