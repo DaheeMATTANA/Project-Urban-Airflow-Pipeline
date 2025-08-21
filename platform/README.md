@@ -21,14 +21,14 @@ It includes all components related to infrastructure, orchestration, and ingesti
 
 ---
 
-# 🚀 Service Management (Makefile)
+## 🚀 Service Management (Makefile)
 
 This project provides a `Makefile` to easily manage common services such as **Airflow**, **Redpanda**, and **MinIO**.  
 It simplifies workflows with one-liners to start, stop, and monitor everything.
 
 ---
 
-## 📦 Prerequisites
+### 📦 Prerequisites
 
 - [GNU Make](https://www.gnu.org/software/make/)  
 - [Docker & Docker Compose](https://docs.docker.com/)  
@@ -36,7 +36,7 @@ It simplifies workflows with one-liners to start, stop, and monitor everything.
 
 ---
 
-## ▶️ Usage
+### ▶️ Usage
 
 All available commands:
 
