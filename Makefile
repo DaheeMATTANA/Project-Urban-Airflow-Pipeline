@@ -1,25 +1,31 @@
-# Airflow
-airflow-up:
+airflow-up: ## Start Airflow services (webserver + scheduler + postgres)
 	docker compose -f platform/airflow/docker/docker-compose.yml up -d
 
-airflow-down:
+airflow-down: ## Stop Airflow services
 	docker compose -f platform/airflow/docker/docker-compose.yml down
 
-# Redpanda (Kafka replacement)
-redpanda-up:
+redpanda-up: ## Start Redpanda broker
 	docker compose -f platform/redpanda/docker-compose.yml up -d
 
-redpanda-down:
+redpanda-down:## Stop Redpanda broker
 	docker compose -f platform/redpanda/docker-compose.yml down
 
-# MinIO
-minio-up:
+minio-up: ## Start MinIO server
 	docker compose -f platform/minio/docker-compose.yml up -d
 
-minio-down:
+minio-down: ## Start MinIO server
 	docker compose -f platform/minio/docker-compose.yml down
 
-# Optional: bring everything up/down
-all-up: airflow-up redpanda-up minio-up
+all-up: ## Start all services
+	$(MAKE) airflow-up
+	$(MAKE) redpanda-up
+	$(MAKE) minio-up
 
-all-down: airflow-down redpanda-down minio-down
+all-down: ## Stop all services
+	$(MAKE) airflow-down
+	$(MAKE) redpanda-down
+	$(MAKE) minio-down
+
+help: ## Show available make commands
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+	| awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-15s\033[0m %s\n", $$1, $$2}'
