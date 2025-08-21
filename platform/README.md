@@ -23,36 +23,34 @@ It includes all components related to infrastructure, orchestration, and ingesti
 
 # 🚀 Service Management (Makefile)
 
-To simplify workflows, common services can be started/stopped with one-liners.
+This project provides a `Makefile` to easily manage common services such as **Airflow**, **Redpanda**, and **MinIO**.  
+It simplifies workflows with one-liners to start, stop, and monitor everything.
 
-Start / Stop
-make airflow-up     # start Airflow (webserver, scheduler, Postgres)
-make airflow-down   # stop Airflow
+---
 
-make redpanda-up    # start Redpanda broker
-make redpanda-down  # stop Redpanda
+## 📦 Prerequisites
 
-make minio-up       # start MinIO
-make minio-down     # stop MinIO
+- [GNU Make](https://www.gnu.org/software/make/)  
+- [Docker & Docker Compose](https://docs.docker.com/)  
+- On Windows: Git Bash or WSL2 is recommended (see ⚠️ note below)
 
-make all-up         # start everything
-make all-down       # stop everything
+---
 
-Help
-make help
+## ▶️ Usage
 
+All available commands:
 
-Outputs a list of available commands with descriptions:
+```bash
+make airflow-up     # Start Airflow (webserver, scheduler, Postgres)
+make airflow-down   # Stop Airflow
 
-airflow-up      Start Airflow services (webserver + scheduler + postgres)
-airflow-down    Stop Airflow services
-redpanda-up     Start Redpanda broker
-redpanda-down   Stop Redpanda broker
-minio-up        Start MinIO server
-minio-down      Stop MinIO server
-all-up          Bring everything up
-all-down        Bring everything down
-help            Show available make commands
+make redpanda-up    # Start Redpanda broker
+make redpanda-down  # Stop Redpanda
 
+make minio-up       # Start MinIO
+make minio-down     # Stop MinIO
 
-⚠️ On Windows (PowerShell/CMD), make help requires Git Bash or WSL2 (because it uses grep + awk).
+make all-up         # Start everything
+make all-down       # Stop everything
+
+make help           # Show available make commands
