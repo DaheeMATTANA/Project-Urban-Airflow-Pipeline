@@ -29,3 +29,30 @@ all-down: ## Stop all services
 help: ## Show available make commands
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 	| awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-15s\033[0m %s\n", $$1, $$2}'
+
+# ---
+# MAKE LINT
+# ---
+.DEFAULT_GOAL := help
+
+PYTHON := python3
+
+.PHONY: help
+help: ## Show available commands
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2}'
+
+.PHONY: lint
+lint: ## Run Ruff check (same as CI)
+	ruff check .
+
+.PHONY: lint-fix
+lint-fix: ## Run Ruff with auto-fix locally
+	ruff check . --fix
+
+.PHONY: format
+format: ## Run Ruff formatter
+	ruff format .
+
+.PHONY: precommit
+precommit: ## Install pre-commit hooks
+	pip install pre-commit && pre-commit install

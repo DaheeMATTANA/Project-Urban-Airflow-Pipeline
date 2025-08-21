@@ -1,0 +1,7 @@
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.6.4  # pin to latest stable release
+    hooks:
+      - id: ruff
+        args: [--fix]        # auto-fix issues (imports, pyupgrade, etc.)
+      - id: ruff-format      # apply consistent formatting
