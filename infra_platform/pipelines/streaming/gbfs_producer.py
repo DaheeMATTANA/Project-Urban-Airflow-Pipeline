@@ -1,8 +1,9 @@
 import datetime
 
 import pytz
-from pipelines.common.http_utils import fetch_json_with_retry
-from pipelines.common.kafka_utils import get_producer
+
+from infra_platform.pipelines.common.http_utils import fetch_json_with_retry
+from infra_platform.pipelines.common.kafka_utils import get_producer
 
 URL = "https://velib-metropole-opendata.smovengo.cloud/opendata/Velib_Metropole/station_status.json"
 TOPIC = "gbfs_station_status"
@@ -34,5 +35,6 @@ def produce():
         f"[{datetime.datetime.now(paris_tz).isoformat()}] Message sent to topic '{TOPIC}'"
     )
 
-    if __name__ == "__main__":
-        produce()
+
+if __name__ == "__main__":
+    produce()

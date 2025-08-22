@@ -1,20 +1,20 @@
 airflow-up: ## Start Airflow services (webserver + scheduler + postgres)
-	docker compose -f platform/airflow/docker/docker-compose.yml up -d
+	docker compose -f infra_platform/airflow/docker/docker-compose.yml up -d
 
 airflow-down: ## Stop Airflow services
-	docker compose -f platform/airflow/docker/docker-compose.yml down
+	docker compose -f infra_platform/airflow/docker/docker-compose.yml down
 
 redpanda-up: ## Start Redpanda broker
-	docker compose -f platform/redpanda/docker-compose.yml up -d
+	docker compose -f infra_platform/redpanda/docker-compose.yml up -d
 
 redpanda-down:## Stop Redpanda broker
-	docker compose -f platform/redpanda/docker-compose.yml down
+	docker compose -f infra_platform/redpanda/docker-compose.yml down
 
 minio-up: ## Start MinIO server
-	docker compose -f platform/minio/docker-compose.yml up -d
+	docker compose -f infra_platform/minio/docker-compose.yml up -d
 
 minio-down: ## Start MinIO server
-	docker compose -f platform/minio/docker-compose.yml down
+	docker compose -f infra_platform/minio/docker-compose.yml down
 
 all-up: ## Start all services
 	$(MAKE) airflow-up

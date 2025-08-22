@@ -6,21 +6,26 @@ services:
       - redpanda
       - start
       - --overprovisioned
-      - --smp 1
+      - --smp
+      - "1"
       - --memory
       - 512M
       - --reserve-memory
       - 0M
       - --node-id
-      - '0'
+      - "0"
       - --check=false
       - --kafka-addr
-      - PLAINTEXT://0.0.0.0:9092
+      - PLAINTEXT://0.0.0.0:9092,PLAINTEXT_INTERNAL://0.0.0.0:19092
       - --advertise-kafka-addr
-      - PLAINTEXT://redpanda:9092
-    ports: ['9092:9092', '9644:9644']
+      - PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://redpanda:19092
+    ports:
+      - "9092:9092"
+      - "9644:9644"
     networks:
       - data-platform
+    volumes:
+      - redpanda_data:/var/lib/redpanda/data
 
   console:
     image: redpandadata/console:latest
@@ -39,3 +44,6 @@ services:
 networks:
   data-platform:
     external: true
+
+volumes:
+  redpanda_data:
