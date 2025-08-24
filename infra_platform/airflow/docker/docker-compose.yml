@@ -35,11 +35,13 @@ services:
       MINIO_ENDPOINT: minio:9000
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: minioadmin
+      DUCKDB_PATH: /opt/airflow/data/raw.duckdb
     volumes:
       - ../dags:/opt/airflow/dags
       - ../plugins:/opt/airflow/plugins
       - ../../pipelines:/opt/airflow/src/pipelines
       - ../../minio:/opt/airflow/src/minio
+      - duckdb_data:/opt/airflow/data
     ports:
       - "8081:8080"
     depends_on:
@@ -69,11 +71,13 @@ services:
       MINIO_ENDPOINT: minio:9000
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: minioadmin
+      DUCKDB_PATH: /opt/airflow/data/raw.duckdb
     volumes:
       - ../dags:/opt/airflow/dags
       - ../plugins:/opt/airflow/plugins
       - ../../pipelines:/opt/airflow/src/pipelines
       - ../../minio:/opt/airflow/src/minio
+      - duckdb_data:/opt/airflow/data
     depends_on:
       airflow-webserver:
         condition: service_started
@@ -87,3 +91,4 @@ networks:
 
 volumes:
   pg_data: {}
+  duckdb_data: {}
