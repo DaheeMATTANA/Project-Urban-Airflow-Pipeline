@@ -1,4 +1,4 @@
 kafka-python
 requests
 pytz
--e /opt/airflow/infra_platform
+minio

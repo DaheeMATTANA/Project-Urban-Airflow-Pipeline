@@ -2,8 +2,7 @@ from datetime import datetime, timedelta
 
 from airflow import DAG
 from airflow.operators.python import PythonOperator
-
-from infra_platform.pipelines.streaming.gbfs_producer import produce
+from pipelines.streaming.gbfs_producer import produce
 
 # DAG
 default_args = {
