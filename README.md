@@ -57,18 +57,14 @@ Urban Airflow Pipeline covers the full lifecycle of a modern data product:
 ## 🗂 Repo Structure
 
 <pre>
-platform/          # Infra, orchestration, pipelines
+infra_platform/          # Infra, orchestration, pipelines
   airflow/         # Airflow DAGs, plugins, docker setup
   pipelines/       # Ingestion scripts (batch & stream)
   minio/           # Local object storage config
   redpanda/        # Local streaming config
-  infra/terraform/ # Cloud infrastructure as code
 
 analytics/         # dbt project & BI assets
-  dbt/
-    models/        # intermediate/staging/mart transformations
-    tests/         # dbt tests
-    seeds/         # dbt seeds
+  dbt/             # dbt project
   bi/powerbi/      # PBIX files and dataset docs
 </pre>
 
@@ -92,5 +88,5 @@ analytics/         # dbt project & BI assets
 
 ## 📝 Status
 
-**Phase:** S1–S2 — Bootstrapping & Infra.
+**Phase:** S2 — Ingestion.
 

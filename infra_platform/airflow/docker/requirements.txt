@@ -1,0 +1,6 @@
+kafka-python
+requests
+pytz
+minio
+duckdb
+pandas
