@@ -1,3 +1,4 @@
 requests
 tenacity
 kafka-python
+minio
