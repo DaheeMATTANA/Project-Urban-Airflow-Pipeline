@@ -79,7 +79,7 @@ def save_to_minio(data: dict, sensor_id: int):
     """
     Save JSON data directly into MinIO with partitioned path.
     """
-    now = datetime.datetime.utcnow()
+    now = datetime.datetime.now(datetime.UTC)
     object_path = f"openaq/yyyy={now:%Y}/MM={now:%m}/dd={now:%d}/hh={now:%H}/sensor_{sensor_id}.json"
 
     # Convert dict to bytes

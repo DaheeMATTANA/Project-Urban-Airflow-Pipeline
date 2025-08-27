@@ -52,3 +52,18 @@ format: ## Run Ruff formatter
 .PHONY: precommit
 precommit: ## Install pre-commit hooks
 	pip install pre-commit && pre-commit install
+
+
+# ---
+# Run Spark
+# ---
+run-spark: ## Run Spark with dependencies (argument FILE=path/to/your/script.py)
+	spark-submit \
+	  --master local[*] \
+	  --packages org.apache.hadoop:hadoop-aws:3.3.1,com.amazonaws:aws-java-sdk:1.12.262 \
+	  --conf spark.hadoop.fs.s3a.impl=org.apache.hadoop.fs.s3a.S3AFileSystem \
+	  --conf spark.hadoop.fs.s3a.path.style.access=true \
+	  $(FILE)
+
+run-openaq: ## Run openaq_spark_ingest.py
+	make run-spark FILE=infra_platform/pipelines/ingestion/openaq_spark_ingest.py
