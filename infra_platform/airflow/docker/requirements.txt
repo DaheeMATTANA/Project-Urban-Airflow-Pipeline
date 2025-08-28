@@ -4,3 +4,4 @@ pytz
 minio
 duckdb
 pandas
+apache-airflow-providers-apache-spark==4.0.0

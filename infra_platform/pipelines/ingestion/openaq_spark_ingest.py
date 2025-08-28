@@ -32,17 +32,7 @@ MINIO_ACCESS_KEY = os.getenv("MINIO_ACCESS_KEY", "minioadmin")
 MINIO_SECRET_KEY = os.getenv("MINIO_SECRET_KEY", "minioadmin")
 
 # SparkSesssion with S3(MinIO) connector
-spark = (
-    SparkSession.builder.appName("OpenAQSparkIngestion")
-    .config("spark.hadoop.fs.s3a.endpoint", f"http://{MINIO_ENDPOINT}")
-    .config("spark.hadoop.fs.s3a.access.key", MINIO_ACCESS_KEY)
-    .config("spark.hadoop.fs.s3a.secret.key", MINIO_SECRET_KEY)
-    .config("spark.hadoop.fs.s3a.path.style.access", True)
-    .config(
-        "spark.hadoop.fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem"
-    )
-    .getOrCreate()
-)
+spark = SparkSession.builder.appName("OpenAQSparkIngestion").getOrCreate()
 
 # Spark Schema
 schema = StructType(

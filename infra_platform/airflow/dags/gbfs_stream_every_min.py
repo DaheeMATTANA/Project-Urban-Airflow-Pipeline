@@ -12,7 +12,7 @@ default_args = {
 }
 
 with DAG(
-    dag_id="gbfs_stream",
+    dag_id="gbfs_stream_every_min",
     default_args=default_args,
     start_date=datetime(2025, 1, 1),
     schedule_interval="* * * * *",  # every 1 minute
