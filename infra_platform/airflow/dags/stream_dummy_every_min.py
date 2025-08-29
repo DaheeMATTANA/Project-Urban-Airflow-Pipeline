@@ -54,7 +54,7 @@ def produce():
 
 # ---- Airflow DAG ----
 with DAG(
-    dag_id="stream_dummy",
+    dag_id="stream_dummy_every_min",
     start_date=datetime(2025, 1, 1),
     schedule_interval="* * * * *",  # every minute
     catchup=False,

@@ -4,3 +4,7 @@ pytz
 minio
 duckdb
 pandas
+apache-airflow-providers-apache-spark==4.0.0
+pyspark==3.5.0
+py4j==0.10.9.7
+python-dotenv==1.0.0

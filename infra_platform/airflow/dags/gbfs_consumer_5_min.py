@@ -6,7 +6,7 @@ from pipelines.ingestion.gbfs_consumer_batch import consume_batch
 from pipelines.loading.gbfs_duckdb_loader import load_gbfs_to_duckdb
 
 with DAG(
-    dag_id="gbfs_consumer_dag",
+    dag_id="gbfs_consumer_5_min",
     start_date=datetime(2025, 1, 1),
     schedule_interval="*/5 * * * *",
     catchup=False,

@@ -36,6 +36,7 @@ services:
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: minioadmin
       DUCKDB_PATH: /opt/airflow/data/raw.duckdb
+      AIRFLOW__CONNECTION__SPARK_DEFAULT: "spark://local[*]"
     volumes:
       - ../dags:/opt/airflow/dags
       - ../plugins:/opt/airflow/plugins
@@ -72,6 +73,7 @@ services:
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: minioadmin
       DUCKDB_PATH: /opt/airflow/data/raw.duckdb
+      AIRFLOW__CONNECTION__SPARK_DEFAULT: "spark://local[*]"
     volumes:
       - ../dags:/opt/airflow/dags
       - ../plugins:/opt/airflow/plugins
