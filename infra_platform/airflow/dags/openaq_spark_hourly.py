@@ -2,9 +2,47 @@ import os
 from datetime import datetime, timedelta
 
 from airflow import DAG
+from airflow.operators.python import PythonOperator
 from airflow.providers.apache.spark.operators.spark_submit import (
     SparkSubmitOperator,
 )
+
+
+def load_openaq_to_duckdb(**context):
+    """
+    Task to load OpenAQ to DuckDB using OpenAQLoader class.
+    """
+    import sys
+
+    sys.path.append("/opt/airflow/src")
+
+    try:
+        from pipelines.loading.openaq_duckdb_loader import OpenAQLoader
+
+        loader = OpenAQLoader()
+        context["task_instance"].log.info("OpenAQLoader created successfully")
+
+        rows_inserted = loader.load_current_hour()
+        context["task_instance"].log.info(
+            f"OpenAQ DuckDB loading successful: {rows_inserted} rows"
+        )
+
+        summary = loader.get_air_quality_summary()
+        context["task_instance"].log.info(
+            f"Air quality summary: {len(summary)} parameters loaded"
+        )
+
+        return rows_inserted
+
+    except Exception as e:
+        context["task_instance"].log.error(
+            f"OpenAQ DuckDB loading failed: {e}"
+        )
+        import traceback
+
+        context["task_instance"].log.error(traceback.format_exc())
+        raise
+
 
 # DAG defaults
 default_args = {
@@ -17,11 +55,11 @@ default_args = {
 with DAG(
     dag_id="openaq_spark_hourly",
     default_args=default_args,
-    description="Ingest hourly OpenAQ data into MinIO via Spark",
+    description="Ingest hourly OpenAQ data into MinIO via Spark and load to DuckDB",
     schedule_interval="@hourly",  # every hour
     start_date=datetime(2025, 1, 1),
     catchup=False,
-    tags=["openaq", "spark"],
+    tags=["openaq", "spark", "duckdb"],
 ) as dag:
     ingest_openaq = SparkSubmitOperator(
         task_id="spark_ingest_openaq",
@@ -55,3 +93,11 @@ with DAG(
             "JAVA_HOME": "/usr/lib/jvm/java-17-openjdk-amd64",
         },
     )
+
+    load_to_duckdb_task = PythonOperator(
+        task_id="load_openaq_to_duckdb",
+        python_callable=load_openaq_to_duckdb,
+        provide_context=True,
+    )
+
+    ingest_openaq >> load_to_duckdb_task

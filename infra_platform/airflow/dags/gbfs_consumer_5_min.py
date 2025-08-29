@@ -8,9 +8,8 @@ from pipelines.loading.gbfs_duckdb_loader import load_gbfs_to_duckdb
 with DAG(
     dag_id="gbfs_consumer_5_min",
     start_date=datetime(2025, 1, 1),
-    schedule_interval="*/5 * * * *",  # Every 5 minutes
+    schedule_interval="*/5 * * * *",
     catchup=False,
-    tags=["gbfs", "consumer"],
 ) as dag:
     consume_task = PythonOperator(
         task_id="consume_gbfs_to_minio_batch",
