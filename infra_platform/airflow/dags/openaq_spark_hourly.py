@@ -25,7 +25,7 @@ with DAG(
 ) as dag:
     ingest_openaq = SparkSubmitOperator(
         task_id="spark_ingest_openaq",
-        application="/opt/airflow/pipelines/ingestion/openaq_spark_ingest.py",
+        application="/opt/airflow/src/pipelines/ingestion/openaq_spark_ingest.py",
         conn_id="spark_default",
         verbose=True,
         packages="org.apache.hadoop:hadoop-aws:3.3.4,com.amazonaws:aws-java-sdk-bundle:1.12.262",
@@ -36,19 +36,22 @@ with DAG(
             "spark.executor.memory": "2g",
             "spark.sql.adaptive.enabled": "true",
             "spark.sql.adaptive.coalescePartitions.enabled": "true",
-            "spark.hadoop.fs.s3a.endpoint": "http://localhost:9000",
-            "spark.hadoop.fs.s3a.access.key": "minioadmin",
-            "spark.hadoop.fs.s3a.secret.key": "minioadmin",
+            "spark.hadoop.fs.s3a.endpoint": os.getenv(
+                "MINIO_ENDPOINT", "http://localhost:9000"
+            ),
+            "spark.hadoop.fs.s3a.access.key": os.getenv(
+                "MINIO_ACCESS_KEY", "minioadmin"
+            ),
+            "spark.hadoop.fs.s3a.secret.key": os.getenv(
+                "MINIO_SECRET_KEY", "minioadmin"
+            ),
             "spark.hadoop.fs.s3a.path.style.access": "true",
             "spark.hadoop.fs.s3a.impl": "org.apache.hadoop.fs.s3a.S3AFileSystem",
             "spark.hadoop.fs.s3a.connection.ssl.enabled": "false",
         },
         env_vars={
             "OPENAQ_API_KEY": os.getenv("OPENAQ_API_KEY", ""),
-            "MINIO_ENDPOINT": os.getenv("MINIO_ENDPOINT", "localhost:9000"),
             "MINIO_BUCKET": "raw",
-            "MINIO_ACCESS_KEY": os.getenv("MINIO_ACCESS_KEY", "minioadmin"),
-            "MINIO_SECRET_KEY": os.getenv("MINIO_SECRET_KEY", "minioadmin"),
             "JAVA_HOME": "/usr/lib/jvm/java-17-openjdk-amd64",
         },
     )
