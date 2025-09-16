@@ -1,6 +1,7 @@
 import datetime
 import os
 
+import pytz
 import requests
 from dotenv import load_dotenv
 from pyspark.sql import SparkSession
@@ -38,6 +39,7 @@ spark = SparkSession.builder.appName("OpenAQSparkIngestion").getOrCreate()
 schema = StructType(
     [
         StructField("timestamp", TimestampType(), True),
+        StructField("timestamp_cet", TimestampType(), True),
         StructField("value", DoubleType(), True),
         StructField("unit", StringType(), True),
         StructField("sensor_id", StringType(), True),
@@ -81,11 +83,14 @@ def fetch_sensor_data(sensor_info):
 
     print(f"Fetching data for sensor {sid} ({pname}) at {loc_name}")
 
+    utc_now = datetime.datetime.now(datetime.UTC)
+    date_from = (utc_now - datetime.timedelta(days=1)).isoformat()
+
     try:
         resp = requests.get(
             f"{API_BASE}/sensors/{sid}/hours",
             headers=HEADERS,
-            params={"limit": 100},
+            params={"limit": 1000, "date_from": date_from},
             timeout=30,
         )
 
@@ -98,6 +103,8 @@ def fetch_sensor_data(sensor_info):
         print(f"Found {len(results)} measurements for sensor {sid}")
 
         enriched = []
+        paris_tz = pytz.timezone("Europe/Paris")
+
         for r in results:
             period = r.get("period", {})
             datetime_from = period.get("datetimeFrom", {})
@@ -114,10 +121,12 @@ def fetch_sensor_data(sensor_info):
                 dt = datetime.datetime.fromisoformat(
                     datetime_str.replace("Z", "+00:00")
                 )
+                local_dt = dt.astimezone(paris_tz).replace(tzinfo=None)
 
                 enriched.append(
                     {
-                        "timestamp": dt,
+                        "timestamp": dt.replace(tzinfo=None),
+                        "timestamp_cet": local_dt,
                         "value": float(value),
                         "unit": unit,
                         "sensor_id": sid,
@@ -153,7 +162,7 @@ if __name__ == "__main__":
         print("No data fetched")
     else:
         # Convert to DataFrame
-        df = spark.createDataFrame(data)
+        df = spark.createDataFrame(data, schema=schema)
 
         # Write to MinIO in partitioned Parquet
         now = datetime.datetime.now(datetime.UTC)

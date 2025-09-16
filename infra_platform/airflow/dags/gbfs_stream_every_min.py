@@ -14,7 +14,7 @@ default_args = {
 with DAG(
     dag_id="gbfs_stream_every_min",
     default_args=default_args,
-    start_date=datetime(2025, 1, 1),
+    start_date=datetime(2025, 9, 15),
     schedule_interval="* * * * *",  # every 1 minute
     catchup=False,
     tags=["gbfs", "streaming"],
