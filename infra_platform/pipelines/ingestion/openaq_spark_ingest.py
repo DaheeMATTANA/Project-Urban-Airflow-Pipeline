@@ -49,27 +49,66 @@ schema = StructType(
 )
 
 
-def get_paris_sensors(limit=10):
+def get_paris_sensors(limit=100, days_active=7):
     """
-    Return a list of sensor IDs for Paris bbox.
+    Return a list of active sensor IDs for Paris bbox,
+    filtering out sensors that haven't reported in the last N days.
+    Always returns a list (possibly empty).
     """
-    resp = requests.get(
-        f"{API_BASE}/locations",
-        headers=HEADERS,
-        params={"bbox": PARIS_BBOX_STR, "limit": limit},
-    )
-    resp.raise_for_status()
-    locations = resp.json()["results"]
+    import datetime
+
+    try:
+        resp = requests.get(
+            f"{API_BASE}/locations",
+            headers=HEADERS,
+            params={
+                "bbox": PARIS_BBOX_STR,
+                "limit": limit,
+                "sort": "desc",
+                "include": "latest",
+            },
+            timeout=30,
+        )
+        resp.raise_for_status()
+    except Exception as e:
+        print(f"API error while fetching locations: {e}")
+        return []
+
+    locations = resp.json().get("results", [])
     sensor_ids = []
+
+    cutoff = datetime.datetime.now(datetime.UTC) - datetime.timedelta(
+        days=days_active
+    )
+
     for loc in locations:
+        # some locations don’t have lastUpdated
+        last_updated = loc.get("lastUpdated")
+        dt_last = None
+        if last_updated:
+            try:
+                dt_last = datetime.datetime.fromisoformat(
+                    last_updated.replace("Z", "+00:00")
+                )
+            except Exception:
+                pass
+
+        # skip inactive locations if we could parse lastUpdated
+        if dt_last and dt_last < cutoff:
+            continue
+
         for sensor in loc.get("sensors", []):
             sensor_ids.append(
                 {
-                    "sensor_id": str(sensor["id"]),
-                    "parameter": sensor["parameter"]["name"],
-                    "location": loc["name"],
+                    "sensor_id": str(sensor.get("id")),
+                    "parameter": sensor.get("parameter", {}).get("name", ""),
+                    "location": loc.get("name", "Unknown"),
                 }
             )
+
+    print(
+        f"Found {len(sensor_ids)} active sensors in Paris (last {days_active} days)"
+    )
     return sensor_ids
 
 

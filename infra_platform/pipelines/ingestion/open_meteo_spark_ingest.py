@@ -1,9 +1,10 @@
 import os
-from datetime import datetime
+from datetime import UTC, datetime
 
 import requests
 from dotenv import load_dotenv
 from pyspark.sql import SparkSession
+from pyspark.sql.functions import col, from_utc_timestamp, to_timestamp
 
 # Load .env
 load_dotenv()
@@ -16,6 +17,8 @@ MINIO_SECRET_KEY = os.getenv("MINIO_SECRET_KEY", "minioadmin")
 
 
 def fetch_and_store_open_meteo(execution_date, **context):
+    if execution_date is None:
+        execution_date = datetime.datetime.now(datetime.UTC)
     # Spark session
     spark = SparkSession.builder.appName("OpenMeteoIngestion").getOrCreate()
 
@@ -68,6 +71,13 @@ def fetch_and_store_open_meteo(execution_date, **context):
         ],
     )
 
+    df = df.withColumn("time", to_timestamp(col("time")))
+
+    # Add Paris time
+    df = df.withColumn(
+        "time_cet", from_utc_timestamp(col("time"), "Europe/Paris")
+    )
+
     # Partition path
     partition_path = execution_date.strftime("yyyy=%Y/mm=%m/dd=%d/hh=%H")
     base_path = f"s3a://{MINIO_BUCKET}/openmeteo/{partition_path}/"
@@ -77,4 +87,4 @@ def fetch_and_store_open_meteo(execution_date, **context):
 
 
 if __name__ == "__main__":
-    fetch_and_store_open_meteo(datetime.utcnow())
+    fetch_and_store_open_meteo(datetime.now(UTC))

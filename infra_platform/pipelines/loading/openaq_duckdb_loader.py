@@ -16,6 +16,7 @@ class OpenAQLoader(BaseLoader):
             "prefix": "openaq",
             "schema": {
                 "timestamp": "TIMESTAMP",
+                "timestamp_cet": "TIMESTAMP",
                 "value": "DOUBLE",
                 "unit": "VARCHAR",
                 "sensor_id": "VARCHAR",
