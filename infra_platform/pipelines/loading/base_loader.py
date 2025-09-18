@@ -55,36 +55,36 @@ class BaseLoader:
         self.logger.info(f"Table {self.table_name} ready")
 
     def load_data(self, s3_path, date_str, hour):
-        """
-        Base method for loading data.
-        """
         conn = get_duckdb_connection()
-
         try:
             self.create_table(conn)
             self.setup_duckdb_s3(conn)
 
-            base_columns = ", ".join(self.schema.keys())
+            # Build explicit SELECT list in the same order as schema
+            parquet_cols = ", ".join(
+                [f"{col} AS {col}" for col in self.schema.keys()]
+            )
 
-            # Insert SQL
-            conn.execute(f"""
-                INSERT INTO {self.table_name} 
+            insert_sql = f"""
+                INSERT INTO {self.table_name} ({", ".join(self.schema.keys())}, ingestion_date, ingestion_hour, created_at)
                 SELECT 
-                    {base_columns},
+                    {parquet_cols},
                     '{date_str}' as ingestion_date,
                     {hour} as ingestion_hour,
                     CURRENT_TIMESTAMP as created_at
                 FROM read_parquet('{s3_path}')
-            """)
+            """
 
-            # Compute results
-            count = conn.execute(
-                "SELECT COUNT(*) FROM (SELECT 1) as dummy_count"
-            ).fetchone()[0]
+            conn.execute(insert_sql)
+
+            count = conn.execute(f"""
+                SELECT COUNT(*) 
+                FROM {self.table_name}
+                WHERE ingestion_date = '{date_str}' AND ingestion_hour = {hour}
+            """).fetchone()[0]
             conn.commit()
 
             self.logger.info(f"Loaded {count} rows from {s3_path}")
             return count
-
         finally:
             conn.close()

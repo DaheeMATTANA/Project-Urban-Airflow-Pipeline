@@ -57,14 +57,13 @@ with DAG(
     default_args=default_args,
     description="Ingest hourly OpenAQ data into MinIO via Spark and load to DuckDB",
     schedule_interval="@hourly",  # every hour
-    start_date=datetime(2025, 1, 1),
+    start_date=datetime(2025, 9, 15),
     catchup=False,
     tags=["openaq", "spark", "duckdb"],
 ) as dag:
     ingest_openaq = SparkSubmitOperator(
         task_id="spark_ingest_openaq",
         application="/opt/airflow/src/pipelines/ingestion/openaq_spark_ingest.py",
-        conn_id="spark_default",
         verbose=True,
         packages="org.apache.hadoop:hadoop-aws:3.3.4,com.amazonaws:aws-java-sdk-bundle:1.12.262",
         application_args=[],
@@ -90,6 +89,7 @@ with DAG(
         env_vars={
             "OPENAQ_API_KEY": os.getenv("OPENAQ_API_KEY", ""),
             "MINIO_BUCKET": "raw",
+            "MINIO_ENDPOINT": "minio:9000",
             "JAVA_HOME": "/usr/lib/jvm/java-17-openjdk-amd64",
         },
     )

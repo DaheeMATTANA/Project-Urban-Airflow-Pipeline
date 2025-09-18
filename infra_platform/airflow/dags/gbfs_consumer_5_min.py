@@ -7,7 +7,7 @@ from pipelines.loading.gbfs_duckdb_loader import load_gbfs_to_duckdb
 
 with DAG(
     dag_id="gbfs_consumer_5_min",
-    start_date=datetime(2025, 1, 1),
+    start_date=datetime(2025, 9, 15),
     schedule_interval="*/5 * * * *",
     catchup=False,
 ) as dag:

@@ -36,13 +36,14 @@ services:
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: minioadmin
       DUCKDB_PATH: /opt/airflow/data/raw.duckdb
-      AIRFLOW__CONNECTION__SPARK_DEFAULT: "spark://local[*]"
+      AIRFLOW_CONN_SPARK_DEFAULT: "spark://local[*]"
     volumes:
       - ../dags:/opt/airflow/dags
       - ../plugins:/opt/airflow/plugins
       - ../../pipelines:/opt/airflow/src/pipelines
       - ../../minio:/opt/airflow/src/minio
       - duckdb_data:/opt/airflow/data
+      - ../../jars:/opt/spark/jars
     ports:
       - "8081:8080"
     depends_on:
@@ -73,13 +74,14 @@ services:
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: minioadmin
       DUCKDB_PATH: /opt/airflow/data/raw.duckdb
-      AIRFLOW__CONNECTION__SPARK_DEFAULT: "spark://local[*]"
+      AIRFLOW_CONN_SPARK_DEFAULT: "spark://local[*]"
     volumes:
       - ../dags:/opt/airflow/dags
       - ../plugins:/opt/airflow/plugins
       - ../../pipelines:/opt/airflow/src/pipelines
       - ../../minio:/opt/airflow/src/minio
       - duckdb_data:/opt/airflow/data
+      - ../../jars:/opt/spark/jars
     depends_on:
       airflow-webserver:
         condition: service_started

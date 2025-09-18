@@ -1,6 +1,7 @@
 import datetime
 import os
 
+import pytz
 import requests
 from dotenv import load_dotenv
 from pyspark.sql import SparkSession
@@ -38,6 +39,7 @@ spark = SparkSession.builder.appName("OpenAQSparkIngestion").getOrCreate()
 schema = StructType(
     [
         StructField("timestamp", TimestampType(), True),
+        StructField("timestamp_cet", TimestampType(), True),
         StructField("value", DoubleType(), True),
         StructField("unit", StringType(), True),
         StructField("sensor_id", StringType(), True),
@@ -47,27 +49,66 @@ schema = StructType(
 )
 
 
-def get_paris_sensors(limit=10):
+def get_paris_sensors(limit=100, days_active=7):
     """
-    Return a list of sensor IDs for Paris bbox.
+    Return a list of active sensor IDs for Paris bbox,
+    filtering out sensors that haven't reported in the last N days.
+    Always returns a list (possibly empty).
     """
-    resp = requests.get(
-        f"{API_BASE}/locations",
-        headers=HEADERS,
-        params={"bbox": PARIS_BBOX_STR, "limit": limit},
-    )
-    resp.raise_for_status()
-    locations = resp.json()["results"]
+    import datetime
+
+    try:
+        resp = requests.get(
+            f"{API_BASE}/locations",
+            headers=HEADERS,
+            params={
+                "bbox": PARIS_BBOX_STR,
+                "limit": limit,
+                "sort": "desc",
+                "include": "latest",
+            },
+            timeout=30,
+        )
+        resp.raise_for_status()
+    except Exception as e:
+        print(f"API error while fetching locations: {e}")
+        return []
+
+    locations = resp.json().get("results", [])
     sensor_ids = []
+
+    cutoff = datetime.datetime.now(datetime.UTC) - datetime.timedelta(
+        days=days_active
+    )
+
     for loc in locations:
+        # some locations don’t have lastUpdated
+        last_updated = loc.get("lastUpdated")
+        dt_last = None
+        if last_updated:
+            try:
+                dt_last = datetime.datetime.fromisoformat(
+                    last_updated.replace("Z", "+00:00")
+                )
+            except Exception:
+                pass
+
+        # skip inactive locations if we could parse lastUpdated
+        if dt_last and dt_last < cutoff:
+            continue
+
         for sensor in loc.get("sensors", []):
             sensor_ids.append(
                 {
-                    "sensor_id": str(sensor["id"]),
-                    "parameter": sensor["parameter"]["name"],
-                    "location": loc["name"],
+                    "sensor_id": str(sensor.get("id")),
+                    "parameter": sensor.get("parameter", {}).get("name", ""),
+                    "location": loc.get("name", "Unknown"),
                 }
             )
+
+    print(
+        f"Found {len(sensor_ids)} active sensors in Paris (last {days_active} days)"
+    )
     return sensor_ids
 
 
@@ -81,11 +122,14 @@ def fetch_sensor_data(sensor_info):
 
     print(f"Fetching data for sensor {sid} ({pname}) at {loc_name}")
 
+    utc_now = datetime.datetime.now(datetime.UTC)
+    date_from = (utc_now - datetime.timedelta(days=1)).isoformat()
+
     try:
         resp = requests.get(
             f"{API_BASE}/sensors/{sid}/hours",
             headers=HEADERS,
-            params={"limit": 100},
+            params={"limit": 1000, "date_from": date_from},
             timeout=30,
         )
 
@@ -98,6 +142,8 @@ def fetch_sensor_data(sensor_info):
         print(f"Found {len(results)} measurements for sensor {sid}")
 
         enriched = []
+        paris_tz = pytz.timezone("Europe/Paris")
+
         for r in results:
             period = r.get("period", {})
             datetime_from = period.get("datetimeFrom", {})
@@ -114,10 +160,12 @@ def fetch_sensor_data(sensor_info):
                 dt = datetime.datetime.fromisoformat(
                     datetime_str.replace("Z", "+00:00")
                 )
+                local_dt = dt.astimezone(paris_tz).replace(tzinfo=None)
 
                 enriched.append(
                     {
-                        "timestamp": dt,
+                        "timestamp": dt.replace(tzinfo=None),
+                        "timestamp_cet": local_dt,
                         "value": float(value),
                         "unit": unit,
                         "sensor_id": sid,
@@ -153,7 +201,7 @@ if __name__ == "__main__":
         print("No data fetched")
     else:
         # Convert to DataFrame
-        df = spark.createDataFrame(data)
+        df = spark.createDataFrame(data, schema=schema)
 
         # Write to MinIO in partitioned Parquet
         now = datetime.datetime.now(datetime.UTC)
