@@ -28,7 +28,7 @@ PARIS_BBOX_STR = ",".join(map(str, PARIS_BBOX))
 
 # MinIO configs
 MINIO_ENDPOINT = os.getenv("MINIO_ENDPOINT", "localhost:9000")
-MINIO_BUCKET = os.getenv("MINIO_BUCKET", "raw")
+MINIO_BUCKET = os.getenv("MINIO_BUCKET", "bronze")
 MINIO_ACCESS_KEY = os.getenv("MINIO_ACCESS_KEY", "minioadmin")
 MINIO_SECRET_KEY = os.getenv("MINIO_SECRET_KEY", "minioadmin")
 
@@ -207,7 +207,7 @@ if __name__ == "__main__":
         now = datetime.datetime.now(datetime.UTC)
         path = (
             f"s3a://{MINIO_BUCKET}/openaq/"
-            f"yyyy={now:%Y}/MM={now:%m}/dd={now:%d}/hh={now:%H}/"
+            f"yyyy={now:%Y}/mm={now:%m}/dd={now:%d}/hh={now:%H}/"
         )
         df.write.mode("overwrite").parquet(path)
 

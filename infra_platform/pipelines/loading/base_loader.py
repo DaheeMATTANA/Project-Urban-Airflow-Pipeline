@@ -7,6 +7,10 @@ from pipelines.common.duckdb_utils import get_duckdb_connection
 class BaseLoader:
     """
     Base class for all the loaders.
+    Provides:
+        - DuckDB + MinIO setup
+        - Schema-based table creation
+        - Partition loading from S3 parquet
     """
 
     def __init__(self, config):
@@ -54,6 +58,14 @@ class BaseLoader:
 
         self.logger.info(f"Table {self.table_name} ready")
 
+    def build_s3_path(self, date_str, hour):
+        """
+        Default S3 path builder: s3://bucket/prefix/yyyy=YYYY/mm=MM/dd=DD/hh=HH/*.parquet
+        Can be overridden by subclasses.
+        """
+        year, month, day = date_str.split("-")
+        return f"s3a://{self.bucket}/{self.prefix}/yyyy={year}/mm={month}/dd={day}/hh={hour:02d}/*.parquet"
+
     def load_data(self, s3_path, date_str, hour):
         conn = get_duckdb_connection()
         try:
@@ -88,3 +100,11 @@ class BaseLoader:
             return count
         finally:
             conn.close()
+
+    def load_partition(self, date_str, hour):
+        """
+        High-level loader: DAGs should call this.
+        Builds the correct s3_path internally.
+        """
+        s3_path = self.build_s3_path(date_str, hour)
+        return self.load_data(s3_path, date_str, hour)
