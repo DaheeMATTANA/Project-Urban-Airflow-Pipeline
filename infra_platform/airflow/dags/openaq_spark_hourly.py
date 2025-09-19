@@ -37,6 +37,9 @@ with DAG(
     default_args=DEFAULT_ARGS,
     description="Ingest hourly OpenAQ data into MinIO (bronze) + DuckDB",
     schedule_interval="@hourly",  # every hour
+    max_active_runs=1,
+    max_active_tasks=2,
+    concurrency=1,
     tags=["source:openaq"],
     doc_md=__doc__,
 ) as dag:
@@ -45,7 +48,7 @@ with DAG(
         application="/opt/airflow/src/pipelines/ingestion/openaq_spark_ingest.py",
         verbose=True,
         packages="org.apache.hadoop:hadoop-aws:3.3.4,com.amazonaws:aws-java-sdk-bundle:1.12.262",
-        application_args=[],
+        application_args=["{{ ds }}", "{{ logical_date.hour }}"],
         name="OpenAQIngest",
         conf={
             "spark.driver.memory": "2g",
