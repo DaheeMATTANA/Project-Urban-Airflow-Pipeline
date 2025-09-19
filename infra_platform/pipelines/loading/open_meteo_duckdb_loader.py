@@ -16,7 +16,7 @@ OPEN_METEO_SCHEMA = {
 def get_open_meteo_loader():
     config = {
         "table_name": "staging__open_meteo_raw",
-        "bucket": os.getenv("MINIO_BUCKET", "raw"),
+        "bucket": os.getenv("MINIO_BUCKET", "bronze"),
         "prefix": "openmeteo",
         "schema": OPEN_METEO_SCHEMA,
     }

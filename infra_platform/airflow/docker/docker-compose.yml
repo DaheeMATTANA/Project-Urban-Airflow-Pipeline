@@ -42,7 +42,7 @@ services:
       - ../plugins:/opt/airflow/plugins
       - ../../pipelines:/opt/airflow/src/pipelines
       - ../../minio:/opt/airflow/src/minio
-      - duckdb_data:/opt/airflow/data
+      - ../../duckdb_data:/opt/airflow/data
       - ../../jars:/opt/spark/jars
     ports:
       - "8081:8080"
@@ -80,7 +80,7 @@ services:
       - ../plugins:/opt/airflow/plugins
       - ../../pipelines:/opt/airflow/src/pipelines
       - ../../minio:/opt/airflow/src/minio
-      - duckdb_data:/opt/airflow/data
+      - ../../duckdb_data:/opt/airflow/data
       - ../../jars:/opt/spark/jars
     depends_on:
       airflow-webserver:

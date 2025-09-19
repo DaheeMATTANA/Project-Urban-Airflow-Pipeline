@@ -1,47 +1,47 @@
 import os
-from datetime import datetime, timedelta
 
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.providers.apache.spark.operators.spark_submit import (
     SparkSubmitOperator,
 )
+from dags.common.defaults import DEFAULT_ARGS
 from pipelines.loading.open_meteo_duckdb_loader import get_open_meteo_loader
 
+"""
+## Open Meteo Spark Batch Ingestion DAG
 
-def load_partition_to_duckdb(**context):
-    logical_date = context["logical_date"]
-    date_str = logical_date.strftime("%Y-%m-%d")
-    hour = logical_date.hour
-    partition_path = logical_date.strftime("yyyy=%Y/mm=%m/dd=%d/hh=%H")
-    s3_path = f"s3a://raw/openmeteo/{partition_path}/*.parquet"
+This DAG ingests **Open Meteo data** every hour :
+- Fetches weather conditions data from provider API
+- Stores raw data in MinIO (bronze)
+- Pushes metadata to DuckDB staging
 
+Owner : Team Buldo
+"""
+
+
+def load_openmeteo_to_duckdb(**context):
+    date_str = context["ds"]
+    hour = context["logical_date"].hour
     loader = get_open_meteo_loader()
-    count = loader.load_data(s3_path, date_str, hour)
+    count = loader.load_partition(date_str, hour)
 
-    print(f"Inserted {count} rows into {loader.table_name}")
+    context["task_instance"].log.info(
+        f"Inserted {count} rows into {loader.table_name} for {date_str} hour {hour}"
+    )
+    return count
 
-
-default_args = {
-    "owner": "data-engineering",
-    "depends_on_past": False,
-    "email_on_failure": False,
-    "email_on_retry": False,
-    "retries": 1,
-    "retry_delay": timedelta(minutes=5),
-}
 
 SPARK_APP = "/opt/airflow/src/pipelines/ingestion/open_meteo_spark_ingest.py"
 
 with DAG(
     dag_id="open_meteo_hourly",
-    description="Ingest hourly Open-Meteo weather data into MinIO + DuckDB",
+    default_args=DEFAULT_ARGS,
+    description="Ingest hourly Open-Meteo weather data into MinIO (bronze) + DuckDB",
     schedule_interval="@hourly",
-    start_date=datetime(2025, 9, 15),
-    catchup=False,
-    default_args=default_args,
     max_active_runs=1,
-    tags=["weather", "openmeteo", "spark"],
+    tags=["source:openmeteo"],
+    doc_md=__doc__,
 ) as dag:
     ingest_task = SparkSubmitOperator(
         task_id="open_meteo_spark_ingest",
@@ -69,7 +69,7 @@ with DAG(
             "spark.hadoop.fs.s3a.connection.ssl.enabled": "false",
         },
         env_vars={
-            "MINIO_BUCKET": "raw",
+            "MINIO_BUCKET": "bronze",
             "MINIO_ENDPOINT": "minio:9000",
             "JAVA_HOME": "/usr/lib/jvm/java-17-openjdk-amd64",
         },
@@ -77,8 +77,11 @@ with DAG(
 
     duckdb_task = PythonOperator(
         task_id="load_to_duckdb",
-        python_callable=load_partition_to_duckdb,
+        python_callable=load_openmeteo_to_duckdb,
         provide_context=True,
+        op_kwargs={
+            "date_filter": "{{ ds }}"  # Use Airflow execution date
+        },
     )
 
     ingest_task >> duckdb_task

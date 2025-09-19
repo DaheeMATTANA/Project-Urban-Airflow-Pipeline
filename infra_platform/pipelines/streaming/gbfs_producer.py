@@ -19,7 +19,7 @@ def produce():
 
     # Enrich with metadata
     message = {
-        "timestamp_utc": datetime.datetime.utcnow().isoformat(),
+        "timestamp_utc": datetime.datetime.now(datetime.UTC).isoformat(),
         "timestamp_cet_cest": datetime.datetime.now(paris_tz).isoformat(),
         "city": "Paris",
         "payload": data,
