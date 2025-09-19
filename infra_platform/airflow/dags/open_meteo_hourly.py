@@ -40,6 +40,8 @@ with DAG(
     description="Ingest hourly Open-Meteo weather data into MinIO (bronze) + DuckDB",
     schedule_interval="@hourly",
     max_active_runs=1,
+    max_active_tasks=2,
+    concurrency=1,
     tags=["source:openmeteo"],
     doc_md=__doc__,
 ) as dag:
@@ -48,7 +50,7 @@ with DAG(
         application=SPARK_APP,
         verbose=True,
         packages="org.apache.hadoop:hadoop-aws:3.3.4,com.amazonaws:aws-java-sdk-bundle:1.12.262",
-        application_args=["{{ ds }}T{{ execution_date.hour }}:00:00"],
+        application_args=["{{ ds }}", "{{ logical_date.hour }}"],
         name="OpenMeteoIngest",
         conf={
             "spark.driver.memory": "2g",

@@ -1,5 +1,6 @@
 import datetime
 import os
+import sys
 
 import pytz
 import requests
@@ -189,6 +190,18 @@ def fetch_sensor_data(sensor_info):
 
 
 if __name__ == "__main__":
+    if len(sys.argv) < 3:
+        raise ValueError(
+            "Usage: openaq_spark_ingest.py <exec_date:YYYY-MM-DD> <hour:HH>"
+        )
+
+    exec_date = sys.argv[1]
+    exec_hour = sys.argv[2]
+
+    dt = datetime.datetime.fromisoformat(
+        f"{exec_date}T{exec_hour.zfill(2)}:00:00+00:00"
+    )
+
     # Get sensors in Paris
     sensors = get_paris_sensors(limit=5)  # Limit for demo
     print(f"Found {len(sensors)} sensors in Paris")
@@ -204,10 +217,9 @@ if __name__ == "__main__":
         df = spark.createDataFrame(data, schema=schema)
 
         # Write to MinIO in partitioned Parquet
-        now = datetime.datetime.now(datetime.UTC)
         path = (
             f"s3a://{MINIO_BUCKET}/openaq/"
-            f"yyyy={now:%Y}/mm={now:%m}/dd={now:%d}/hh={now:%H}/"
+            f"yyyy={dt:%Y}/mm={dt:%m}/dd={dt:%d}/hh={dt:%H}/"
         )
         df.write.mode("overwrite").parquet(path)
 

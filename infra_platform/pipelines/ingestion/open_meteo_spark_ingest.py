@@ -1,5 +1,6 @@
 import os
-from datetime import UTC, datetime
+import sys
+from datetime import datetime
 
 import requests
 from dotenv import load_dotenv
@@ -16,9 +17,11 @@ MINIO_ACCESS_KEY = os.getenv("MINIO_ACCESS_KEY", "minioadmin")
 MINIO_SECRET_KEY = os.getenv("MINIO_SECRET_KEY", "minioadmin")
 
 
-def fetch_and_store_open_meteo(execution_date, **context):
-    if execution_date is None:
-        execution_date = datetime.datetime.now(datetime.UTC)
+def fetch_and_store_open_meteo(exec_date: str, exec_hour: str):
+    dt = datetime.fromisoformat(
+        f"{exec_date}T{exec_hour.zfill(2)}:00:00+00:00"
+    )
+
     # Spark session
     spark = SparkSession.builder.appName("OpenMeteoIngestion").getOrCreate()
 
@@ -79,12 +82,17 @@ def fetch_and_store_open_meteo(execution_date, **context):
     )
 
     # Partition path
-    partition_path = execution_date.strftime("yyyy=%Y/mm=%m/dd=%d/hh=%H")
+    partition_path = dt.strftime("yyyy=%Y/mm=%m/dd=%d/hh=%H")
     base_path = f"s3a://{MINIO_BUCKET}/openmeteo/{partition_path}/"
 
     # Save to MinIO as Parquet
-    (df.write.mode("overwrite").parquet(base_path))
+    df.write.mode("overwrite").parquet(base_path)
+    print(f"Wrote {df.count()} rows to {base_path}")
 
 
 if __name__ == "__main__":
-    fetch_and_store_open_meteo(datetime.now(UTC))
+    if len(sys.argv) < 3:
+        raise ValueError(
+            "Usage: openmeteo_spark_ingest.py <exec_date:YYYY-MM-DD> <hour:HH>"
+        )
+    fetch_and_store_open_meteo(sys.argv[1], sys.argv[2])
