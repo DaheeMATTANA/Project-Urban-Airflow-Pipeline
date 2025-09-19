@@ -3,5 +3,10 @@ urban_airflow_analytics:
   outputs:
     dev:
       type: duckdb
-      path: ../../../warehouse.duckdb
+      path: ../../infra_platform/duckdb_data/warehouse_dev.duckdb
+      threads: 4
+
+    prod:
+      type: duckdb
+      path: ../../infra_platform/duckdb_data/warehouse_prod.duckdb
       threads: 4

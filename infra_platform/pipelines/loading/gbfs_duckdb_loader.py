@@ -140,7 +140,7 @@ def load_gbfs_to_duckdb(bucket="bronze", prefix="gbfs", date_filter=None):
 
                     duckdb_conn.execute(
                         """
-                        INSERT INTO staging__gbfs_station_status_raw (
+                        INSERT INTO raw.raw_gbfs_station_status (
                             station_id,
                             num_bikes_available,
                             num_docks_available,

@@ -15,7 +15,7 @@ OPENAQ_SCHEMA = {
 
 def get_openaq_loader():
     config = {
-        "table_name": "staging__openaq_raw",
+        "table_name": "raw.raw_openaq",
         "bucket": os.getenv("MINIO_BUCKET", "bronze"),
         "prefix": "openaq",
         "schema": OPENAQ_SCHEMA,

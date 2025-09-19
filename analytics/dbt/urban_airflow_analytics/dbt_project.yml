@@ -32,7 +32,9 @@ clean-targets:         # directories to be removed by `dbt clean`
 models:
   urban_airflow_analytics:
     # Config indicated by + and applies to all files under models/example/
-    example:
-      +materialized: view
-    staging:
-      +materialized: view
+    stg:
+      +schema: stg
+    int:
+      +schema: int
+    mart:
+      +schema: mart
