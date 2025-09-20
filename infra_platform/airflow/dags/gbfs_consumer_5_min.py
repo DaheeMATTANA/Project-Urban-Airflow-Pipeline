@@ -12,8 +12,24 @@ This DAG ingests **GBFS bike sharing data** every 5 minutes (near real-time) :
 - Stores raw data in MinIO (bronze)
 - Pushes metadata to DuckDB staging
 
+* Important parameter : full_refresh = False will run incremental loads
+* and full_refresh needs to be implemented only when it is absolutely necessary.
+
 Owner : Team Buldo
 """
+
+
+def load_gbfs_task(**kwargs):
+    conf = kwargs.get("dag_run").conf or {}
+    full_refresh = conf.get("full_refresh", False)
+    date_filter = conf.get("date_filter")
+    print(
+        f"[INFO] DAG run full_refresh={full_refresh}, date_filter={date_filter}"
+    )
+    return load_gbfs_to_duckdb(
+        full_refresh=full_refresh, date_filter=date_filter
+    )
+
 
 with DAG(
     dag_id="gbfs_consumer_5_min",
@@ -36,7 +52,7 @@ with DAG(
     # Optional loader task - can be enabled/disabled
     load_to_duckdb_task = PythonOperator(
         task_id="load_gbfs_to_duckdb",
-        python_callable=load_gbfs_to_duckdb,
+        python_callable=load_gbfs_task,
     )
 
     consume_task >> load_to_duckdb_task

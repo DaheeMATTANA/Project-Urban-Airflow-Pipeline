@@ -2,6 +2,10 @@ import logging
 import os
 
 from pipelines.common.duckdb_utils import get_duckdb_connection
+from pipelines.common.load_state_utils import (
+    get_last_loaded_at,
+    update_last_loaded_at,
+)
 
 
 class BaseLoader:
@@ -11,6 +15,8 @@ class BaseLoader:
         - DuckDB + MinIO setup
         - Schema-based table creation
         - Partition loading from S3 parquet
+        - Incremental loading with checkpoints
+        - Optional full refresh
     """
 
     def __init__(self, config):
@@ -66,16 +72,30 @@ class BaseLoader:
         year, month, day = date_str.split("-")
         return f"s3a://{self.bucket}/{self.prefix}/yyyy={year}/mm={month}/dd={day}/hh={hour:02d}/*.parquet"
 
-    def load_data(self, s3_path, date_str, hour):
+    def load_data(self, s3_path, date_str, hour, full_refresh=False):
         conn = get_duckdb_connection()
         try:
             self.create_table(conn)
             self.setup_duckdb_s3(conn)
 
+            # Handle full refresh
+            if full_refresh:
+                self.logger.info(
+                    f"[INFO] Full refresh enabled, wiping partition {date_str} hour {hour}"
+                )
+                conn.execute(
+                    f"DELETE FROM {self.table_name} WHERE ingestion_date = '{date_str}' AND ingestion_hour = {hour}"
+                )
+                last_loaded_at = None
+            else:
+                last_loaded_at = get_last_loaded_at(conn, self.table_name)
+
             # Build explicit SELECT list in the same order as schema
             parquet_cols = ", ".join(
                 [f"{col} AS {col}" for col in self.schema.keys()]
             )
+
+            ts_col = "time" if "time" in self.schema else "timestamp"
 
             insert_sql = f"""
                 INSERT INTO {self.table_name} ({", ".join(self.schema.keys())}, ingestion_date, ingestion_hour, created_at)
@@ -87,6 +107,13 @@ class BaseLoader:
                 FROM read_parquet('{s3_path}')
             """
 
+            if last_loaded_at:
+                insert_sql += f"WHERE {ts_col} > TIMESTAMP '{last_loaded_at}'"
+
+            self.logger.info(
+                f"[DEBUG] Loading from {s3_path}, last_loaded_at={last_loaded_at}, full_refresh={full_refresh}"
+            )
+
             conn.execute(insert_sql)
 
             count = conn.execute(f"""
@@ -94,14 +121,31 @@ class BaseLoader:
                 FROM {self.table_name}
                 WHERE ingestion_date = '{date_str}' AND ingestion_hour = {hour}
             """).fetchone()[0]
-            conn.commit()
 
+            if last_loaded_at:
+                self.logger.info(
+                    f"[DEBUG] Partition {date_str}/{hour}: {count} rows after incremental filter > {last_loaded_at}"
+                )
+            else:
+                self.logger.info(
+                    f"[DEBUG] Partition {date_str}/{hour}: {count} rows inserted (no filter)"
+                )
+
+            # Update checkpoint
+            if count > 0:
+                max_ts = conn.execute(
+                    f"SELECT MAX({ts_col}) FROM {self.table_name}"
+                ).fetchone()[0]
+                if max_ts:
+                    update_last_loaded_at(conn, self.table_name, max_ts)
+
+            conn.commit()
             self.logger.info(f"Loaded {count} rows from {s3_path}")
             return count
         finally:
             conn.close()
 
-    def load_partition(self, date_str, hour):
+    def load_partition(self, date_str, hour, full_refresh=False):
         """
         High-level loader: DAGs should call this.
         Builds the correct s3_path internally.

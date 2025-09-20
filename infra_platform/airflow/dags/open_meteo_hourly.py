@@ -16,18 +16,23 @@ This DAG ingests **Open Meteo data** every hour :
 - Stores raw data in MinIO (bronze)
 - Pushes metadata to DuckDB staging
 
+* Important parameter : full_refresh = False will run incremental loads
+* and full_refresh needs to be implemented only when it is absolutely necessary.
+
 Owner : Team Buldo
 """
 
 
 def load_openmeteo_to_duckdb(**context):
+    conf = context["dag_run"].conf or {}
+    full_refresh = conf.get("full_refresh", False)
     date_str = context["ds"]
     hour = context["logical_date"].hour
     loader = get_open_meteo_loader()
-    count = loader.load_partition(date_str, hour)
+    count = loader.load_partition(date_str, hour, full_refresh=full_refresh)
 
     context["task_instance"].log.info(
-        f"Inserted {count} rows into {loader.table_name} for {date_str} hour {hour}"
+        f"[INFO] Inserted {count} rows into {loader.table_name} for {date_str} hour {hour} (full_refresh={full_refresh})"
     )
     return count
 
