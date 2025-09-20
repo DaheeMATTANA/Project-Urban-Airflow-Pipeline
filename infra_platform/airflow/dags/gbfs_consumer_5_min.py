@@ -2,7 +2,6 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 from dags.common.defaults import DEFAULT_ARGS
 from pipelines.ingestion.gbfs_consumer_batch import consume_batch
-from pipelines.loading.gbfs_duckdb_loader import load_gbfs_to_duckdb
 
 """
 ## GBFS Stream Ingestion DAG
@@ -10,7 +9,6 @@ from pipelines.loading.gbfs_duckdb_loader import load_gbfs_to_duckdb
 This DAG ingests **GBFS bike sharing data** every 5 minutes (near real-time) :
 - Fetches live station status from provider API
 - Stores raw data in MinIO (bronze)
-- Pushes metadata to DuckDB staging
 
 Owner : Team Buldo
 """
@@ -32,11 +30,3 @@ with DAG(
             "timeout_s": 30,
         },
     )
-
-    # Optional loader task - can be enabled/disabled
-    load_to_duckdb_task = PythonOperator(
-        task_id="load_gbfs_to_duckdb",
-        python_callable=load_gbfs_to_duckdb,
-    )
-
-    consume_task >> load_to_duckdb_task

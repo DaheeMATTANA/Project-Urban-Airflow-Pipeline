@@ -1,25 +1,9 @@
 version: 2
 
 sources:
-  - name: raw_data
-    database: /opt/airflow/data/raw.duckdb
-
+  - name: raw
+    schema: raw
     tables:
-      - name: staging__gbfs_station_status_raw
-        description: "Raw GBFS station status data from Kafka"
-
-        columns:
-          - name: station_id
-            description: "Unique station identifier"
-
-          - name: num_bikes_available
-            description: "Number of bikes currently available"
-
-          - name: num_docks_available
-            description: "Number of docks currently available"
-
-          - name: last_reported
-            description: "Last time station reported status"
-            
-          - name: loaded_at
-            description: "When record was loaded into staging"
+      - name: openaq
+      - name: gbfs_station_status
+      - name: open_meteo

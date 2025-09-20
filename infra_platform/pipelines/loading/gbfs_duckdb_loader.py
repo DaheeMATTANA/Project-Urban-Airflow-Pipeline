@@ -1,22 +1,38 @@
 import json
-from datetime import datetime, timedelta
+from datetime import datetime
 
 import pandas as pd
+import pytz
 from pipelines.common.duckdb_utils import (
     create_staging_table,
     get_duckdb_connection,
 )
+from pipelines.common.load_state_utils import (
+    get_last_loaded_at,
+    update_last_loaded_at,
+)
 from pipelines.common.minio_utils import get_minio_client
 
+UTC = pytz.utc
+CET = pytz.timezone("Europe/Paris")
 
-def load_gbfs_to_duckdb(bucket="bronze", prefix="gbfs", date_filter=None):
+
+def load_gbfs_to_duckdb(
+    date_str=None,
+    hour=None,
+    bucket="bronze",
+    prefix="gbfs",
+    full_refresh=False,
+):
     """
-    Load GBFS data from MinIO to DuckDB staging table
+    Incrementally load GBFS data from MinIO into DuckDB raw schema.
 
     Args:
+        date_str: Date string (YYYY-MM-DD) to load specific date
+        hour: The hour to load specific hour
         bucket: MinIO bucket name
         prefix: Object prefix (gbfs)
-        date_filter: Optional date string (YYYY-MM-DD) to load specific date
+        full_refresh: If True, clears table from the date onward & reloads
     """
 
     # Ensure staging table exists
@@ -26,22 +42,30 @@ def load_gbfs_to_duckdb(bucket="bronze", prefix="gbfs", date_filter=None):
     minio_client = get_minio_client()
     duckdb_conn = get_duckdb_connection()
 
-    # Determine date to process
-    if date_filter:
-        target_date = date_filter
+    if full_refresh and date_str:
+        print(f"[INFO] Wiping partition {date_str} hour {hour}")
+        duckdb_conn.execute(
+            f"DELETE FROM raw.raw_gbfs_station_status WHERE ingestion_date = '{date_str}' AND ingestion_hour = {hour}"
+        )
+        last_loaded_at = None
     else:
-        # Default to yesterday to ensure complete data
-        target_date = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
+        last_loaded_at = get_last_loaded_at(
+            duckdb_conn, "raw_gbfs_station_status"
+        )
 
-    print(f"Loading GBFS data for date: {target_date}")
+    target_date = date_str or datetime.now().strftime("%Y-%m-%d")
 
-    # List objects for the target date
-    object_prefix = f"{prefix}/station_status/date={target_date}/"
+    print(f"Loading GBFS data for date: {target_date}, hour: {hour}")
+
+    object_prefix = (
+        f"{prefix}/station_status/date={target_date}/hour-{hour:02d}/"
+    )
     objects = minio_client.list_objects(
         bucket, prefix=object_prefix, recursive=True
     )
 
     records_loaded = 0
+    all_records = []
 
     for obj in objects:
         if obj.object_name.endswith(".json"):
@@ -52,18 +76,12 @@ def load_gbfs_to_duckdb(bucket="bronze", prefix="gbfs", date_filter=None):
 
                 # --- Extract station data ---
                 stations = []
-                timestamp_cet = None
 
                 if "payload" in data and "data" in data["payload"]:
                     stations = data["payload"]["data"].get("stations", [])
-                    timestamp_cet = data.get("timestamp_cet_cest")
 
                 elif "data" in data and "stations" in data["data"]:
                     stations = data["data"]["stations"]
-                    if "last_updated" in data:
-                        timestamp_cet = datetime.fromtimestamp(
-                            data["last_updated"]
-                        ).isoformat()
 
                 # --- Parse date/hour from file path ---
                 path_parts = obj.object_name.split("/")
@@ -84,95 +102,36 @@ def load_gbfs_to_duckdb(bucket="bronze", prefix="gbfs", date_filter=None):
                     "00",
                 )
 
-                # --- Prepare records for bulk insert ---
-                records = []
+                # --- Prepare records ---
                 for station in stations:
-                    record = {
-                        "station_id": str(station.get("station_id")),
-                        "num_bikes_available": station.get(
-                            "num_bikes_available"
-                        ),
-                        "num_docks_available": station.get(
-                            "num_docks_available"
-                        ),
-                        "is_installed": bool(station.get("is_installed")),
-                        "is_renting": bool(station.get("is_renting")),
-                        "last_reported": datetime.fromtimestamp(
-                            station.get("last_reported", 0)
-                        ),
-                        "timestamp_cet_cest": timestamp_cet,
-                        "ingestion_date": date_part,
-                        "ingestion_hour": int(hour_part),
-                        "file_path": obj.object_name,
-                        "loaded_at": datetime.now(),
-                        "is_returning": bool(station.get("is_returning")),
-                    }
-                    records.append(record)
-
-                # --- Insert into DuckDB ---
-                if records:
-                    df = pd.DataFrame(records)
-
-                    df["timestamp_cet_cest"] = pd.to_datetime(
-                        df["timestamp_cet_cest"], errors="coerce"
+                    last_reported_val = station.get("last_reported", 0)
+                    last_reported_dt = datetime.fromtimestamp(
+                        last_reported_val, tz=UTC
                     )
-                    df["ingestion_date"] = pd.to_datetime(
-                        df["ingestion_date"], errors="coerce"
-                    ).dt.date
+                    timestamp_cet_cest = last_reported_dt.astimezone(
+                        CET
+                    ).replace(tzinfo=None)
+                    last_reported_naive = last_reported_dt.replace(tzinfo=None)
 
-                    columns_order = [
-                        "station_id",
-                        "num_bikes_available",
-                        "num_docks_available",
-                        "is_installed",
-                        "is_renting",
-                        "last_reported",
-                        "timestamp_cet_cest",
-                        "ingestion_date",
-                        "ingestion_hour",
-                        "file_path",
-                        "loaded_at",
-                        "is_returning",
-                    ]
-                    df_ordered = df[columns_order]
-
-                    duckdb_conn.register("tmp_df", df_ordered)
-
-                    duckdb_conn.execute(
-                        """
-                        INSERT INTO staging__gbfs_station_status_raw (
-                            station_id,
-                            num_bikes_available,
-                            num_docks_available,
-                            is_installed,
-                            is_renting,
-                            last_reported,
-                            timestamp_cet_cest,
-                            ingestion_date,
-                            ingestion_hour,
-                            file_path,
-                            loaded_at,
-                            is_returning
-                        )
-                        SELECT
-                            station_id,
-                            num_bikes_available,
-                            num_docks_available,
-                            is_installed,
-                            is_renting,
-                            CAST(last_reported AS TIMESTAMP),
-                            CAST(timestamp_cet_cest AS TIMESTAMP),
-                            CAST(ingestion_date AS DATE),
-                            ingestion_hour,
-                            file_path,
-                            CAST(loaded_at AS TIMESTAMP),
-                            is_returning
-                        FROM tmp_df
-                        """
-                    )
-                    records_loaded += len(records)
-                    print(
-                        f"Loaded {len(records)} records from {obj.object_name}"
+                    all_records.append(
+                        {
+                            "station_id": str(station.get("station_id")),
+                            "num_bikes_available": station.get(
+                                "num_bikes_available"
+                            ),
+                            "num_docks_available": station.get(
+                                "num_docks_available"
+                            ),
+                            "is_installed": bool(station.get("is_installed")),
+                            "is_renting": bool(station.get("is_renting")),
+                            "last_reported": last_reported_naive,
+                            "timestamp_cet_cest": timestamp_cet_cest,
+                            "ingestion_date": date_part,
+                            "ingestion_hour": int(hour_part),
+                            "file_path": obj.object_name,
+                            "loaded_at": datetime.now(),
+                            "is_returning": bool(station.get("is_returning")),
+                        }
                     )
 
                 response.close()
@@ -181,6 +140,96 @@ def load_gbfs_to_duckdb(bucket="bronze", prefix="gbfs", date_filter=None):
             except Exception as e:
                 print(f"Error processing {obj.object_name}: {e}")
                 continue
+
+    # A single bulk insert after loop
+    if not all_records:
+        print(f"[DEBUG] No records found for {date_str} hour {hour}")
+        duckdb_conn.close()
+        return 0
+
+    df = pd.DataFrame(all_records)
+
+    df["timestamp_cet_cest"] = pd.to_datetime(
+        df["timestamp_cet_cest"], errors="coerce"
+    )
+    df["ingestion_date"] = pd.to_datetime(
+        df["ingestion_date"], errors="coerce"
+    ).dt.date
+
+    print(f"[DEBUG] {len(df)} rows before incremental filter")
+
+    if last_loaded_at:
+        df = df[df["last_reported"] > last_loaded_at]
+        print(
+            f"[DEBUG] {len(df)} rows after incremental filter > {last_loaded_at}"
+        )
+
+    if df.empty:
+        print(f"[DEBUG] Skipping insert, no new rows beyond {last_loaded_at}")
+        duckdb_conn.close()
+        return 0
+
+    # --- Insert into DuckDB ---
+    columns_order = [
+        "station_id",
+        "num_bikes_available",
+        "num_docks_available",
+        "is_installed",
+        "is_renting",
+        "last_reported",
+        "timestamp_cet_cest",
+        "ingestion_date",
+        "ingestion_hour",
+        "file_path",
+        "loaded_at",
+        "is_returning",
+    ]
+    df_ordered = df[columns_order]
+
+    duckdb_conn.register("tmp_df", df_ordered)
+
+    duckdb_conn.execute(
+        """
+        INSERT INTO raw.raw_gbfs_station_status (
+            station_id,
+            num_bikes_available,
+            num_docks_available,
+            is_installed,
+            is_renting,
+            last_reported,
+            timestamp_cet_cest,
+            ingestion_date,
+            ingestion_hour,
+            file_path,
+            loaded_at,
+            is_returning
+        )
+        SELECT
+            station_id,
+            num_bikes_available,
+            num_docks_available,
+            is_installed,
+            is_renting,
+            CAST(last_reported AS TIMESTAMP),
+            CAST(timestamp_cet_cest AS TIMESTAMP),
+            CAST(ingestion_date AS DATE),
+            ingestion_hour,
+            file_path,
+            CAST(loaded_at AS TIMESTAMP),
+            is_returning
+        FROM tmp_df
+        """
+    )
+    records_loaded = len(df)
+
+    if records_loaded > 0:
+        max_ts = duckdb_conn.execute(
+            "SELECT MAX(last_reported) FROM raw.raw_gbfs_station_status"
+        ).fetchone()[0]
+        if max_ts:
+            update_last_loaded_at(
+                duckdb_conn, "raw_gbfs_station_status", max_ts
+            )
 
     duckdb_conn.commit()
     duckdb_conn.close()
