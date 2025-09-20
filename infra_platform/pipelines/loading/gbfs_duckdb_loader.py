@@ -1,5 +1,5 @@
 import json
-from datetime import datetime, timedelta
+from datetime import datetime
 
 import pandas as pd
 import pytz
@@ -18,15 +18,20 @@ CET = pytz.timezone("Europe/Paris")
 
 
 def load_gbfs_to_duckdb(
-    bucket="bronze", prefix="gbfs", date_filter=None, full_refresh=False
+    date_str=None,
+    hour=None,
+    bucket="bronze",
+    prefix="gbfs",
+    full_refresh=False,
 ):
     """
     Incrementally load GBFS data from MinIO into DuckDB raw schema.
 
     Args:
+        date_str: Date string (YYYY-MM-DD) to load specific date
+        hour: The hour to load specific hour
         bucket: MinIO bucket name
         prefix: Object prefix (gbfs)
-        date_filter: Optional date string (YYYY-MM-DD) to load specific date
         full_refresh: If True, clears table from the date onward & reloads
     """
 
@@ -37,10 +42,10 @@ def load_gbfs_to_duckdb(
     minio_client = get_minio_client()
     duckdb_conn = get_duckdb_connection()
 
-    if full_refresh and date_filter:
-        print(f"[INFO] Wiping partition {date_filter}")
+    if full_refresh and date_str:
+        print(f"[INFO] Wiping partition {date_str} hour {hour}")
         duckdb_conn.execute(
-            f"DELETE FROM raw.raw_gbfs_station_status WHERE ingestion_date = '{date_filter}'"
+            f"DELETE FROM raw.raw_gbfs_station_status WHERE ingestion_date = '{date_str}' AND ingestion_hour = {hour}"
         )
         last_loaded_at = None
     else:
@@ -48,14 +53,9 @@ def load_gbfs_to_duckdb(
             duckdb_conn, "raw_gbfs_station_status"
         )
 
-    # Determine date to process
-    if date_filter:
-        target_date = date_filter
-    else:
-        # Default to yesterday to ensure complete data
-        target_date = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
+    target_date = date_str or datetime.now().strftime("%Y-%m-%d")
 
-    print(f"Loading GBFS data for date: {target_date}")
+    print(f"Loading GBFS data for date: {target_date}, hour: {hour}")
 
     # List objects for the target date
     object_prefix = f"{prefix}/station_status/date={target_date}/"
@@ -110,6 +110,7 @@ def load_gbfs_to_duckdb(
                     timestamp_cet_cest = last_reported_dt.astimezone(
                         CET
                     ).replace(tzinfo=None)
+                    last_reported_naive = last_reported_dt.replace(tzinfo=None)
 
                     record = {
                         "station_id": str(station.get("station_id")),
@@ -121,7 +122,7 @@ def load_gbfs_to_duckdb(
                         ),
                         "is_installed": bool(station.get("is_installed")),
                         "is_renting": bool(station.get("is_renting")),
-                        "last_reported": last_reported_dt,
+                        "last_reported": last_reported_naive,
                         "timestamp_cet_cest": timestamp_cet_cest,
                         "ingestion_date": date_part,
                         "ingestion_hour": int(hour_part),

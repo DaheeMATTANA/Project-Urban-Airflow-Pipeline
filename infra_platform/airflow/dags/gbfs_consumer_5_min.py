@@ -19,15 +19,14 @@ Owner : Team Buldo
 """
 
 
-def load_gbfs_task(**kwargs):
-    conf = kwargs.get("dag_run").conf or {}
+def load_gbfs_task(**context):
+    conf = context["dag_run"].conf or {}
     full_refresh = conf.get("full_refresh", False)
-    date_filter = conf.get("date_filter")
-    print(
-        f"[INFO] DAG run full_refresh={full_refresh}, date_filter={date_filter}"
-    )
+    date_str = context["ds"]
+    hour = context["logical_date"].hour
+    print(f"[INFO] DAG run full_refresh={full_refresh}, date_str={date_str}")
     return load_gbfs_to_duckdb(
-        full_refresh=full_refresh, date_filter=date_filter
+        full_refresh=full_refresh, date_str=date_str, hour=hour
     )
 
 

@@ -145,10 +145,15 @@ class BaseLoader:
         finally:
             conn.close()
 
-    def load_partition(self, date_str, hour, full_refresh=False):
+    def load_partition(self, date_str=None, hour=None, full_refresh=False):
         """
         High-level loader: DAGs should call this.
         Builds the correct s3_path internally.
         """
+        if not date_str or hour is None:
+            raise ValueError(
+                "date_str and hour must be provided (use {{ ds }} and {{ logical_date.hour }} in DAG)"
+            )
+
         s3_path = self.build_s3_path(date_str, hour)
         return self.load_data(s3_path, date_str, hour)

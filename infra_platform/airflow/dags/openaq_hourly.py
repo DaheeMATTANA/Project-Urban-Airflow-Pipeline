@@ -29,7 +29,9 @@ def load_openaq_to_duckdb(**context):
     date_str = context["ds"]
     hour = context["logical_date"].hour
     loader = get_openaq_loader()
-    count = loader.load_partition(date_str, hour, full_refresh=full_refresh)
+    count = loader.load_partition(
+        date_str=date_str, hour=hour, full_refresh=full_refresh
+    )
 
     context["task_instance"].log.info(
         f"[INFO] Inserted {count} rows into {loader.table_name} for {date_str} hour {hour} (full_refresh={full_refresh})"
