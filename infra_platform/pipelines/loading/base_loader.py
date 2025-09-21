@@ -1,5 +1,6 @@
 import logging
 import os
+from datetime import UTC, datetime
 
 from pipelines.common.duckdb_utils import get_duckdb_connection
 from pipelines.common.load_state_utils import (
@@ -108,6 +109,7 @@ class BaseLoader:
             """
 
             if last_loaded_at:
+                last_loaded_at = last_loaded_at.replace(tzinfo=None)
                 insert_sql += f"WHERE {ts_col} > TIMESTAMP '{last_loaded_at}'"
 
             self.logger.info(
@@ -137,7 +139,12 @@ class BaseLoader:
                     f"SELECT MAX({ts_col}) FROM {self.table_name}"
                 ).fetchone()[0]
                 if max_ts:
-                    update_last_loaded_at(conn, self.table_name, max_ts)
+                    now = datetime.now(UTC).replace(tzinfo=None)
+                    loaded_ts = min(max_ts, now)
+                    update_last_loaded_at(conn, self.table_name, loaded_ts)
+                    self.logger.info(
+                        f"[INFO] Updated checkpoint for {self.table_name}: {loaded_ts}"
+                    )
 
             conn.commit()
             self.logger.info(f"Loaded {count} rows from {s3_path}")
@@ -157,3 +164,16 @@ class BaseLoader:
 
         s3_path = self.build_s3_path(date_str, hour)
         return self.load_data(s3_path, date_str, hour)
+
+    def load_forecast_partition(self, date_str=None, full_refresh=False):
+        """
+        Special loader for forecast datasets (daily partitions, no hour) such as Open Meteo.
+        Reuses the same incremental + checkpoint logic as load_partition.
+        """
+        if not date_str:
+            raise ValueError("date_str must be provided for forecast loader")
+
+        year, month, day = date_str.split("-")
+        s3_path = f"s3a://{self.bucket}/{self.prefix}/yyyy={year}/mm={month}/dd={day}/*.parquet"
+
+        return self.load_data(s3_path, date_str, 0, full_refresh=full_refresh)

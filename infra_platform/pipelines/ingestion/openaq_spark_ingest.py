@@ -124,7 +124,7 @@ def fetch_sensor_data(sensor_info):
     print(f"Fetching data for sensor {sid} ({pname}) at {loc_name}")
 
     utc_now = datetime.datetime.now(datetime.UTC)
-    date_from = (utc_now - datetime.timedelta(days=1)).isoformat()
+    date_from = (utc_now - datetime.timedelta(hours=1)).isoformat()
 
     try:
         resp = requests.get(

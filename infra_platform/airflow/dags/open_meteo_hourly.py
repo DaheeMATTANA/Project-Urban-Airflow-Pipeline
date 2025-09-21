@@ -6,7 +6,10 @@ from airflow.providers.apache.spark.operators.spark_submit import (
     SparkSubmitOperator,
 )
 from dags.common.defaults import DEFAULT_ARGS
-from pipelines.loading.open_meteo_duckdb_loader import get_open_meteo_loader
+from pipelines.loading.open_meteo_duckdb_loader import (
+    get_open_meteo_forecast_loader,
+    get_open_meteo_loader,
+)
 
 """
 ## Open Meteo Spark Batch Ingestion DAG
@@ -35,6 +38,21 @@ def load_openmeteo_to_duckdb(**context):
 
     context["task_instance"].log.info(
         f"[INFO] Inserted {count} rows into {loader.table_name} for {date_str} hour {hour} (full_refresh={full_refresh})"
+    )
+    return count
+
+
+def load_openmeteo_forecast_to_duckdb(**context):
+    conf = context["dag_run"].conf or {}
+    full_refresh = conf.get("full_refresh", False)
+    date_str = context["ds"]
+    loader = get_open_meteo_forecast_loader()
+    count = loader.load_forecast_partition(
+        date_str=date_str, full_refresh=full_refresh
+    )
+
+    context["task_instance"].log.info(
+        f"[INFO] Inserted {count} rows into {loader.table_name} for {date_str} (full_refresh={full_refresh})"
     )
     return count
 
@@ -93,4 +111,13 @@ with DAG(
         },
     )
 
-    ingest_task >> duckdb_task
+    duckdb_task_forecast = PythonOperator(
+        task_id="load_to_duckdb_forecast",
+        python_callable=load_openmeteo_forecast_to_duckdb,
+        provide_context=True,
+        op_kwargs={
+            "date_filter": "{{ ds }}"  # Use Airflow execution date
+        },
+    )
+
+    ingest_task >> [duckdb_task, duckdb_task_forecast]
