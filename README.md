@@ -82,11 +82,11 @@ analytics/         # dbt project & BI assets
 ## 🔗 Related
 
 - **Urban Airflow Analytics** (optional separate repo): dbt + BI only, for teams splitting DE/AE workflows.
-- Public API sources: GBFS (bike sharing), OpenWeather, OpenAQ.
+- Public API sources: GBFS (bike sharing), OpenWeather, OpenAQ, IDFM API for disruptions, Public Holiday Calendar
 
 ---
 
 ## 📝 Status
 
-**Phase:** S2 — Ingestion.
+**Phase:** S4 — Ingestion 3.
 
