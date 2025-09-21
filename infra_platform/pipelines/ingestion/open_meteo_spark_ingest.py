@@ -12,7 +12,7 @@ load_dotenv()
 
 # MinIO configs
 MINIO_ENDPOINT = os.getenv("MINIO_ENDPOINT", "localhost:9000")
-MINIO_BUCKET = os.getenv("MINIO_BUCKET", "raw")
+MINIO_BUCKET = os.getenv("MINIO_BUCKET", "bronze")
 MINIO_ACCESS_KEY = os.getenv("MINIO_ACCESS_KEY", "minioadmin")
 MINIO_SECRET_KEY = os.getenv("MINIO_SECRET_KEY", "minioadmin")
 
@@ -42,7 +42,7 @@ def fetch_and_store_open_meteo(exec_date: str, exec_hour: str):
         "latitude": latitude,
         "longitude": longitude,
         "hourly": ",".join(hourly_params),
-        "timezone": "Europe/Paris",
+        "timezone": "UTC",
     }
 
     resp = requests.get(url, params=params)
@@ -81,13 +81,28 @@ def fetch_and_store_open_meteo(exec_date: str, exec_hour: str):
         "time_cet", from_utc_timestamp(col("time"), "Europe/Paris")
     )
 
+    # Hourly filter
+    df_hourly = df.filter(
+        (col("time").cast("date") == exec_date)
+        & (col("time").substr(12, 2) == exec_hour.zfill(2))
+    )
+
     # Partition path
     partition_path = dt.strftime("yyyy=%Y/mm=%m/dd=%d/hh=%H")
     base_path = f"s3a://{MINIO_BUCKET}/openmeteo/{partition_path}/"
 
     # Save to MinIO as Parquet
-    df.write.mode("overwrite").parquet(base_path)
-    print(f"Wrote {df.count()} rows to {base_path}")
+    df_hourly.write.mode("overwrite").parquet(base_path)
+    print(f"[HOURLY] Wrote {df_hourly.count()} rows to {base_path}")
+
+    # Seperate forecasts daily
+    forecast_path = dt.strftime("yyyy=%Y/mm=%m/dd=%d")
+    base_forecast_path = (
+        f"s3a://{MINIO_BUCKET}/openmeteo_forecast/{forecast_path}/"
+    )
+
+    df.write.mode("overwrite").parquet(base_forecast_path)
+    print(f"[FORECAST] Wrote {df.count()} rows to {base_forecast_path}")
 
 
 if __name__ == "__main__":
