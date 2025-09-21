@@ -27,19 +27,15 @@ def persist_message_to_minio(bucket: str, prefix: str, message: dict):
     if not client.bucket_exists(bucket):
         client.make_bucket(bucket)
 
-    # Handle missing timestamp_cet_cest
-    if "timestamp_cet_cest" in message:
-        now = datetime.datetime.fromisoformat(message["timestamp_cet_cest"])
-    elif "lastUpdatedOther" in message:
-        now = datetime.datetime.fromtimestamp(message["lastUpdatedOther"])
-    else:
-        now = datetime.datetime.now()
+    now_utc = datetime.datetime.now(datetime.UTC)
 
-    # Partition path
-    date = now.strftime("%Y-%m-%d")
-    hour = now.strftime("%H")
+    date = now_utc.strftime("%Y-%m-%d")
+    hour = now_utc.strftime("%H")
 
-    path = f"{prefix}/station_status/date={date}/hour-{hour}/{now.isoformat()}.json"
+    path = (
+        f"{prefix}/station_status/date={date}/hour-{hour}/"
+        f"{now_utc.isoformat()}.json"
+    )
 
     # Convert to JSON
     data_bytes = BytesIO(json.dumps(message).encode("utf-8"))

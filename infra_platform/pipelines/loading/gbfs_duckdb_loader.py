@@ -53,7 +53,7 @@ def load_gbfs_to_duckdb(
             duckdb_conn, "raw_gbfs_station_status"
         )
 
-    target_date = date_str or datetime.now().strftime("%Y-%m-%d")
+    target_date = date_str or datetime.now(tz=UTC).strftime("%Y-%m-%d")
 
     print(f"Loading GBFS data for date: {target_date}, hour: {hour}")
 
