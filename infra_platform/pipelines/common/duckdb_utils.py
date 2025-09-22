@@ -8,7 +8,9 @@ def get_duckdb_connection():
     """
     Get DuckDB connection to local database
     """
-    db_path = os.getenv("DUCKDB_PATH", "/opt/airflow/data/raw.duckdb")
+    db_path = os.getenv(
+        "DUCKDB_PATH", "/opt/airflow/data/warehouse_dev.duckdb"
+    )
 
     # Ensure directory exists
     Path(db_path).parent.mkdir(parents=True, exist_ok=True)
