@@ -10,12 +10,20 @@ CITY = "Paris"
 paris_tz = pytz.timezone("Europe/Paris")
 
 
-def produce():
+def produce(date_filter=None):
     """
     Fetch GBFS station_status feed and publish to Redpanda/Kafka.
     """
+    # Build URL with optional timestamp
+    if date_filter:
+        url = f"{URL}?at={date_filter}"
+    else:
+        url = URL
+
+    print(f"[DEBUG] Fetching URL: {url}")
+
     # Fetch data from API with retry/backoff
-    data = fetch_json_with_retry(URL)
+    data = fetch_json_with_retry(url)
 
     # Enrich with metadata
     message = {
@@ -31,7 +39,7 @@ def produce():
     producer.flush()
 
     print(
-        f"[{datetime.datetime.now(paris_tz).isoformat()}] Message sent to topic '{TOPIC}'"
+        f"[{datetime.datetime.now(paris_tz).isoformat()}] Message sent to topic '{TOPIC} (date_filter={date_filter})'"
     )
 
 

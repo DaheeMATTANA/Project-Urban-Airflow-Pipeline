@@ -33,6 +33,7 @@ services:
       AIRFLOW__WEBSERVER__SECRET_KEY: ${AIRFLOW_SECRET_KEY}
       AIRFLOW__API__AUTH_BACKENDS: "airflow.api.auth.backend.basic_auth"
       PYTHONPATH: /opt/airflow:/opt/airflow/src
+      IDFM_API_KEY: ${IDFM_API_KEY}
       MINIO_ENDPOINT: minio:9000
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: minioadmin
@@ -72,6 +73,7 @@ services:
       AIRFLOW__WEBSERVER__SECRET_KEY: ${AIRFLOW_SECRET_KEY}
       AIRFLOW__API__AUTH_BACKENDS: "airflow.api.auth.backend.basic_auth"
       PYTHONPATH: /opt/airflow:/opt/airflow/src
+      IDFM_API_KEY: ${IDFM_API_KEY}
       MINIO_ENDPOINT: minio:9000
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: minioadmin

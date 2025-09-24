@@ -42,7 +42,7 @@ def fetch_holidays_data() -> dict:
     return resp.json()
 
 
-def write_to_minio(data: dict, min_year: int):
+def write_to_minio_yearly(data: dict, min_year: int):
     """
     Write to MinIO bucket holidays.json partitioned by year
     """
@@ -72,7 +72,7 @@ def write_to_minio(data: dict, min_year: int):
 
 def run_ingest(min_year: int):
     data = fetch_holidays_data()
-    write_to_minio(data, min_year=min_year)
+    write_to_minio_yearly(data, min_year=min_year)
 
 
 if __name__ == "__main__":
