@@ -11,7 +11,7 @@ from pipelines.common.load_state_utils import (
 
 class BaseLoader:
     """
-    Base class for all the loaders.
+    Base class for all the loaders (Parquet).
     Provides:
         - DuckDB + MinIO setup
         - Schema-based table creation
@@ -34,7 +34,7 @@ class BaseLoader:
         conn.execute("INSTALL httpfs;")
         conn.execute("LOAD httpfs;")
 
-        endpoint = os.getenv("MINIO_ENDPOINT", "http://localhost:9000")
+        endpoint = os.getenv("MINIO_ENDPOINT", "localhost:9000")
         access_key = os.getenv("MINIO_ACCESS_KEY", "minioadmin")
         secret_key = os.getenv("MINIO_SECRET_KEY", "minioadmin")
 

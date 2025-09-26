@@ -228,7 +228,7 @@ def load_gbfs_to_duckdb(
         ).fetchone()[0]
         if max_ts:
             update_last_loaded_at(
-                duckdb_conn, "raw_gbfs_station_status", max_ts
+                duckdb_conn, "raw.raw_gbfs_station_status", max_ts
             )
 
     duckdb_conn.commit()
