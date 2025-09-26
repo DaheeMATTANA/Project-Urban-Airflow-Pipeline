@@ -21,6 +21,7 @@ def get_duckdb_connection():
 
 def create_staging_table():
     """
+    ** GBFS only
     Create staging table if it doesn't exist
     """
     conn = get_duckdb_connection()

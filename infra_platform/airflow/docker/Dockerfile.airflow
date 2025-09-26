@@ -1,21 +1,21 @@
 FROM apache/airflow:2.8.1-python3.11
 
-# Passer en root pour installer Java
 USER root
 
-# Installer Java 17 et nettoyer
+# Install Java 17
 RUN apt-get update && \
     apt-get install -y openjdk-17-jdk && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Définir JAVA_HOME
+# Define JAVA_HOME
 ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 ENV PATH=$JAVA_HOME/bin:$PATH
 
-# Retourner à l'utilisateur airflow
+# Go back to airflow user
 USER airflow
 
-# Installer les requirements si vous en avez
 COPY requirements.txt /requirements.txt
 RUN pip install --no-cache-dir -r /requirements.txt
+
+RUN python -c 'import duckdb; con=duckdb.connect(); con.execute("INSTALL httpfs"); con.close()'
