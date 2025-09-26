@@ -45,7 +45,6 @@ with DAG(
     default_args=DEFAULT_ARGS,
     description="Ingest and load IDFM disruption data",
     schedule_interval="@hourly",
-    catchup=False,
     tags=["source:IDFM", "bronze"],
 ) as dag:
     ingest_task = PythonOperator(
