@@ -62,11 +62,39 @@ infra_platform/    # Infra, orchestration, pipelines
   pipelines/       # Ingestion scripts (batch & stream)
   minio/           # Local object storage config
   redpanda/        # Local streaming config
+  duckdb_data/     # Duckdb databases
 
 analytics/         # dbt project & BI assets
   dbt/             # dbt project
   bi/powerbi/      # PBIX files and dataset docs
 </pre>
+
+---
+
+## CI/CD Workflow
+
+Our GitHub Actions workflow (`.github/workflows/deploy-dbt.yml`) handles environment builds automatically:
+
+- **Pull Request → main**  
+  Runs `dbt build` in **preprod** and uploads `warehouse_preprod.duckdb`.
+
+- **Release published**  
+  Runs `dbt build` in **prod** and uploads `warehouse_prod.duckdb`.
+
+- **Manual trigger (`workflow_dispatch`)**  
+  Allows running `dbt build` manually against a chosen environment.
+
+You can download these artifacts locally with the `make download-preprod` or `make download-prod` commands.
+
+---
+
+## Summary of Environments
+
+| Environment | Trigger              | Target file                                            | Usage                             |
+|-------------|----------------------|--------------------------------------------------------|-----------------------------------|
+| **dev**     | Local only           | `infra_platform/duckdb_data/warehouse_dev.duckdb`      | Developer iteration               |
+| **preprod** | Pull Request (CI/CD) | `infra_platform/duckdb_data/warehouse_preprod.duckdb`  | Validation before merging to main |
+| **prod**    | Release (CI/CD)      | `infra_platform/duckdb_data/warehouse_prod.duckdb`     | Production warehouse for analytics|
 
 ---
 
