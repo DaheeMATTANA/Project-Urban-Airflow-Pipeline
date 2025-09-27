@@ -6,6 +6,9 @@ on:
     branches: ["main"]
     paths:
       - "analytics/dbt/**"
+  
+  release:
+    types: [published]
 
   # Allow manual runs from GitHub Actions UI
   workflow_dispatch:
@@ -25,11 +28,24 @@ jobs:
       - name: Install dependencies
         run: pip install dbt-duckdb
 
-      - name: Run dbt build (prod)
-        run: dbt build --target prod --profiles-dir ./analytics/dbt
+      # Pick environment based on trigger
+      - name: Run dbt build (preprod on merge, prod on release)
+        run: |
+          if [[ "${{ github.event_name }}" == "push" ]]; then
+            echo "Deploying to preprod..."
+            dbt build --target preprod --profiles-dir ./analytics/dbt
+          elif [[ "${{ github.event_name }}" == "release" ]]; then
+            echo "Deploying to prod..."
+            dbt build --target prod --profiles-dir ./analytics/dbt
+          else
+            echo "Manual run: defaulting to preprod"
+            dbt build --target preprod --profiles-dir ./analytics/dbt
+          fi
 
       - name: Upload DuckDB artifact
         uses: actions/upload-artifact@v3
         with:
-          name: warehouse_prod
-          path: infra_platform/duckdb_data/warehouse_prod.duckdb
+          name: warehouse
+          path: |
+            infra_platform/duckdb_data/warehouse_preprod.duckdb
+            infra_platform/duckdb_data/warehouse_prod.duckdb
