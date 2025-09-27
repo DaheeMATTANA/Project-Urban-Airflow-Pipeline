@@ -74,7 +74,9 @@ run-openaq: ## Run openaq_spark_ingest.py
 REPO = DaheeMATTANA/Project-Urban-Airflow-Pipeline
 
 download-preprod: ## Download warehouse_preprod.duckdb
+	rm -f infra_platform/duckdb_data/warehouse_preprod.duckdb
 	gh run download --repo $(REPO) -n warehouse_preprod -D infra_platform/duckdb_data
 
 download-prod: ## Download warehouse_prod.duckdb
+	rm -f infra_platform/duckdb_data/warehouse_prod.duckdb
 	gh run download --repo $(REPO) -n warehouse_prod -D infra_platform/duckdb_data
