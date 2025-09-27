@@ -41,27 +41,27 @@ It simplifies workflows with one-liners to start, stop, and monitor everything.
 All available commands:
 
 ```bash
-make airflow-up     # Start Airflow (webserver, scheduler, Postgres)
-make airflow-down   # Stop Airflow
+make airflow-up         # Start Airflow (webserver, scheduler, Postgres)
+make airflow-down       # Stop Airflow
 
-make redpanda-up    # Start Redpanda broker
-make redpanda-down  # Stop Redpanda
+make redpanda-up        # Start Redpanda broker
+make redpanda-down      # Stop Redpanda
 
-make minio-up       # Start MinIO
-make minio-down     # Stop MinIO
+make minio-up           # Start MinIO
+make minio-down         # Stop MinIO
 
-make all-up         # Start everything
-make all-down       # Stop everything
+make all-up             # Start everything
+make all-down           # Stop everything
 
-make lint           # Run Ruff lint checks (same as CI)
-make lint-fix       # Run Ruff with auto-fix
-make format         # Format code using Ruff
-make precommit      # Install pre-commit hooks
+make lint               # Run Ruff lint checks (same as CI)
+make lint-fix           # Run Ruff with auto-fix
+make format             # Format code using Ruff
+make precommit          # Install pre-commit hooks
 
-make run-spark      # Run Spark with dependencies (agrument : FILE=path/to/your_script.py)
-make run-openaq     # Run the OpenAQ Spark ingestion job
+make run-spark          # Run Spark with dependencies (agrument : FILE=path/to/your_script.py)
+make run-openaq         # Run the OpenAQ Spark ingestion job
 
 make download-preprod   # Download latest warehouse_preprod.duckdb
 make download-prod      # Download latest warehouse_prod.duckdb
 
-make help           # Show available make commands
+make help               # Show available make commands
