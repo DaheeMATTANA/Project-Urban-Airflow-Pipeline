@@ -35,22 +35,24 @@ jobs:
       - name: Install dependencies
         run: pip install dbt-duckdb
 
-      # Pick environment based on trigger
-      - name: Run dbt build (preprod on merge, prod on release)
+      - name: Set DB target
         run: |
           if [[ "${{ github.event_name }}" == "push" ]]; then
             echo "Deploying to preprod..."
-            export DBT_TARGET=preprod
+            echo "DBT_TARGET=preprod" >> $GITHUB_ENV
           elif [[ "${{ github.event_name }}" == "release" ]]; then
             echo "Deploying to prod..."
-            export DBT_TARGET=prod
+            echo "DBT_TARGET=prod" >> $GITHUB_ENV
           fi
-          dbt build
+
+      - name: Ensure duckdb_data folder exists
+        run: mkdir -p infra_platform/duckdb_data
+
+      - name: Run dbt build
+        run: dbt build
 
       - name: Upload DuckDB artifact
         uses: actions/upload-artifact@v4
         with:
           name: warehouse
-          path: |
-            infra_platform/duckdb_data/warehouse_preprod.duckdb
-            infra_platform/duckdb_data/warehouse_prod.duckdb
+          path: infra_platform/duckdb_data/warehouse_${{ env.DBT_TARGET }}.duckdb
