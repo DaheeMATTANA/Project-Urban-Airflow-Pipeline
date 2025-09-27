@@ -19,8 +19,10 @@ jobs:
     defaults:
       run:
         working-directory: analytics/dbt/urban_airflow_analytics
-      env:
-        DBT_PROFILES_DIR: ../../
+
+    env:
+      DBT_PROFILES_DIR: ../../
+      
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
