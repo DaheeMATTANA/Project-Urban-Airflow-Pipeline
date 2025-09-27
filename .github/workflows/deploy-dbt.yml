@@ -2,7 +2,7 @@ name: Deploy dbt models
 
 on:
   # Trigger when changes in dbt folder are merged into main
-  push:
+  pull_request:
     branches: ["main"]
     paths:
       - "analytics/dbt/**"
@@ -37,7 +37,7 @@ jobs:
 
       - name: Set DB target
         run: |
-          if [[ "${{ github.event_name }}" == "push" ]]; then
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
             echo "Deploying to preprod..."
             echo "DBT_TARGET=preprod" >> $GITHUB_ENV
           elif [[ "${{ github.event_name }}" == "release" ]]; then
