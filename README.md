@@ -9,7 +9,7 @@ This repository is designed as a **portfolio-quality example** of a production-s
 
 ---
 
-## 🎯 Scope
+## Scope
 
 Urban Airflow Pipeline covers the full lifecycle of a modern data product:
 
@@ -38,7 +38,7 @@ Urban Airflow Pipeline covers the full lifecycle of a modern data product:
 
 ---
 
-## 📦 Tech Stack
+## Tech Stack
 
 - **Orchestration:** Apache Airflow (local via Docker; cloud via Composer)
 - **Streaming:** Redpanda (Kafka API-compatible)
@@ -54,10 +54,10 @@ Urban Airflow Pipeline covers the full lifecycle of a modern data product:
 
 ---
 
-## 🗂 Repo Structure
+## Repo Structure
 
 <pre>
-infra_platform/          # Infra, orchestration, pipelines
+infra_platform/    # Infra, orchestration, pipelines
   airflow/         # Airflow DAGs, plugins, docker setup
   pipelines/       # Ingestion scripts (batch & stream)
   minio/           # Local object storage config
@@ -70,7 +70,7 @@ analytics/         # dbt project & BI assets
 
 ---
 
-## 🚀 Goals
+## Goals
 
 - Showcase **both** data engineering and analytics engineering skills.
 - Mirror a **production-grade** architecture with cloud-native patterns.
@@ -79,14 +79,14 @@ analytics/         # dbt project & BI assets
 
 ---
 
-## 🔗 Related
+## Related
 
 - **Urban Airflow Analytics** (optional separate repo): dbt + BI only, for teams splitting DE/AE workflows.
 - Public API sources: GBFS (bike sharing), OpenWeather, OpenAQ, IDFM API for disruptions, Public Holiday Calendar
 
 ---
 
-## 📝 Status
+## Status
 
-**Phase:** S4 — Ingestion 3.
+**Phase:** S5 — Transformations.
 
