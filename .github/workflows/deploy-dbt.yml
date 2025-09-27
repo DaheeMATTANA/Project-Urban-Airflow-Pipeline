@@ -2,7 +2,7 @@ name: Deploy dbt models
 
 on:
   # Trigger when changes in dbt folder are merged into main
-  push:
+  pull_request:
     branches: ["main"]
     paths:
       - "analytics/dbt/**"
@@ -37,7 +37,7 @@ jobs:
 
       - name: Set DB target
         run: |
-          if [[ "${{ github.event_name }}" == "push" ]]; then
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
             echo "Deploying to preprod..."
             echo "DBT_TARGET=preprod" >> $GITHUB_ENV
           elif [[ "${{ github.event_name }}" == "release" ]]; then
@@ -47,10 +47,10 @@ jobs:
 
       - name: Init DuckDB database file
         run: |
-          mkdir -p infra_platform/duckdb_data
+          mkdir -p ../../../infra_platform/duckdb_data
           python - <<'PYCODE'
           import duckdb, os
-          path = f"infra_platform/duckdb_data/warehouse_{os.environ['DBT_TARGET']}.duckdb"
+          path = f"../../../infra_platform/duckdb_data/warehouse_{os.environ['DBT_TARGET']}.duckdb"
           con = duckdb.connect(path)
           con.execute("create schema if not exists main;")
           con.close()
@@ -63,5 +63,5 @@ jobs:
       - name: Upload DuckDB artifact
         uses: actions/upload-artifact@v4
         with:
-          name: warehouse
+          name: warehouse_${{ env.DBT_TARGET }}
           path: infra_platform/duckdb_data/warehouse_${{ env.DBT_TARGET }}.duckdb

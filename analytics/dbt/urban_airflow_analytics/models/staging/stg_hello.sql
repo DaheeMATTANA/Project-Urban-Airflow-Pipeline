@@ -12,4 +12,4 @@ UNION ALL
 
 SELECT
     3 AS id
-    , '!' AS message
+    , 'to' AS message
