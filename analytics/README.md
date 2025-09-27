@@ -6,7 +6,7 @@ It includes dbt models, tests, and BI assets (Power BI dashboards).
 
 ---
 
-## 📂 Structure
+## Structure
 - **dbt/** → dbt project for transformations (intermediate → staging → mart).
   - `models/staging/` → source-aligned tables, cleaned and typed (one-to-one with raw sources).
   - `models/intermediate/` → business logic transformations, enriched datasets, joins across sources.
@@ -16,7 +16,7 @@ It includes dbt models, tests, and BI assets (Power BI dashboards).
 
 ---
 
-## 🚀 Goals
+## Goals
 - Apply **dbt transformations** locally using DuckDB (cost-free warehouse).
 - Enforce **data quality** via dbt tests (and later Great Expectations).
 - Provide **gold-layer marts** that drive Power BI dashboards.
