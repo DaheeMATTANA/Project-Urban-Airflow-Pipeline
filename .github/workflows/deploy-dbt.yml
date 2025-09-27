@@ -45,9 +45,11 @@ jobs:
             echo "DBT_TARGET=prod" >> $GITHUB_ENV
           fi
 
-      - name: Ensure duckdb_data folder exists
-        run: mkdir -p infra_platform/duckdb_data
-
+      - name: Init DuckDB database file
+        run: |
+          mkdir -p infra_platform/duckdb_data
+          duckdb infra_platform/duckdb_data/warehouse_${{ env.DBT_TARGET }}.duckdb "select 1;"
+          
       - name: Run dbt build
         run: dbt build
 
