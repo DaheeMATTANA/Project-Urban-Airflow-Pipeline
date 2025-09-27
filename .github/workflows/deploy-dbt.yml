@@ -16,6 +16,11 @@ on:
 jobs:
   dbt-build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: analytics/dbt/urban_airflow_analytics
+      env:
+        DBT_PROFILES_DIR: ../../
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
@@ -33,14 +38,12 @@ jobs:
         run: |
           if [[ "${{ github.event_name }}" == "push" ]]; then
             echo "Deploying to preprod..."
-            dbt build --target preprod --profiles-dir ./analytics/dbt
+            export DBT_TARGET=preprod
           elif [[ "${{ github.event_name }}" == "release" ]]; then
             echo "Deploying to prod..."
-            dbt build --target prod --profiles-dir ./analytics/dbt
-          else
-            echo "Manual run: defaulting to preprod"
-            dbt build --target preprod --profiles-dir ./analytics/dbt
+            export DBT_TARGET=prod
           fi
+          dbt build
 
       - name: Upload DuckDB artifact
         uses: actions/upload-artifact@v4
