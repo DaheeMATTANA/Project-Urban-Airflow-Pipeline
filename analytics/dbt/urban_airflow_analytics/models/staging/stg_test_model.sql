@@ -19,3 +19,9 @@ UNION ALL
 SELECT
     4 AS id
     , 'test' AS message
+
+UNION ALL
+
+SELECT
+    4 AS id
+    , '.' AS message
