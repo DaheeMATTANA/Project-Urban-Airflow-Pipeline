@@ -5,7 +5,7 @@ It provides S3-compatible object storage to hold raw and processed data for the 
 
 ---
 
-## 🚀 Run MinIO
+## Run MinIO
 
 Start MinIO with Docker Compose:
 
