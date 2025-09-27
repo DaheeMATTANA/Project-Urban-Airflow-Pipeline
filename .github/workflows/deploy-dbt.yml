@@ -48,7 +48,14 @@ jobs:
       - name: Init DuckDB database file
         run: |
           mkdir -p infra_platform/duckdb_data
-          duckdb infra_platform/duckdb_data/warehouse_${{ env.DBT_TARGET }}.duckdb "select 1;"
+          python - <<'PYCODE'
+          import duckdb, os
+          path = f"infra_platform/duckdb_data/warehouse_{os.environ['DBT_TARGET']}.duckdb"
+          con = duckdb.connect(path)
+          con.execute("create schema if not exists main;")
+          con.close()
+          print(f"Initialized {path}")
+          PYCODE
           
       - name: Run dbt build
         run: dbt build
