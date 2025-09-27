@@ -32,7 +32,7 @@ It simplifies workflows with one-liners to start, stop, and monitor everything.
 
 - [GNU Make](https://www.gnu.org/software/make/)  
 - [Docker & Docker Compose](https://docs.docker.com/)  
-- On Windows: Git Bash or WSL2 is recommended (see ⚠️ note below)
+- On Windows: Git Bash or WSL2 is recommended
 
 ---
 
