@@ -18,4 +18,10 @@ UNION ALL
 
 SELECT
     4 AS id
+    , 'simple' AS message
+
+UNION ALL
+
+SELECT
+    5 AS id
     , 'test' AS message
