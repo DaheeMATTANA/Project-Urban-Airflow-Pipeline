@@ -63,5 +63,5 @@ jobs:
       - name: Upload DuckDB artifact
         uses: actions/upload-artifact@v4
         with:
-          name: warehouse
+          name: warehouse_${{ env.DBT_TARGET }}
           path: infra_platform/duckdb_data/warehouse_${{ env.DBT_TARGET }}.duckdb

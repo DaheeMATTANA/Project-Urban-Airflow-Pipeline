@@ -67,3 +67,14 @@ run-spark: ## Run Spark with dependencies (argument FILE=path/to/your/script.py)
 
 run-openaq: ## Run openaq_spark_ingest.py
 	make run-spark FILE=infra_platform/pipelines/ingestion/openaq_spark_ingest.py
+
+# ---
+# Download duckdb artifacts from git
+# ---
+REPO = DaheeMATTANA/Project-Urban-Airflow-Pipeline
+
+download-preprod: ## Download warehouse_preprod.duckdb
+	gh run download --repo $(REPO) -n warehouse_preprod -D infra_platform/duckdb_data
+
+download-prod: ## Download warehouse_prod.duckdb
+	gh run download --repo $(REPO) -n warehouse_prod -D infra_platform/duckdb_data
