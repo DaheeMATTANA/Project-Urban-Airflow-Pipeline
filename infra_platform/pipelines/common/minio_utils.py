@@ -17,22 +17,31 @@ def get_minio_client():
 
 
 def write_to_minio_hourly(
-    bucket: str, prefix: str, message: dict, event_key: str = None
+    bucket: str,
+    prefix: str,
+    message: dict,
+    event_key: str = None,
+    date_str: str = None,
+    hour: int = None,
 ):
     """
     Write message to MinIO under partitioned path by hour.
+    If date_str and hour are not provided, fallback to current UTC time.
     """
     client = get_minio_client()
 
     if not client.bucket_exists(bucket):
         client.make_bucket(bucket)
 
-    now_utc = datetime.datetime.now(datetime.UTC)
+    if date_str is None or hour is None:
+        now_utc = datetime.datetime.now(datetime.UTC)
+        date_str = now_utc.strftime("%Y-%m-%d")
+        hour = now_utc.strftime("%H")
+    else:
+        hour = f"{int(hour):02d}"
 
-    date = now_utc.strftime("%Y-%m-%d")
-    hour = now_utc.strftime("%H")
-
-    path = f"{prefix}/date={date}/hour-{hour}/{now_utc.isoformat()}.json"
+    filename = datetime.datetime.now(datetime.UTC).isoformat()
+    path = f"{prefix}/date={date_str}/hour-{hour}/{filename}.json"
 
     data_bytes = BytesIO(json.dumps(message).encode("utf-8"))
     event_count = len(message.get(event_key, []))

@@ -6,6 +6,17 @@ from pipelines.loading.transport_disruption_duckdb_loader import (
     DisruptionLoader,
 )
 
+"""
+## IDFM transport disruption backfill DAG
+
+This DAG backfills duckdb loader job for IDFM data :
+- Assuming that the files exist in MinIO
+- Only loads the data into DuckDB
+- Does not call API or write to MinIO
+
+Owner : Team Buldo
+"""
+
 
 def backfill_disruptions(**context):
     conf = context["dag_run"].conf or {}

@@ -14,7 +14,7 @@ URL = "https://prim.iledefrance-mobilites.fr/marketplace/disruptions_bulk/disrup
 
 
 # Fetch data
-def fetch_and_store_idfm_data():
+def fetch_and_store_idfm_data(**context):
     API_TOKEN = os.getenv("IDFM_API_KEY")
     if not API_TOKEN:
         raise ValueError("IDFM_API_KEY missing in .env")
@@ -22,11 +22,16 @@ def fetch_and_store_idfm_data():
 
     resp = fetch_json_with_retry(url=URL, headers=headers)
 
+    date_str = context["ds"]
+    hour = context["logical_date"].hour
+
     write_to_minio_hourly(
         bucket=MINIO_BUCKET,
         prefix="idfm_disruption",
         message=resp,
         event_key="disruptions",
+        date_str=date_str,
+        hour=hour,
     )
 
 
