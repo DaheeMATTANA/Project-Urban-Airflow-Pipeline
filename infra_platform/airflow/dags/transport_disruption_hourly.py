@@ -53,6 +53,7 @@ with DAG(
     ingest_task = PythonOperator(
         task_id="fetch_and_store_idfm_data",
         python_callable=fetch_and_store_idfm_data,
+        provide_context=True,
     )
 
     loading_task = PythonOperator(
