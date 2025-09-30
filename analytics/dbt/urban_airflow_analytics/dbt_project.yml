@@ -24,3 +24,9 @@ models:
     mart:
       +schema: urban_airflow_analytics
       +materialized: table
+
+on-run-start:
+  - |
+    {% if target.name in ['preprod', 'prod'] %}
+    attach 'infra_platform/duckdb_data/warehouse_dev.duckdb' as dev_db;
+    {% endif %}

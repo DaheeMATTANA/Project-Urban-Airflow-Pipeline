@@ -2,6 +2,7 @@ version: 2
 
 sources:
   - name: raw
+    database: "{{ 'dev_db' if target.name in ['preprod', 'prod'] else target.database }}"
     schema: raw
     tables:
 
