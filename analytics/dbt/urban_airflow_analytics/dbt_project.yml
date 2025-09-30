@@ -24,3 +24,9 @@ models:
     mart:
       +schema: urban_airflow_analytics
       +materialized: table
+
+on-run-start:
+  - |
+    {% if target.name in ['preprod', 'prod'] %}
+    attach '{{ env_var("DBT_DEV_WAREHOUSE_PATH") }}' as dev_db;
+    {% endif %}

@@ -2,8 +2,227 @@ version: 2
 
 sources:
   - name: raw
+    database: "{{ 'dev_db' if target.name in ['preprod', 'prod'] else target.database }}"
     schema: raw
     tables:
-      - name: openaq
-      - name: gbfs_station_status
-      - name: open_meteo
+
+      - name: raw_gbfs_station_status
+        description: "Paris Vélib station status events from gbfs"
+        columns:
+          - name: station_id
+            description: "Id of the Vélib station"
+            data_type: string
+            tests:
+              - not_null
+
+          - name: num_bikes_available
+            description: "Number of bikes available at the time of the report"
+            data_type: integer
+
+          - name: num_docks_available
+            description: "Number of bike docks available (empty) at the time of the report"
+            data_type: integer
+
+          - name: is_installed
+            description: "True if the station is operational, false if being developed"
+            data_type: boolean
+
+          - name: is_renting
+            description: "True if the station is capable to rent bikes, false otherwise"
+            data_type: boolean
+
+          - name: last_reported
+            description: "Timestamp of the last reported time in UTC"
+            data_type: timestamp
+
+          - name: timestamp_cet_cest
+            description: "Timestamp of the last reported time in CET/CEST"
+            data_type: timestamp
+
+          - name: ingestion_date
+            description: "Date of the data ingestion in UTC"
+            data_type: date
+
+          - name: ingestion_hour
+            description: "Hour of the partition in UTC"
+            data_type: integer
+
+          - name: file_path
+            description: "MinIO file path of the ingestion"
+            data_type: string
+
+          - name: loaded_at
+            description: "Timestamp of the data load in UTC"
+            data_type: timestamp
+
+          - name: is_returning
+            description: "True if the station is capable to receive a return, false otherwise"
+            data_type: boolean
+
+      - name: raw_open_meteo
+        description: "A table which contains hourly weather information."
+        columns:
+          - name: time
+            description: "Timestamp of the weather information in UTC"
+            data_type: timestamp
+            tests:
+              - not_null
+
+          - name: time_cet
+            description: "Timestamp of the weather information in CET/CEST."
+            data_type: timestamp
+
+          - name: temperature_2m
+            description: "Air temperature at 2m above the surface of land, sea or inland waters (°C)"
+            data_type: float
+
+          - name: precipitation
+            description: "Precipitation in millimeters"
+            data_type: float
+
+          - name: precipitation_probability
+            description: "Probability of precipitation."
+            data_type: float
+
+          - name: visibility
+            description: "Viewing distance in meters, influenced by low clouds, humidity and aerosols"
+            data_type: float
+
+          - name: windspeed_10m
+            description: "Wind speed at 10 meters above ground (km/h)"
+            data_type: float
+
+          - name: ingestion_date
+            description: "Date string of the data ingestion in UTC"
+            data_type: string
+
+          - name: ingestion_hour
+            description: "Hour of the partition in UTC"
+            data_type: integer
+
+          - name: created_at
+            description: "Timestamp of the data load in UTC"
+            data_type: timestamp
+
+      - name: raw_open_meteo_forecast
+        description: "A table which contains hourly weather forecast of 4 days ahead."
+        columns:
+          - name: time
+            description: "Timestamp of the weather forecast in UTC"
+            data_type: timestamp
+            tests:
+              - not_null
+
+          - name: time_cet
+            description: "Timestamp of the weather forecast in CET/CEST"
+            data_type: timestamp
+
+          - name: temperature_2m
+            description: "Air temperature at 2m above the surface of land, sea or inland waters (°C)"
+            data_type: float
+
+          - name: precipitation
+            description: "Precipitation in millimeters"
+            data_type: float
+
+          - name: precipitation_probability
+            description: "Probability of precipitation"
+            data_type: float
+
+          - name: visibility
+            description: "Viewing distance in meters, influenced by low clouds, humidity and aerosols"
+            data_type: float
+
+          - name: windspeed_10m
+            description: "Wind speed at 10 meters above ground (km/h)"
+            data_type: float
+
+          - name: ingestion_date
+            description: "Date string of the data ingestion in UTC"
+            data_type: string
+
+          - name: ingestion_hour
+            description: "Hour of the partition in UTC"
+            data_type: integer
+
+          - name: created_at
+            description: "Timestamp of the data load in UTC"
+            data_type: timestamp
+
+      - name: raw_transport_disruption
+        description: "A table which contains Paris public transport disruptions."
+        columns:
+          - name: event_id
+            description: "ID of the disruption event"
+            data_type: string
+            tests:
+              - not_null
+              - unique
+
+          - name: start_ts
+            description: "Timestamp of the start of the disruption event in CET/CEST"
+            data_type: timestamp
+
+          - name: end_ts
+            description: "Timestamp of the end of the disruption event in CET/CEST"
+            data_type: timestamp
+
+          - name: cause
+            description: "Reason for disruption in French (Travaux, Perturbation, Information)"
+            data_type: string
+
+          - name: severity
+            description: "Severity of disruption in French (Bloquante, Perturbée, Information)"
+            data_type: string
+
+          - name: title
+            description: "Title of the message, usually a summary of the affected line and reason"
+            data_type: string
+
+          - name: message
+            description: "Content of the message, details of the disruption"
+            data_type: string
+
+          - name: ingestion_date
+            description: "Date string of the data ingestion in UTC"
+            data_type: string
+
+          - name: ingestion_hour
+            description: "Hour of the partition in UTC"
+            data_type: integer
+
+          - name: created_at
+            description: "Timestamp of the data load in UTC"
+            data_type: timestamp
+
+      - name: raw_french_holidays
+        description: "A table which contains information about french holidays."
+        columns:
+          - name: date
+            description: "Date of the holiday"
+            data_type: date
+            tests:
+              - not_null
+              - unique
+
+          - name: holiday_name
+            description: "Name of the holiday in French"
+            data_type: string
+
+          - name: is_national
+            description: "True if it is a national holiday, false otherwise"
+            data_type: boolean
+
+          - name: ingestion_date
+            description: "Date of the data ingestion"
+            data_type: string
+
+          - name: ingestion_hour
+            description: "Hour of the partition in UTC"
+            data_type: integer
+
+          - name: created_at
+            description: "Timestamp of the data load in UTC"
+            data_type: timestamp
+
+      - name: raw_openaq

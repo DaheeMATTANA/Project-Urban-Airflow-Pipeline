@@ -1,0 +1,53 @@
+version: 2
+
+models:
+  - name: stg_gbfs_station_status
+    description: "Paris Vélib station status events from gbfs"
+    columns:
+      - name: station_id
+        description: "Id of the Vélib station"
+        data_type: string
+
+      - name: num_bikes_available
+        description: "Number of bikes available at the time of the report"
+        data_type: integer
+
+      - name: num_docks_available
+        description: "Number of bike docks available (empty) at the time of the report"
+        data_type: integer
+
+      - name: is_installed
+        description: "True if the station is operational, false if being developed"
+        data_type: boolean
+
+      - name: is_renting
+        description: "True if the station is capable to rent bikes, false otherwise"
+        data_type: boolean
+
+      - name: last_reported_utc
+        description: "Timestamp of the last reported time in UTC"
+        data_type: timestamp
+
+      - name: last_reported_cet
+        description: "Timestamp of the last reported time in CET/CEST"
+        data_type: timestamp
+
+      - name: part_date_utc
+        description: "Date of the data ingestion in UTC"
+        data_type: date
+
+      - name: part_hour_utc
+        description: "Hour of the partition in UTC"
+        data_type: integer
+
+      - name: bucket_file_path
+        description: "MinIO file path of the ingestion"
+        data_type: string
+
+      - name: loaded_at_utc
+        description: "Timestamp of the data load in UTC"
+        data_type: timestamp
+
+      - name: is_returning
+        description: "True if the station is capable to receive a return, false otherwise"
+        data_type: boolean

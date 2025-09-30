@@ -1,0 +1,48 @@
+version: 2
+
+models:
+  - name: stg_open_meteo
+    description: "A table which contains hourly weather information."
+    columns:
+      - name: timestamp_utc
+        description: "Timestamp of the weather information in UTC"
+        data_type: timestamp
+        tests:
+          - not_null
+
+      - name: timestamp_cet
+        description: "Timestamp of the weather information in CET/CEST."
+        data_type: timestamp
+
+      - name: temperature_2m
+        description: "Air temperature at 2m above the surface of land, sea or inland waters (°C)"
+        data_type: float
+
+      - name: precipitation
+        description: "Precipitation in millimeters"
+        data_type: float
+
+      - name: precipitation_probability
+        description: "Probability of precipitation."
+        data_type: float
+
+      - name: visibility
+        description: "Viewing distance in meters, influenced by low clouds, humidity and aerosols"
+        data_type: float
+
+      - name: windspeed_10m
+        description: "Wind speed at 10 meters above ground (km/h)"
+        data_type: float
+
+      - name: part_date_utc
+        description: "Date string of the data ingestion in UTC"
+        data_type: string
+
+      - name: part_hour_utc
+        description: "Hour of the partition in UTC"
+        data_type: integer
+
+      - name: loaded_at_utc
+        description: "Timestamp of the data load in UTC"
+        data_type: timestamp
+
