@@ -52,10 +52,14 @@ jobs:
         run: |
           python - <<'PYCODE'
           import duckdb, os
+          from pathlib import Path
+
           target = os.environ.get('DBT_TARGET')
+          workspace = Path(os.environ['GITHUB_WORKSPACE'])
           if target in ("preprod", "prod"):
-              path = f"../../../infra_platform/duckdb_data/warehouse_{target}.duckdb"
-              con = duckdb.connect(path)
+              path = workspace / f"infra_platform/duckdb_data/warehouse_{target}.duckdb"
+              path.parent.mkdir(parents=True, exist_ok=True)
+              con = duckdb.connect(str(path))
               con.execute("create schema if not exists main;")
               con.close()
               print(f"[INFO] Initialized {path}")
