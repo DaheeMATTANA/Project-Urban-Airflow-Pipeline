@@ -27,7 +27,7 @@ def upload_duckdb_to_minio():
 
 
 with DAG(
-    dag_id="snapshot_duckdb_to_minio",
+    dag_id="snapshot_warehouse_dev_daily",
     default_args={"retries": 1, "retry_delay": timedelta(minutes=5)},
     description="Snapshot dev DuckDB file into MinIO for CI/CD",
     schedule_interval="0 2 * * *",  # every day at 2am
