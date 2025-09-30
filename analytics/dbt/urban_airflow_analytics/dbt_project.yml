@@ -28,5 +28,5 @@ models:
 on-run-start:
   - |
     {% if target.name in ['preprod', 'prod'] %}
-    attach 'infra_platform/duckdb_data/warehouse_dev.duckdb' as dev_db;
+    attach '{{ project_root }}/duckdb_data/warehouse_dev.duckdb' as dev_db;
     {% endif %}
