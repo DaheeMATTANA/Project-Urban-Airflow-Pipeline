@@ -39,28 +39,36 @@ jobs:
       - name: Set DB target
         run: |
           if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            echo "Deploying to preprod..."
             echo "DBT_TARGET=preprod" >> $GITHUB_ENV
           elif [[ "${{ github.event_name }}" == "release" ]]; then
+            echo "Deploying to prod..."
             echo "DBT_TARGET=prod" >> $GITHUB_ENV
+          else
+            echo "DBT_TARGET=dev" >> $GITHUB_ENV
           fi
 
       - name: Init target DuckDB file
         run: |
-          mkdir -p ../../../infra_platform/duckdb_data
           python - <<'PYCODE'
           import duckdb, os
-          target = os.environ['DBT_TARGET']
-          path = f"../../../infra_platform/duckdb_data/warehouse_{target}.duckdb"
-          con = duckdb.connect(path)
-          con.execute("create schema if not exists main;")
-          con.close()
-          print(f"Initialized {path}")
+          target = os.environ.get('DBT_TARGET')
+          if target in ("preprod", "prod"):
+              path = f"../../../infra_platform/duckdb_data/warehouse_{target}.duckdb"
+              con = duckdb.connect(path)
+              con.execute("create schema if not exists main;")
+              con.close()
+              print(f"[INFO] Initialized {path}")
+          else:
+              print("[INFO] Skipping target init for dev")
           PYCODE
+
 
       - name: Run dbt build
         run: dbt build --target $DBT_TARGET
 
       - name: Upload DuckDB artifact
+        if: env.DBT_TARGET != 'dev'
         uses: actions/upload-artifact@v4
         with:
           name: warehouse_${{ env.DBT_TARGET }}
