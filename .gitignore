@@ -67,3 +67,5 @@ spark-*/
 /jars/
 /infra_platform/airflow/jars/
 *.jar
+
+actions-runner/
