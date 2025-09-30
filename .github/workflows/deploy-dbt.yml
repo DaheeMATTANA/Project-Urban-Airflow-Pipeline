@@ -15,17 +15,20 @@ on:
 
 jobs:
   dbt-build:
-    runs-on: self-hosted   # ✅ self-hosted runner required (has access to your infra)
+    runs-on: self-hosted
     defaults:
       run:
         working-directory: analytics/dbt/urban_airflow_analytics
 
     env:
       DBT_PROFILES_DIR: ../
-      MINIO_ENDPOINT: ${{ secrets.MINIO_ENDPOINT }}
+      DBT_DEV_WAREHOUSE_PATH: ${{ github.workspace }}/infra_platform/duckdb_data/warehouse_dev.duckdb
+      MINIO_ENDPOINT: "minio:9000"
+      MINIO_BUCKET: "snapshots"
+      MINIO_KEY: "warehouse_dev.duckdb"
       MINIO_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
       MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY }}
-      
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -36,7 +39,7 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: pip install dbt-duckdb
+        run: pip install dbt-duckdb minio
 
       - name: Set DB target
         run: |
@@ -46,49 +49,61 @@ jobs:
           elif [[ "${{ github.event_name }}" == "release" ]]; then
             echo "Deploying to prod..."
             echo "DBT_TARGET=prod" >> $GITHUB_ENV
+          else
+            echo "DBT_TARGET=dev" >> $GITHUB_ENV
           fi
 
-      # ✅ Ensure dev snapshot exists before continuing
-      - name: Check dev DuckDB snapshot exists
-        run: |
-          DEV_DB=../../../infra_platform/duckdb_data/warehouse_dev.duckdb
-          if [ ! -f "$DEV_DB" ]; then
-            echo "❌ warehouse_dev.duckdb is missing! Did ingestion run?"
-            exit 1
-          fi
-          echo "✅ Found $DEV_DB"
-
-      # ✅ Debug step: list schemas & tables in dev DB
-      - name: Debug dev DuckDB contents
+      - name: Download dev DuckDB snapshot (for preprod/prod)
+        if: env.DBT_TARGET != 'dev'
         run: |
           python - <<'PYCODE'
-          import duckdb
-          con = duckdb.connect("../../../infra_platform/duckdb_data/warehouse_dev.duckdb")
-          print("✅ Schemas:")
-          print(con.execute("PRAGMA show_schemas").fetchall())
-          print("✅ Tables in raw schema:")
-          print(con.execute("PRAGMA show_tables FROM raw").fetchall())
-          con.close()
+          import os
+          from minio import Minio
+          from pathlib import Path
+
+          dev_path = Path("${{ github.workspace }}/infra_platform/duckdb_data/warehouse_dev.duckdb")
+          dev_path.parent.mkdir(parents=True, exist_ok=True)
+
+          client = Minio(
+              os.environ["MINIO_ENDPOINT"],
+              access_key=os.environ["MINIO_ACCESS_KEY"],
+              secret_key=os.environ["MINIO_SECRET_KEY"],
+              secure=False
+          )
+
+          client.fget_object(
+              os.environ["MINIO_BUCKET"],
+              os.environ["MINIO_KEY"],
+              str(dev_path)
+          )
+          print(f"[INFO] Downloaded dev DuckDB snapshot to {dev_path}")
           PYCODE
 
-      # ✅ Init only target DB (not dev)
-      - name: Init target DuckDB (preprod/prod)
+      - name: Init target DuckDB file
         run: |
-          mkdir -p ../../../infra_platform/duckdb_data
           python - <<'PYCODE'
           import duckdb, os
-          target = os.environ['DBT_TARGET']
-          path = f"../../../infra_platform/duckdb_data/warehouse_{target}.duckdb"
-          con = duckdb.connect(path)
-          con.execute("create schema if not exists main;")
-          con.close()
-          print(f"✅ Initialized {path}")
+          from pathlib import Path
+
+          target = os.environ.get('DBT_TARGET')
+          workspace = Path(os.environ['GITHUB_WORKSPACE'])
+          if target in ("preprod", "prod"):
+              path = workspace / f"infra_platform/duckdb_data/warehouse_{target}.duckdb"
+              path.parent.mkdir(parents=True, exist_ok=True)
+              con = duckdb.connect(str(path))
+              con.execute("create schema if not exists main;")
+              con.close()
+              print(f"[INFO] Initialized {path}")
+          else:
+              print("[INFO] Skipping target init for dev")
           PYCODE
 
+
       - name: Run dbt build
-        run: dbt build
+        run: dbt build --target $DBT_TARGET
 
       - name: Upload DuckDB artifact
+        if: env.DBT_TARGET != 'dev'
         uses: actions/upload-artifact@v4
         with:
           name: warehouse_${{ env.DBT_TARGET }}

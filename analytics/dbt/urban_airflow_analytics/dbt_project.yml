@@ -28,6 +28,5 @@ models:
 on-run-start:
   - |
     {% if target.name in ['preprod', 'prod'] %}
-    select '{{ env_var("DBT_DEV_WAREHOUSE_PATH") }}' as dev_db_path;
     attach '{{ env_var("DBT_DEV_WAREHOUSE_PATH") }}' as dev_db;
     {% endif %}
