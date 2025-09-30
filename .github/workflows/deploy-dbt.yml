@@ -22,9 +22,7 @@ jobs:
 
     env:
       DBT_PROFILES_DIR: ../
-      MINIO_ENDPOINT: localhost:9000
-      MINIO_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
-      MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY }}
+      DBT_DEV_WAREHOUSE_PATH: ${{ github.workspace }}/infra_platform/duckdb_data/warehouse_dev.duckdb
       
     steps:
       - name: Checkout repo
