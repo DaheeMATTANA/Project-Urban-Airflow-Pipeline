@@ -1,0 +1,48 @@
+version: 2
+
+models:
+  - name: stg_transport_disruption
+    description: "A table which contains Paris public transport disruptions."
+    columns:
+      - name: event_id
+        description: "ID of the disruption event"
+        data_type: string
+        tests:
+          - not_null
+          - unique
+
+      - name: started_at_cet
+        description: "Timestamp of the start of the disruption event in CET/CEST"
+        data_type: timestamp
+
+      - name: ended_at_cet
+        description: "Timestamp of the end of the disruption event in CET/CEST"
+        data_type: timestamp
+
+      - name: disruption_cause_fr
+        description: "Reason for disruption in French (Travaux, Perturbation, Information)"
+        data_type: string
+
+      - name: disruption_severity_fr
+        description: "Severity of disruption in French (Bloquante, Perturbée, Information)"
+        data_type: string
+
+      - name: message_title_fr
+        description: "Title of the message, usually a summary of the affected line and reason"
+        data_type: string
+
+      - name: message_body_fr
+        description: "Content of the message, details of the disruption"
+        data_type: string
+
+      - name: part_date_utc
+        description: "Date string of the data ingestion in UTC"
+        data_type: string
+
+      - name: part_hour_utc
+        description: "Hour of the partition in UTC"
+        data_type: integer
+
+      - name: loaded_at_utc
+        description: "Timestamp of the data load in UTC"
+        data_type: timestamp

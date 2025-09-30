@@ -43,7 +43,7 @@ def backfill_produce(**context):
     while current < end:
         iso_ts = current.strftime("%Y-%m-%dT%H:%M:%SZ")
         produce(iso_ts)
-        current += timedelta(minutes=1)
+        current += timedelta(minutes=15)
 
     print(f"Backfill complete from {start} to {end}")
 

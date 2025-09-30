@@ -1,0 +1,32 @@
+version: 2
+
+models:
+  - name: stg_french_holidays
+    description: "A table which contains information about french holidays."
+    columns:
+      - name: holiday_date
+        description: "Date of the holiday"
+        data_type: date
+        tests:
+          - not_null
+          - unique
+
+      - name: holiday_name_fr
+        description: "Name of the holiday in French"
+        data_type: string
+
+      - name: is_national
+        description: "True if it is a national holiday, false otherwise"
+        data_type: boolean
+
+      - name: part_date_utc
+        description: "Date of the data ingestion"
+        data_type: string
+
+      - name: part_hour_utc
+        description: "Hour of the partition in UTC"
+        data_type: integer
+
+      - name: created_at_utc
+        description: "Timestamp of the data load in UTC"
+        data_type: timestamp
