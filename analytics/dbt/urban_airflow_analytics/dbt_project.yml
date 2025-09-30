@@ -25,8 +25,11 @@ models:
       +schema: urban_airflow_analytics
       +materialized: table
 
+vars:
+  dev_db_path: "../../../infra_platform/duckdb_data/warehouse_dev.duckdb"
+
 on-run-start:
   - |
     {% if target.name in ['preprod', 'prod'] %}
-    attach '{{ project_root }}/duckdb_data/warehouse_dev.duckdb' as dev_db;
+    attach '{{ var("dev_db_path") }}' as dev_db;
     {% endif %}
