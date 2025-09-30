@@ -66,8 +66,8 @@ jobs:
 
           client = Minio(
               os.environ["MINIO_ENDPOINT"],
-              access_key=os.environ["MINIO_ACCESS_KEY"],
-              secret_key=os.environ["MINIO_SECRET_KEY"],
+              access_key=None,
+              secret_key=None,
               secure=False
           )
 
