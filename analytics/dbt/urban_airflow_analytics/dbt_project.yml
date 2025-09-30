@@ -26,7 +26,7 @@ models:
       +materialized: table
 
 vars:
-  dev_db_path: "/../../../infra_platform/duckdb_data/warehouse_dev.duckdb"
+  dev_db_path: "../../../infra_platform/duckdb_data/warehouse_dev.duckdb"
 
 on-run-start:
   - |
