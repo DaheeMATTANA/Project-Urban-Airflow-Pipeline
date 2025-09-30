@@ -15,13 +15,16 @@ on:
 
 jobs:
   dbt-build:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     defaults:
       run:
         working-directory: analytics/dbt/urban_airflow_analytics
 
     env:
       DBT_PROFILES_DIR: ../
+      MINIO_ENDPOINT: localhost:9000
+      MINIO_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
+      MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY }}
       
     steps:
       - name: Checkout repo
@@ -33,41 +36,31 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: pip install dbt-duckdb
+        run: pip install dbt-duckdb minio
 
       - name: Set DB target
         run: |
           if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-            echo "Deploying to preprod..."
             echo "DBT_TARGET=preprod" >> $GITHUB_ENV
           elif [[ "${{ github.event_name }}" == "release" ]]; then
-            echo "Deploying to prod..."
             echo "DBT_TARGET=prod" >> $GITHUB_ENV
           fi
 
-      - name: Init DuckDB database file
+      - name: Init target DuckDB file
         run: |
           mkdir -p ../../../infra_platform/duckdb_data
           python - <<'PYCODE'
           import duckdb, os
           target = os.environ['DBT_TARGET']
           path = f"../../../infra_platform/duckdb_data/warehouse_{target}.duckdb"
-          dev_path = "../../../infra_platform/duckdb_data/warehouse_dev.duckdb"
-          # init target DB
           con = duckdb.connect(path)
           con.execute("create schema if not exists main;")
           con.close()
           print(f"Initialized {path}")
-          # also init dev DB for sources
-          if not os.path.exists(dev_path):
-            con = duckdb.connect(dev_path)
-            con.execute("create schema if not exists raw;")
-            con.close()
-            print(f"Initialized {dev_path}")
           PYCODE
-          
+
       - name: Run dbt build
-        run: dbt build
+        run: dbt build --target $DBT_TARGET
 
       - name: Upload DuckDB artifact
         uses: actions/upload-artifact@v4
