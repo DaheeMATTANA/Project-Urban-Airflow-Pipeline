@@ -19,8 +19,10 @@ models:
   urban_airflow_analytics:
     staging:
       +schema: urban_airflow_analytics
+      +materialized: table
     intermediate:
       +schema: urban_airflow_analytics
+      +materialized: table
     mart:
       +schema: urban_airflow_analytics
       +materialized: table
