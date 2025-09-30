@@ -28,5 +28,6 @@ models:
 on-run-start:
   - |
     {% if target.name in ['preprod', 'prod'] %}
+    select 'ATTACHING -> {{ project_root }}/../../../infra_platform/duckdb_data/warehouse_dev.duckdb' as debug_path;
     attach '{{ project_root }}/../../../infra_platform/duckdb_data/warehouse_dev.duckdb' as dev_db;
     {% endif %}
