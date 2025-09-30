@@ -26,10 +26,10 @@ models:
       +materialized: table
 
 vars:
-  dev_db_path: "{{ project_root }}/../../../infra_platform/duckdb_data/warehouse_dev.duckdb"
+  dev_db_path: "/../../../infra_platform/duckdb_data/warehouse_dev.duckdb"
 
 on-run-start:
   - |
     {% if target.name in ['preprod', 'prod'] %}
-    attach '{{ var("dev_db_path") }}' as dev_db;
+    attach '{{ project_root }}/{{ var("dev_db_path") }}' as dev_db;
     {% endif %}
