@@ -45,6 +45,7 @@ with DAG(
     schedule_interval=None,  # only runs when manually triggered
     catchup=False,
     tags=["source:IDFM", "bronze", "backfill"],
+    doc_md=__doc__,
 ) as dag:
     backfill_task = PythonOperator(
         task_id="backfill_disruptions",

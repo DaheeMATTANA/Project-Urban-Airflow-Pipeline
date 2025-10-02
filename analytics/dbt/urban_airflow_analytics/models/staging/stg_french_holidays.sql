@@ -1,8 +1,7 @@
 WITH
 
 source_french_holidays AS (
-    SELECT 
-        *
+    SELECT *
     FROM {{ source('raw', 'raw_french_holidays') }}
 )
 

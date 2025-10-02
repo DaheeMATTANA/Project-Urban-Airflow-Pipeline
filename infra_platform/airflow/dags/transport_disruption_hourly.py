@@ -49,6 +49,7 @@ with DAG(
     max_active_tasks=2,
     concurrency=1,
     tags=["source:IDFM", "bronze"],
+    doc_md=__doc__,
 ) as dag:
     ingest_task = PythonOperator(
         task_id="fetch_and_store_idfm_data",

@@ -80,3 +80,9 @@ download-preprod: ## Download warehouse_preprod.duckdb
 download-prod: ## Download warehouse_prod.duckdb
 	rm -f infra_platform/duckdb_data/warehouse_prod.duckdb
 	gh run download --repo $(REPO) -n warehouse_prod -D infra_platform/duckdb_data
+
+sql-lint: ## sqlfluff lint
+	sqlfluff lint analytics/dbt/urban_airflow_analytics/models   --dialect duckdb   --exclude-rules L019
+
+sql-fix: ## sqlfluff fix
+	sqlfluff fix analytics/dbt/urban_airflow_analytics/models   --dialect duckdb   --exclude-rules L019

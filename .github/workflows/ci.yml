@@ -18,3 +18,12 @@ jobs:
 
       - name: Run ruff
         run: ruff check .
+
+      - name: Install sqlfluff
+        run: pip install sqlfluff sqlfluff-templater-dbt
+
+      - name: Run sqlfluff lint
+        run: |
+          sqlfluff lint analytics/dbt/urban_airflow_analytics/models \
+            --dialect duckdb \
+            --exclude-rules L019

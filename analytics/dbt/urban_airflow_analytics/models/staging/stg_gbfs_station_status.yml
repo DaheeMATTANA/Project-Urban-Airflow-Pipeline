@@ -7,14 +7,26 @@ models:
       - name: station_id
         description: "Id of the Vélib station"
         data_type: string
+        tests:
+          - not_null
 
       - name: num_bikes_available
         description: "Number of bikes available at the time of the report"
         data_type: integer
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 200
 
       - name: num_docks_available
         description: "Number of bike docks available (empty) at the time of the report"
         data_type: integer
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 200
 
       - name: is_installed
         description: "True if the station is operational, false if being developed"
@@ -51,3 +63,8 @@ models:
       - name: is_returning
         description: "True if the station is capable to receive a return, false otherwise"
         data_type: boolean
+
+    tests:
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "last_reported_utc < last_reported_cet" 
