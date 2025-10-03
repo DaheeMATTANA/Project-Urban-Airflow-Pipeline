@@ -1,0 +1,17 @@
+urban_airflow_analytics:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: /opt/airflow/data/warehouse_dev.duckdb
+      threads: 4
+
+    preprod:
+      type: duckdb
+      path: /opt/airflow/data/warehouse_preprod.duckdb
+      threads: 4
+
+    prod:
+      type: duckdb
+      path: /opt/airflow/data/warehouse_prod.duckdb
+      threads: 4

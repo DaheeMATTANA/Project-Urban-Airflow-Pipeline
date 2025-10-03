@@ -46,7 +46,8 @@ services:
       - ../../minio:/opt/airflow/src/minio
       - ../../duckdb_data:/opt/airflow/data
       - ../../jars:/opt/spark/jars
-      - ../../../analytics/dbt/profiles.yml:/home/airflow/.dbt/profiles.yml:ro
+      - ../../../analytics/dbt/profiles.airflow.yml:/home/airflow/.dbt/profiles.yml:ro
+      - ../../../analytics/dbt:/opt/airflow/src/analytics/dbt
     ports:
       - "8081:8080"
     depends_on:
@@ -87,7 +88,8 @@ services:
       - ../../minio:/opt/airflow/src/minio
       - ../../duckdb_data:/opt/airflow/data
       - ../../jars:/opt/spark/jars
-      - ../../../analytics/dbt/profiles.yml:/home/airflow/.dbt/profiles.yml:ro
+      - ../../../analytics/dbt/profiles.airflow.yml:/home/airflow/.dbt/profiles.yml:ro
+      - ../../../analytics/dbt:/opt/airflow/src/analytics/dbt
     depends_on:
       airflow-webserver:
         condition: service_started

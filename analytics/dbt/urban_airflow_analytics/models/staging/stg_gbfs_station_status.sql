@@ -1,14 +1,13 @@
 WITH
 
 source_gbfs_station_status AS (
-    SELECT
-        *
+    SELECT *
     FROM {{ source('raw', 'raw_gbfs_station_status') }}
 )
 
 , renamed AS (
     SELECT
-        station_id 
+        station_id
         , num_bikes_available
         , num_docks_available
         , is_installed
@@ -24,7 +23,7 @@ source_gbfs_station_status AS (
 )
 
 SELECT
-    station_id 
+    station_id
     , num_bikes_available
     , num_docks_available
     , is_installed

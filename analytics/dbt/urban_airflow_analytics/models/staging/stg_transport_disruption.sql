@@ -1,8 +1,7 @@
 WITH
 
 source_transport_disruption AS (
-    SELECT
-        *
+    SELECT *
     FROM {{ source('raw', 'raw_transport_disruption') }}
 )
 
@@ -21,7 +20,7 @@ source_transport_disruption AS (
     FROM source_transport_disruption
 )
 
-SELECT 
+SELECT
     event_id
     , started_at_cet
     , ended_at_cet

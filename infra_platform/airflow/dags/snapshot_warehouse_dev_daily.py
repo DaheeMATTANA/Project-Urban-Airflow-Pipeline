@@ -5,6 +5,16 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 from minio import Minio
 
+"""
+## Warehouse_dev snapshop upload DAG
+
+This DAG runs every day at 2am to upload warehouse_dev snapshot
+into MinIO 'snapshots' bucket
+to be usable for GitHub action CI to build dataset in preprod or prod.
+
+Owner: Team Buldo
+"""
+
 # Config
 DUCKDB_PATH = "/opt/airflow/data/warehouse_dev.duckdb"
 MINIO_BUCKET = "snapshots"
@@ -32,7 +42,8 @@ with DAG(
     description="Snapshot dev DuckDB file into MinIO for CI/CD",
     schedule_interval="0 2 * * *",  # every day at 2am
     start_date=datetime(2025, 9, 29),
-    catchup=False,
+    tags=["snapshot_db"],
+    doc_md=__doc__,
 ) as dag:
     upload_task = PythonOperator(
         task_id="upload_duckdb",

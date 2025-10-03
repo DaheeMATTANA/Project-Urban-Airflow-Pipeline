@@ -41,6 +41,9 @@ jobs:
       - name: Install dependencies
         run: pip install dbt-duckdb minio
 
+      - name: Install dbt dependencies
+        run: dbt deps
+
       - name: Set DB target
         run: |
           if [[ "${{ github.event_name }}" == "pull_request" ]]; then

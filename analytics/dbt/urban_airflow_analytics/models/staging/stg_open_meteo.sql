@@ -1,8 +1,7 @@
 WITH
 
 source_open_meteo AS (
-    SELECT
-        *
+    SELECT *
     FROM {{ source('raw', 'raw_open_meteo') }}
 )
 

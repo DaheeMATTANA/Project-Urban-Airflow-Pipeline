@@ -13,6 +13,8 @@ models:
       - name: timestamp_cet
         description: "Timestamp of the weather information in CET/CEST."
         data_type: timestamp
+        tests:
+          - not_null
 
       - name: temperature_2m
         description: "Air temperature at 2m above the surface of land, sea or inland waters (°C)"
@@ -45,4 +47,9 @@ models:
       - name: loaded_at_utc
         description: "Timestamp of the data load in UTC"
         data_type: timestamp
+
+    tests:
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "timestamp_utc < timestamp_cet"
 

@@ -46,3 +46,8 @@ models:
       - name: loaded_at_utc
         description: "Timestamp of the data load in UTC"
         data_type: timestamp
+
+    tests:
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "started_at_cet < ended_at_cet"
