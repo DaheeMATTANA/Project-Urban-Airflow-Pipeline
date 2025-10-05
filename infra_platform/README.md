@@ -64,4 +64,9 @@ make run-openaq         # Run the OpenAQ Spark ingestion job
 make download-preprod   # Download latest warehouse_preprod.duckdb
 make download-prod      # Download latest warehouse_prod.duckdb
 
+make restore-right      # Restore duckdb data right after the download
+
+make sql-lint           # sqlfluff lint
+make sql-fix            # sqlfluff fix
+
 make help               # Show available make commands

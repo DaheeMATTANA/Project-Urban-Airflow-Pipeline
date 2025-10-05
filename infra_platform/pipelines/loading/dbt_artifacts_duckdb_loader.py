@@ -2,14 +2,15 @@ import json
 from datetime import UTC, datetime
 from pathlib import Path
 
-from pipelines.common.duckdb_utils import get_duckdb_connection
+import duckdb
 
 
-def load_dbt_test_results():
+def load_dbt_test_results(env="dev"):
     """
     Load dbt test results (from run_results.json) into DuckDB table dbt_table_results.
     """
 
+    warehouse = f"/opt/airflow/data/warehouse_{env}.duckdb"
     target = Path(
         "/opt/airflow/src/analytics/dbt/urban_airflow_analytics/target"
     )
@@ -19,7 +20,11 @@ def load_dbt_test_results():
         run_results = json.load(f)["results"]
 
     # Connect to DuckDB
-    conn = get_duckdb_connection()
+    Path(warehouse).parent.mkdir(parents=True, exist_ok=True)
+    conn = duckdb.connect(warehouse)
+    print(f"Connected to warehouse {warehouse}")
+
+    conn.execute("CREATE SCHEMA IF NOT EXISTS meta")
 
     # Create table
     conn.execute("""
