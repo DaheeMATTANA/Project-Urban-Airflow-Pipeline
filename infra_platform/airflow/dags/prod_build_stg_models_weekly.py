@@ -5,22 +5,22 @@ from dags.common.defaults import DEFAULT_ARGS
 from pipelines.loading.dbt_artifacts_duckdb_loader import load_dbt_test_results
 
 """
-## (PREPROD) Build staging models DAG
+## (PROD) Build staging models DAG
 
-This DAG runs every week to refresh staging models in preprod.
-    - every Monday at 2AM UTC.
+This DAG runs every week to refresh staging models in prod.
+    - every Monday at 3AM UTC.
     - Logs dbt test results into a materialised table.
 
 Owner: Team Buldo
 """
-ENV = "preprod"
+ENV = "prod"
 DBT_PROJECT_DIR = "/opt/airflow/src/analytics/dbt/urban_airflow_analytics"
 DBT_PROFILES_DIR = "/opt/airflow/dbt"
 
 with DAG(
-    dag_id="preprod_build_stg_models_weekly",
+    dag_id="prod_build_stg_models_weekly",
     default_args=DEFAULT_ARGS,
-    schedule_interval="0 2 * * MON",  # every Monday at 2AM
+    schedule_interval="0 3 * * MON",  # every Monday at 3AM
     max_active_runs=1,
     max_active_tasks=2,
     concurrency=1,
@@ -32,7 +32,7 @@ with DAG(
         bash_command=(
             f"dbt build "
             f"--project-dir {DBT_PROJECT_DIR} "
-            f"--target preprod "
+            f"--target prod "
             f"--select models/staging"
         ),
         env={

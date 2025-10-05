@@ -5,7 +5,7 @@ from dags.common.defaults import DEFAULT_ARGS
 from pipelines.loading.dbt_artifacts_duckdb_loader import load_dbt_test_results
 
 """
-## Build staging models DAG
+## (DEV) Build staging models DAG
 
 This DAG runs every week to refresh staging models in dev.
     - every Monday at 1AM UTC.
