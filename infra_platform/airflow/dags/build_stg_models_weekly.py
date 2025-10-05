@@ -1,12 +1,15 @@
 from airflow import DAG
 from airflow.operators.bash import BashOperator
+from airflow.operators.python import PythonOperator
 from dags.common.defaults import DEFAULT_ARGS
+from pipelines.loading.dbt_artifacts_duckdb_loader import load_dbt_test_results
 
 """
 ## Build staging models DAG
 
 This DAG runs every week to refresh staging models in dev.
     - every Monday at 1AM UTC.
+    - Logs dbt test results into a materialised table.
 
 Owner: Team Buldo
 """
@@ -33,3 +36,10 @@ with DAG(
             f"--select models/staging"
         ),
     )
+
+    load_dbt_results = PythonOperator(
+        task_id="load_dbt_results",
+        python_callable=load_dbt_test_results,
+    )
+
+    dbt_build_stg >> load_dbt_results
