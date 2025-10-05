@@ -81,6 +81,9 @@ download-prod: ## Download warehouse_prod.duckdb
 	rm -f infra_platform/duckdb_data/warehouse_prod.duckdb
 	gh run download --repo $(REPO) -n warehouse_prod -D infra_platform/duckdb_data
 
+restore-right: ## Restore duckdb data right after the download
+	chmod -R 777 infra_platform/duckdb_data
+
 sql-lint: ## sqlfluff lint
 	sqlfluff lint analytics/dbt/urban_airflow_analytics/models   --dialect duckdb   --exclude-rules L019
 
