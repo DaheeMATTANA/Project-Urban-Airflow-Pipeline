@@ -20,7 +20,7 @@ DBT_PROFILES_DIR = "/opt/airflow/dbt"
 with DAG(
     dag_id="preprod_build_stg_models_weekly",
     default_args=DEFAULT_ARGS,
-    schedule_interval="0 2 * * MON",  # every Monday at 2AM
+    schedule_interval="0 2 * * MON",  # At 02:00 on Monday
     max_active_runs=1,
     max_active_tasks=2,
     concurrency=1,

@@ -63,7 +63,7 @@ with DAG(
     dag_id="open_meteo_hourly",
     default_args=DEFAULT_ARGS,
     description="Ingest hourly Open-Meteo weather data into MinIO (bronze) + DuckDB",
-    schedule_interval="@hourly",
+    schedule_interval="@hourly",  # At minute 0
     max_active_runs=1,
     max_active_tasks=2,
     concurrency=1,
