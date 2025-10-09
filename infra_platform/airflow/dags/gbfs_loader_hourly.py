@@ -31,7 +31,7 @@ with DAG(
     dag_id="gbfs_loader_hourly",
     default_args=DEFAULT_ARGS,
     description="Load GBFS data hourly into DuckDB (raw schema)",
-    schedule_interval="@hourly",
+    schedule_interval="@hourly",  # At minute 0
     max_active_runs=1,
     max_active_tasks=2,
     concurrency=1,

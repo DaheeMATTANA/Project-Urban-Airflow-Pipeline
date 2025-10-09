@@ -40,7 +40,7 @@ with DAG(
     dag_id="snapshot_warehouse_dev_daily",
     default_args={"retries": 1, "retry_delay": timedelta(minutes=5)},
     description="Snapshot dev DuckDB file into MinIO for CI/CD",
-    schedule_interval="0 2 * * *",  # every day at 2am
+    schedule_interval="0 2 * * *",  # At 02:00
     start_date=datetime(2025, 9, 29),
     tags=["snapshot_db"],
     doc_md=__doc__,

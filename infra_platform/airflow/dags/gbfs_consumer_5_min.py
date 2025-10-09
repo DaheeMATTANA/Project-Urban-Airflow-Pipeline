@@ -17,7 +17,7 @@ with DAG(
     dag_id="gbfs_consumer_5_min",
     default_args=DEFAULT_ARGS,
     description="Ingest every 5 minutes GBFS data into MinIO (bronze) + DuckDB",
-    schedule_interval="*/5 * * * *",
+    schedule_interval="*/5 * * * *",  # At every 5th minute
     catchup=False,
     tags=["source:gbfs"],
     doc_md=__doc__,

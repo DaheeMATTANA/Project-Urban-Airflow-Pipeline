@@ -28,7 +28,7 @@ with DAG(
     dag_id="gbfs_stream_every_min",
     default_args=default_args,
     start_date=datetime(2025, 9, 15),
-    schedule_interval="* * * * *",  # every 1 minute
+    schedule_interval="* * * * *",  # At every minute
     catchup=False,
     tags=["produce:gbfs"],
     doc_md=__doc__,

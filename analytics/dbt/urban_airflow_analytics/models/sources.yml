@@ -59,6 +59,55 @@ sources:
             description: "True if the station is capable to receive a return, false otherwise"
             data_type: boolean
 
+      - name: raw_gbfs_station_information
+        description: "Paris Vélib station information from GBFS"
+        columns:
+          - name: station_id
+            description: "Id of the Vélib station."
+            data_type: string
+            tests:
+              - not_null
+
+          - name: stationCode
+            description: "Operational code of the station, often printed on Vélib stations or indicated on a mobile app."
+            data_type: string
+
+          - name: name
+            description: "Name of the station."
+            data_type: string
+
+          - name: lat
+            description: "Latitude of the station."
+            data_type: float
+
+          - name: lon
+            description: "Longitude of the station."
+            data_type: float
+
+          - name: capacity
+            description: "Capacity of the station."
+            data_type: integer
+
+          - name: station_opening_hours
+            description: "Opening hour information of the station."
+            data_type: string
+
+          - name: rental_methods
+            description: "Acceptable payment methods of the station (e.g. credit card)."
+            data_type: string
+
+          - name: ingestion_date
+            description: "Date of the partition in UTC."
+            data_type: string
+
+          - name: ingesion_hour
+            description: "Hour of the partition. Always 0 since it is partitioned only by date."
+            data_type: timestamp
+
+          - name: created_at
+            description: "Timestamp of the data load in UTC."
+            data_type: timestamp
+
       - name: raw_open_meteo
         description: "A table which contains hourly weather information."
         columns:

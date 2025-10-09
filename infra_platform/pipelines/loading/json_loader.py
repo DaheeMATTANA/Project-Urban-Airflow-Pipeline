@@ -23,6 +23,9 @@ class JsonLoader(BaseLoader):
         """
         return f"s3a://{self.bucket}/{self.prefix}/date={date_str}/hour-{hour:02d}/*.json"
 
+    def get_minio_prefix(self, date_str, hour):
+        return f"{self.prefix}/date={date_str}/hour-{hour:02d}/"
+
     def load_data(self, s3_path, date_str, hour, full_refresh=False):
         """
         Override load_data to read JSON instead of Parquet.
@@ -53,13 +56,14 @@ class JsonLoader(BaseLoader):
             else:
                 last_loaded_at = get_last_loaded_at(conn, self.table_name)
 
-            ts_col = (
-                "start_ts"
-                if "start_ts" in self.schema
-                else "time"
-                if "time" in self.schema
-                else "timestamp"
-            )
+            if "start_ts" in self.schema:
+                ts_col = "start_ts"
+            elif "time" in self.schema:
+                ts_col = "time"
+            elif "timestamp" in self.schema:
+                ts_col = "timestamp"
+            else:
+                ts_col = None
 
             if hasattr(self, "flatten_records"):
                 self.logger.info("[DEBUG] Using Python flattening mode")
@@ -73,7 +77,7 @@ class JsonLoader(BaseLoader):
                 minio = get_minio_client()
                 objects = minio.list_objects(
                     self.bucket,
-                    prefix=f"{self.prefix}/date={date_str}/hour-{hour:02d}/",
+                    prefix=self.get_minio_prefix(date_str, hour),
                     recursive=True,
                 )
 
@@ -110,10 +114,19 @@ class JsonLoader(BaseLoader):
 
                 conn.register("tmp_df", df)
                 cols = list(df.columns)
-                conn.execute(f"""
-                    INSERT OR REPLACE INTO {self.table_name} ({",".join(cols)})
+
+                insert_mode = "INSERT"
+                if not full_refresh:
+                    insert_mode = "INSERT OR REPLACE"
+
+                sql = f"""
+                    {insert_mode} INTO {self.table_name} ({",".join(cols)})
                     SELECT {",".join(cols)} FROM tmp_df
-                """)
+                """
+                self.logger.info(
+                    f"[DEBUG] Executing {insert_mode} for {self.table_name}"
+                )
+                conn.execute(sql)
 
                 count = len(df)
 
@@ -165,7 +178,7 @@ class JsonLoader(BaseLoader):
                         f"[DEBUG] Partition {date_str}/{hour}: {count} rows inserted (no filter)"
                     )
 
-            if count > 0:
+            if count > 0 and ts_col:
                 max_ts = conn.execute(
                     f"SELECT MAX({ts_col}) FROM {self.table_name}"
                 ).fetchone()[0]
@@ -176,6 +189,10 @@ class JsonLoader(BaseLoader):
                     self.logger.info(
                         f"[INFO] Updated checkpoint for {self.table_name}: {loaded_ts}"
                     )
+            else:
+                self.logger.info(
+                    "[INFO] Skipping checkpoint: no timestamp column"
+                )
 
             conn.commit()
             self.logger.info(f"Loaded {count} rows from {s3_path}")

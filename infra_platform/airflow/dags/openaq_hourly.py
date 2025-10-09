@@ -43,7 +43,7 @@ with DAG(
     dag_id="openaq_hourly",
     default_args=DEFAULT_ARGS,
     description="Ingest hourly OpenAQ data into MinIO (bronze) + DuckDB",
-    schedule_interval="@hourly",  # every hour
+    schedule_interval="@hourly",  # At minute 0
     max_active_runs=1,
     max_active_tasks=2,
     concurrency=1,
