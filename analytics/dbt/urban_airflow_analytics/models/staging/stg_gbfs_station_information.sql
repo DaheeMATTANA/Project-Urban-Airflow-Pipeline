@@ -1,4 +1,4 @@
-WITH 
+WITH
 
 source_gbfs_station_status AS (
     SELECT *
@@ -8,7 +8,7 @@ source_gbfs_station_status AS (
 , renamed AS (
     SELECT
         station_id
-        , stationCode AS station_code
+        , stationcode AS station_code
         , name AS station_name
         , lat AS latitude
         , lon AS longitude
