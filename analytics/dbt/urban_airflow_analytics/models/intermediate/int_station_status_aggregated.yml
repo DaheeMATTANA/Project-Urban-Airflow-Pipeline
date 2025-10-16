@@ -1,0 +1,44 @@
+version: 2
+
+models:
+  - name: int_station_status_aggregated
+    description: "Intermediate station status model with aggregation + timezone conversion"
+    columns:
+      - name: station_id
+        description: "Id of the Vélib station"
+        data_type: string
+        tests:
+          - not_null
+
+      - name: last_reported_utc
+        description: "Timestamp of the last reported time in UTC"
+        data_type: timestamp
+
+      - name: last_reported_cet
+        description: "Timestamp of the last reported time in CET/CEST"
+        data_type: timestamp
+
+      - name: is_installed
+        description: "True if the station is operational, false if being developed"
+        data_type: boolean
+
+      - name: is_renting
+        description: "True if the station is capable to rent bikes, false otherwise"
+        data_type: boolean
+
+      - name: is_returning
+        description: "True if the station is capable to receive a return, false otherwise"
+        data_type: boolean
+
+      - name: avg_num_bikes_available
+        description: "Number of bikes available at the time of the report"
+        data_type: integer
+
+      - name: avg_num_docks_available
+        description: "Number of bike docks available (empty) at the time of the report"
+        data_type: integer
+
+    tests:
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "last_reported_utc < last_reported_cet" 
