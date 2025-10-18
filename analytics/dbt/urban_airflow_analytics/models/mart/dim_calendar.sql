@@ -5,6 +5,9 @@
     )
 }}
 
+-- noqa: disable=RF02
+-- noqa: disable=RF04
+
 WITH
 
 dates_from_2024 AS (
