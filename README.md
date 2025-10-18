@@ -83,7 +83,7 @@ Our GitHub Actions workflow (`.github/workflows/deploy-dbt.yml`) handles environ
 - **Manual trigger (`workflow_dispatch`)**  
   Allows running `dbt build` manually against a chosen environment.
 
---
+---
 
 1. After a push or a release, change local directory to `actions-runner` and run the command `./run.sh` so that the GitHub Action can be picked up.
 
