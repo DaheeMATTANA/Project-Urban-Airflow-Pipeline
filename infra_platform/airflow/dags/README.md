@@ -92,12 +92,6 @@ Automates snapshots of DuckDB warehouses and uploads them to MinIO for CI/CD pip
 |--------|------------|-------------|
 | `snapshot_warehouse_dev_daily` | Daily at 02:00 UTC | Uploads `warehouse_dev.duckdb` snapshot to MinIO for CI/CD pipelines. |
 
----
-
-## Ownership
-
-All DAGs are maintained by **Team Buldo**.  
-For operational questions, please contact the team via your internal Slack channel or repository issues.
 
 ---
 
