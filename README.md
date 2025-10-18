@@ -83,9 +83,12 @@ Our GitHub Actions workflow (`.github/workflows/deploy-dbt.yml`) handles environ
 - **Manual trigger (`workflow_dispatch`)**  
   Allows running `dbt build` manually against a chosen environment.
 
-You can download these artifacts locally with the `make download-preprod` or `make download-prod` commands.
 
-After downloading the artifacts it is important to run the `make restore-right` command to unblock acces for local development & Airflow.
+1. After a push or a release, change local directory to `actions-runner` and run the command `./run.sh` so that the GitHub Action can be picked up.
+
+2. You can download these artifacts locally with the `make download-preprod` or `make download-prod` commands.
+
+3. After downloading the artifacts it is important to run the `make restore-right` command to unblock acces for local development & Airflow.
 
 ---
 
