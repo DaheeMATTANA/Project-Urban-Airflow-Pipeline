@@ -48,7 +48,6 @@ Urban Airflow Pipeline covers the full lifecycle of a modern data product:
 - **Transformation:** dbt Core + dbt-duckdb / dbt-bigquery
 - **Data quality:** Great Expectations
 - **BI:** Power BI
-- **IaC:** Terraform
 - **CI/CD:** GitHub Actions
 - **Observability:** Airflow UI, logs, lineage (OpenLineage-ready)
 
@@ -85,6 +84,7 @@ Our GitHub Actions workflow (`.github/workflows/deploy-dbt.yml`) handles environ
   Allows running `dbt build` manually against a chosen environment.
 
 You can download these artifacts locally with the `make download-preprod` or `make download-prod` commands.
+After downloading the artifacts it is important to run the `make restore-right` command to unblock acces for local development & Airflow.
 
 ---
 
