@@ -1,0 +1,87 @@
+version: 2
+
+models:
+  - name: dim_calendar
+    description: "Model containing date and time related dimensions with comparable fields and week/month/quarter information from 2024"
+    columns:
+      - name: date_of_day
+        description: "The date of the day."
+        data_type: date
+        tests:
+          - not_null
+          - unique
+
+      - name: date_of_day_comparable
+        description: "A comparable date of day (Y-1)"
+        data_type: date
+
+      - name: year
+        description: "The year of the date_of_day."
+        data_type: string
+        tests:
+          - not_null
+
+      - name: year_comparable
+        description: "Comparable year (Y-1)"
+        data_type: string
+
+      - name: iso_first_date_of_week
+        description: "The ISO first date of the week for the given date."
+        data_type: date
+
+      - name: iso_first_date_of_week_comparable
+        description: "Comparable ISO first date of the week. (Y-1)"
+        data_type: date
+
+      - name: iso_last_date_of_week
+        description: "The ISO last date of the week for the given date."
+        data_type: date
+
+      - name: iso_last_date_of_week_comparable
+        description: "Comparable ISO last date of the week. (Y-1)"
+        data_type: date
+
+      - name: weekday_name_en
+        description: "The English name of the weekday."
+        data_type: string
+        tests:
+          - not_null
+
+      - name: iso_day_of_week
+        description: "ISO day of the week (1=Monday, 7=Sunday)."
+        data_type: integer
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+                max_value: 7
+
+      - name: is_weekend
+        description: "Flag indicating if the date falls on a weekend."
+        data_type: boolean
+
+      - name: iso_week_number
+        description: "The ISO week number of the year."
+        data_type: integer
+
+      - name: month_number
+        description: "The month number (1-12)."
+        data_type: integer
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+                max_value: 12
+
+      - name: quarter_number
+        description: "The quarter number of the year (1-4)."
+        data_type: integer
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+                max_value: 4
+
+      - name: created_at_utc
+        description: "Timestamp of the creation of the model"
+        data_type: timestamp
