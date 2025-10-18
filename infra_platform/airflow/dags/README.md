@@ -103,5 +103,6 @@ Automates snapshots of DuckDB warehouses and uploads them to MinIO for CI/CD pip
 | GBFS Ingestion | 5 |
 | Weather & Air Quality | 2 |
 | IDFM Transport | 2 |
-| Holidays & Snapshots | 2 |
+| Holidays | 1 |
+| Snapshots | 1 |
 | **Total** | **17 DAGs** |
