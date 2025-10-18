@@ -40,8 +40,11 @@ dates_from_2024 AS (
         + INTERVAL 6 DAY AS iso_last_date_of_week
         , STRFTIME(date_of_day, '%A') AS weekday_name_en
         , EXTRACT(ISODOW FROM date_of_day) AS iso_day_of_week
-        , COALESCE(EXTRACT(ISODOW FROM date_of_day) = 6
-        OR EXTRACT(ISODOW FROM date_of_day) = 7, FALSE) AS is_weekend
+        , COALESCE(
+            EXTRACT(ISODOW FROM date_of_day) = 6
+            OR EXTRACT(ISODOW FROM date_of_day) = 7
+            , FALSE
+        ) AS is_weekend
         , EXTRACT(WEEK FROM date_of_day) AS iso_week_number
         , EXTRACT(MONTH FROM date_of_day) AS month_number
         , EXTRACT(QUARTER FROM date_of_day) AS quarter_number
