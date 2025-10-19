@@ -1,8 +1,8 @@
 version: 2
 
 models:
-  - name: int_station_status_aggregated
-    description: "Intermediate station status model with aggregation + timezone conversion"
+  - name: int_station_status_flagged
+    description: "Intermediate station status model with status flag"
     columns:
       - name: station_id
         description: "Id of the Vélib station"
@@ -30,28 +30,32 @@ models:
         description: "True if the station is capable to receive a return, false otherwise"
         data_type: boolean
 
+      - name: num_bikes_available
+        description: "Number of bikes available at the time of the report"
+        data_type: integer
+
+      - name: num_docks_available
+        description: "Number of bike docks available (empty) at the time of the report"
+        data_type: integer
+
       - name: station_capacity
         description: "Capacity of the station"
         data_type: integer
 
-      - name: avg_num_bikes_available
-        description: "Average number of bikes available of the station at the given time"
-        data_type: integer
+      - name: is_full
+        description: "True when all docks are occupied — no bikes can be returned."
+        data_type: boolean
+        tests:
+          - not_null
 
-      - name: avg_num_docks_available
-        description: "Number of bike docks available (empty) of the station at the given time"
-        data_type: integer
+      - name: is_empty
+        description: "True when all docks are available — no bikes can be rented."
+        data_type: boolean
+        tests:
+          - not_null
 
-      - name: pct_time_full
-        description: "Percentage of time that the station was full (no available docks)."
-        data_type: float
-
-      - name: pct_time_empty
-        description: "Percentage of time that the station was empty (no available bikes) "
-        data_type: float
-
-      - name: avg_num_bikes_in_maintenance
-        description: "Average bikes unavailable or under maintenance of the station at the given time"
+      - name: num_bikes_in_maintenance
+        description: "Estimated bikes unavailable or under maintenance, calculated as capacity - (bikes + docks)."
         data_type: integer
 
     tests:
@@ -62,15 +66,15 @@ models:
 
       - dbt_utils.expression_is_true:
           arguments:
-            expression: "avg_num_bikes_available <= station_capacity" 
+            expression: "num_bikes_available <= station_capacity" 
             severity: warn
 
       - dbt_utils.expression_is_true:
           arguments:
-            expression: "avg_num_docks_available <= station_capacity" 
+            expression: "num_docks_available <= station_capacity" 
             severity: warn
 
       - dbt_utils.expression_is_true:
           arguments:
-            expression: "avg_num_bikes_in_maintenance >= 0" 
+            expression: "num_bikes_in_maintenance >= 0" 
             severity: warn

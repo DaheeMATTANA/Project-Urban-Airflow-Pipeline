@@ -32,6 +32,18 @@ models:
                 min_value: 0
                 max_value: 200
 
+      - name: pct_time_full
+        description: "Percentage of time that the station was full (no available docks)."
+        data_type: float
+
+      - name: pct_time_empty
+        description: "Percentage of time that the station was empty (no available bikes) "
+        data_type: float
+
+      - name: avg_num_bikes_in_maintenance
+        description: "Average bikes unavailable or under maintenance of the station at the given time"
+        data_type: integer
+
     tests:
       - dbt_utils.unique_combination_of_columns:
           arguments:
