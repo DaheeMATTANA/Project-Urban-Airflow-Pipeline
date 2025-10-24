@@ -17,9 +17,9 @@ These DAGs manage the automated execution of dbt models across different environ
 | `dbt_ad_hoc_manually` | Manual | None | Runs dbt models on demand. You can specify `dbt_select` and optionally `dbt_exclude` for flexible builds. |
 | `dev_build_stg_models_weekly` | Dev | Every Monday at 01:00 UTC | Refreshes staging models in the dev environment and logs dbt test results. |
 | `preprod_build_stg_models_weekly` | Preprod | Every Monday at 02:00 UTC | Refreshes staging models in preprod and logs dbt test results. |
-| `prod_build_stg_models_weekly` | Prod | Every Monday at 03:00 UTC | Refreshes staging models in prod and logs dbt test results. |
+| `prod_build_stg_models_daily` | Prod | Everyday at 03:00 UTC | Refreshes staging models in prod and logs dbt test results. |
 | `prod_dim_calendar_yearly` | Prod | Every January 1st at 00:00 UTC | Rebuilds the `dim_calendar` model and its upstream dependencies yearly. |
-| `prod_station_status_weekly` | Prod | Every Monday at 04:30 UTC | Refreshes `fct_station_status` and its upstream dependencies weekly. |
+| `prod_station_status_daily` | Prod | Everyday at 04:30 UTC | Refreshes `fct_station_status` and its upstream dependencies weekly. |
 
 ---
 
