@@ -116,8 +116,6 @@ class JsonLoader(BaseLoader):
                 cols = list(df.columns)
 
                 insert_mode = "INSERT"
-                if not full_refresh:
-                    insert_mode = "INSERT OR REPLACE"
 
                 sql = f"""
                     {insert_mode} INTO {self.table_name} ({",".join(cols)})

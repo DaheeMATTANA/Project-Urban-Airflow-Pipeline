@@ -1,0 +1,51 @@
+version: 2
+
+models:
+  - name: int_station_info_flagged
+    description: "Station information with validity date range and flag"
+    columns:
+      - name: station_id
+        description: "Id of the Vélib station."
+        data_type: string
+        tests:
+          - not_null
+
+      - name: station_code
+        description: "Operational code of the station, often printed on Vélib stations or indicated on a mobile app."
+        data_type: string
+
+      - name: station_name
+        description: "Name of the station."
+        data_type: string
+
+      - name: latitude
+        description: "Latitude of the station."
+        data_type: float
+
+      - name: longitude
+        description: "Longitude of the station."
+        data_type: float
+
+      - name: capacity
+        description: "Capacity of the station."
+        data_type: integer
+
+      - name: valid_from
+        description: "Timestamp when this version of the station information became effective."
+        data_type: timestamp
+
+      - name: valid_to
+        description: "Timestamp When this version ended; null if current."
+        data_type: timestamp
+
+      - name: is_current
+        description: "True if this is the latest version of the station."
+        data_type: boolean
+        tests:
+          - not_null
+
+    tests:
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "valid_from < valid_to"
+

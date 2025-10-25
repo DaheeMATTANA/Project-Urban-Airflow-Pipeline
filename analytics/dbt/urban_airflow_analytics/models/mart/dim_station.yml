@@ -1,0 +1,51 @@
+version: 2
+
+models:
+  - name: dim_station
+    description: "Model containing Vélib station dimensions"
+    columns:
+      - name: station_id
+        description: "Id of the Vélib station."
+        data_type: string
+        tests:
+          - not_null
+
+      - name: station_code
+        description: "Operational code of the station, often printed on Vélib stations or indicated on a mobile app."
+        data_type: string
+
+      - name: station_name
+        description: "Name of the station."
+        data_type: string
+        tests:
+          - not_null
+
+      - name: latitude
+        description: "Latitude of the station."
+        data_type: float
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: -90
+              max_value: 90
+
+      - name: longitude
+        description: "Longitude of the station."
+        data_type: float
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: -180
+              max_value: 180
+
+      - name: capacity
+        description: "Capacity of the station."
+        data_type: integer
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 1000
+
+      - name: is_current
+        description: "True if this is the latest version of the station."
+        data_type: boolean
+        tests:
+          - not_null

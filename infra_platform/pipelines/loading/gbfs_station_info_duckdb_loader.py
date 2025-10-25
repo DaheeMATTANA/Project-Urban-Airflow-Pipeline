@@ -65,7 +65,7 @@ def run_station_info_load(**context):
 
     s3_path = loader.build_s3_path(date_str)
     count = loader.load_data(
-        s3_path=s3_path, date_str=date_str, hour=0, full_refresh=True
+        s3_path=s3_path, date_str=date_str, hour=0, full_refresh=False
     )
 
     print(f"Loaded {count} rows into {loader.table_name} for {date_str}")
