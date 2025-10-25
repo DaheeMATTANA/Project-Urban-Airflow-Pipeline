@@ -1,6 +1,6 @@
 WITH
 
-station_info_valid_flag AS (
+station_info_with_flag AS (
     SELECT
         station_id
         , station_code
@@ -25,4 +25,4 @@ SELECT
     , capacity
     , is_current
 FROM
-    station_info_valid_flag
+    station_info_with_flag
