@@ -50,6 +50,7 @@ services:
       - ../../../analytics/dbt:/opt/airflow/src/analytics/dbt
     ports:
       - "8081:8080"
+      - "8082:8082" # dbt docs
     depends_on:
       postgres:
         condition: service_healthy
