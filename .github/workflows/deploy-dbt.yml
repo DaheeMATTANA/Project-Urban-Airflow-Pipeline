@@ -101,6 +101,11 @@ jobs:
               print("[INFO] Skipping target init for dev")
           PYCODE
 
+      - name: Clean dbt cache
+        run: |
+          echo "[INFO] Cleaning dbt target and logs..."
+          dbt clean || true
+          rm -rf target logs || true
 
       - name: Run dbt build
         run: dbt build --target $DBT_TARGET
