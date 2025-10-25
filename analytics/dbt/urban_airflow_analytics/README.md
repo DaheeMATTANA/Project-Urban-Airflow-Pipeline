@@ -1,15 +1,11 @@
-Welcome to your new dbt project!
+Welcome to Urban Airflow Analytics dbt Project!
 
-### Using the starter project
+### Access to dbt GUI
 
-Try running the following commands:
-- dbt run
-- dbt test
+```bash
+	cd infra_platform/airflow/docker
+	docker compose exec -it airflow-webserver bash
 
-
-### Resources:
-- Learn more about dbt [in the docs](https://docs.getdbt.com/docs/introduction)
-- Check out [Discourse](https://discourse.getdbt.com/) for commonly asked questions and answers
-- Join the [chat](https://community.getdbt.com/) on Slack for live discussions and support
-- Find [dbt events](https://events.getdbt.com) near you
-- Check out [the blog](https://blog.getdbt.com/) for the latest news on dbt's development and best practices
+	cd /opt/airflow/src/analytics/dbt/urban_airflow_analytics
+	dbt docs generate
+	dbt docs serve --port 8082 --host 0.0.0.0

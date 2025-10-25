@@ -1,9 +1,18 @@
+{{ config(
+    materialized = 'incremental'
+    , unique_key = ['station_id', 'last_reported_utc']
+) }}
+
 WITH
 
 station_status AS (
     SELECT *
     FROM
         {{ ref('int_station_status_flagged') }}
+    {% if is_incremental() %}
+        WHERE
+            last_reported_utc > (SELECT MAX(last_reported_utc) FROM {{ this }}) -- noqa: RF02, LT05
+    {% endif %}
 )
 
 , aggregated_by_minute AS (
