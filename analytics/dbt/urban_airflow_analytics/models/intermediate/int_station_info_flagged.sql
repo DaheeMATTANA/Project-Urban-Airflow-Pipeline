@@ -13,7 +13,7 @@ station_information AS (
         {{ ref('stg_gbfs_station_information') }}
 )
 
-, valid_flag AS (
+, add_valid_period AS (
     SELECT
         station_id
         , station_code
@@ -26,10 +26,17 @@ station_information AS (
             PARTITION BY station_id
             ORDER BY loaded_at_utc
         ) AS valid_to
-        , valid_to IS NULL
-            AS is_current
     FROM
         station_information
+)
+
+, add_current_flag AS (
+    SELECT
+        *
+        , (valid_to IS NULL)
+            AS is_current
+    FROM
+        add_valid_period
 )
 
 SELECT
@@ -43,4 +50,4 @@ SELECT
     , valid_to
     , is_current
 FROM
-    valid_flag
+    add_current_flag

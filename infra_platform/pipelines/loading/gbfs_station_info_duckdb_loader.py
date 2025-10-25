@@ -1,4 +1,6 @@
 import datetime
+import hashlib
+import json
 
 from pipelines.loading.json_loader import JsonLoader
 
@@ -11,7 +13,18 @@ STATION_INFO_SCHEMA = {
     "capacity": "INTEGER",
     "station_opening_hours": "VARCHAR",
     "rental_methods": "VARCHAR",
+    "record_hash": "VARCHAR",
 }
+
+
+def compute_record_hash(station: dict) -> str:
+    """
+    Compute a deterministic md5 hash of station content.
+    """
+    exclude = {"ingestion_date", "ingestion_hour"}
+    filtered = {k: v for k, v in station.items() if k not in exclude}
+    payload = json.dumps(filtered, sort_keys=True, separators=(",", ":"))
+    return hashlib.md5(payload.encode("utf-8")).hexdigest()
 
 
 def flatten_gbfs_station_info(data: dict, date_str: str, hour: int):
@@ -27,6 +40,7 @@ def flatten_gbfs_station_info(data: dict, date_str: str, hour: int):
         row = station.copy()
         row["ingestion_date"] = date_str
         row["ingestion_hour"] = 0
+        row["record_hash"] = compute_record_hash(row)
         rows.append(row)
 
     print(f"[DEBUG] Flattened {len(rows)} stations")
