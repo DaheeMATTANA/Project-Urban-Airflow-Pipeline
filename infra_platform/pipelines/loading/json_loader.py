@@ -1,3 +1,5 @@
+import hashlib
+import json
 import os
 from datetime import UTC
 
@@ -7,6 +9,16 @@ from pipelines.common.load_state_utils import (
     update_last_loaded_at,
 )
 from pipelines.loading.base_loader import BaseLoader
+
+
+def _compute_row_hash(row: dict, exclude_cols=None) -> str:
+    """
+    A helper to compute a deterministic md5 hash for change detection.
+    """
+    exclude_cols = exclude_cols or []
+    filtered = {k: v for k, v in row.items() if k not in exclude_cols}
+    payload = json.dumps(filtered, sort_keys=True, separators=(",", ":"))
+    return hashlib.md5(payload.encode("utf-8")).hexdigest()
 
 
 class JsonLoader(BaseLoader):
@@ -100,6 +112,7 @@ class JsonLoader(BaseLoader):
 
                 df = pd.DataFrame(rows)
 
+                # Incremental load based on timestamp (generic)
                 if "start_ts" in df.columns:
                     df["start_ts"] = pd.to_datetime(
                         df["start_ts"], errors="coerce"
@@ -112,19 +125,50 @@ class JsonLoader(BaseLoader):
                     )
                     return 0
 
+                # Incremental load based on content hash for staion_information (optional)
+                if "record_hash" in df.columns and "station_id" in df.columns:
+                    existing = conn.execute(f"""
+                        SELECT station_id, record_hash
+                        FROM {self.table_name}
+                    """).fetchdf()
+
+                    existing_map = dict(
+                        zip(
+                            existing["station_id"],
+                            existing["record_hash"],
+                            strict=False,
+                        )
+                    )
+                    before = len(df)
+
+                    # Keep only new or changed rows
+                    df = df[
+                        df.apply(
+                            lambda r: existing_map.get(r["station_id"])
+                            != r["record_hash"],
+                            axis=1,
+                        )
+                    ]
+                    after = len(df)
+                    self.logger.info(
+                        f"[DEBUG] Filtered {before - after} unchanged rows; keeping {after} new/changed"
+                    )
+
+                    if df.empty:
+                        self.logger.info(
+                            "[INFO] No changed stations — nothing to load"
+                        )
+                        return 0
+
                 conn.register("tmp_df", df)
                 cols = list(df.columns)
 
-                insert_mode = "INSERT"
-                if not full_refresh:
-                    insert_mode = "INSERT OR REPLACE"
-
                 sql = f"""
-                    {insert_mode} INTO {self.table_name} ({",".join(cols)})
+                    INSERT OR REPLACE INTO {self.table_name} ({",".join(cols)})
                     SELECT {",".join(cols)} FROM tmp_df
                 """
                 self.logger.info(
-                    f"[DEBUG] Executing {insert_mode} for {self.table_name}"
+                    f"[DEBUG] Executing INSERT OR REPLACE for {self.table_name}"
                 )
                 conn.execute(sql)
 
