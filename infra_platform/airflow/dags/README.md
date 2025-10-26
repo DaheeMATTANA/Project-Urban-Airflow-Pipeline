@@ -19,7 +19,8 @@ These DAGs manage the automated execution of dbt models across different environ
 | `preprod_build_stg_models_weekly` | Preprod | Every Monday at 02:00 UTC | Refreshes staging models in preprod and logs dbt test results. |
 | `prod_build_stg_models_daily` | Prod | Everyday at 03:00 UTC | Refreshes staging models in prod and logs dbt test results. |
 | `prod_dim_calendar_yearly` | Prod | Every January 1st at 00:00 UTC | Rebuilds the `dim_calendar` model and its upstream dependencies yearly. |
-| `prod_station_status_daily` | Prod | Everyday at 04:30 UTC | Refreshes `fct_station_status` and its upstream dependencies weekly. |
+| `prod_station_status_daily` | Prod | Everyday at 04:30 UTC | Refreshes `fct_station_status` and its upstream dependencies daily. |
+| `prod_dim_station_monthly` | Prod | Every 1st day of month at 02:00 UTC | Refreshes `dim_station` and its upstream dependencies monthly. |
 
 ---
 
@@ -99,10 +100,10 @@ Automates snapshots of DuckDB warehouses and uploads them to MinIO for CI/CD pip
 
 | Category | Number of DAGs |
 |-----------|----------------|
-| DBT Models | 6 |
+| DBT Models | 7 |
 | GBFS Ingestion | 5 |
 | Weather & Air Quality | 2 |
 | IDFM Transport | 2 |
 | Holidays | 1 |
 | Snapshots | 1 |
-| **Total** | **17 DAGs** |
+| **Total** | **18 DAGs** |
