@@ -44,6 +44,12 @@ models:
         tests:
           - not_null
 
+      - name: is_deleted
+        description: "True if the station no longer exists."
+        data_type: boolean
+        tests:
+          - not_null
+
     tests:
       - dbt_utils.expression_is_true:
           arguments:

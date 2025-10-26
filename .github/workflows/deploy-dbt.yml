@@ -110,3 +110,15 @@ jobs:
         with:
           name: warehouse_${{ env.DBT_TARGET }}
           path: infra_platform/duckdb_data/warehouse_${{ env.DBT_TARGET }}.duckdb
+
+      - name: Generate dbt docs
+        if: github.event_name == 'release'
+        run: dbt docs generate
+
+      - name: Deploy dbt docs to GitHub Pages
+        if: github.event_name == 'release'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: analytics/dbt/urban_airflow_analytics/target/
+          publish_branch: gh-pages
