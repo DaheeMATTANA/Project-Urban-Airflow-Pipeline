@@ -9,6 +9,7 @@ station_info_with_flag AS (
         , longitude
         , capacity
         , is_current
+        , is_deleted
     FROM
         {{ ref('int_station_info_flagged') }}
     WHERE
@@ -24,5 +25,6 @@ SELECT
     , longitude
     , capacity
     , is_current
+    , is_deleted
 FROM
     station_info_with_flag

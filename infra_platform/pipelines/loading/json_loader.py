@@ -135,6 +135,10 @@ class JsonLoader(BaseLoader):
                     existing["station_id"] = existing["station_id"].astype(str)
                     df["station_id"] = df["station_id"].astype(str)
 
+                    # Detect stations that disappeared from the API
+                    existing_ids = set(existing["station_id"])
+                    new_ids = set(df["station_id"])
+
                     existing_map = dict(
                         zip(
                             existing["station_id"],
@@ -156,6 +160,49 @@ class JsonLoader(BaseLoader):
                     self.logger.info(
                         f"[DEBUG] Filtered {before - after} unchanged rows; keeping {after} new/changed"
                     )
+
+                    deleted_ids = existing_ids - new_ids
+
+                    if deleted_ids:
+                        self.logger.info(
+                            f"[INFO] Found {len(deleted_ids)} deleted stations: inserting 'DELETED' rows"
+                        )
+                        import pandas as pd
+
+                        deleted_df = pd.DataFrame(
+                            [
+                                {
+                                    "station_id": sid,
+                                    "record_hash": "deleted",
+                                    "station_opening_hours": "DELETED",
+                                    "ingestion_date": date_str,
+                                    "ingestion_hour": hour,
+                                    "created_at": pd.Timestamp.utcnow(),
+                                }
+                                for sid in deleted_ids
+                            ]
+                        )
+
+                        valid_cols = [
+                            c
+                            for c in deleted_df.columns
+                            if c in self.schema.keys()
+                            or c
+                            in [
+                                "ingestion_date",
+                                "ingestion_hour",
+                                "created_at",
+                            ]
+                        ]
+                        deleted_df = deleted_df[valid_cols]
+
+                        # Register and insert as new rows (no update)
+                        conn.register("deleted_tmp", deleted_df)
+                        cols = list(deleted_df.columns)
+                        conn.execute(f"""
+                            INSERT INTO {self.table_name} ({",".join(cols)})
+                            SELECT {",".join(cols)} FROM deleted_tmp
+                        """)
 
                     if df.empty:
                         self.logger.info(
