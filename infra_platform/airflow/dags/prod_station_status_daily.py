@@ -26,7 +26,7 @@ with DAG(
     max_active_runs=1,
     max_active_tasks=2,
     concurrency=1,
-    tags=["dbt", "fct", "station_status"],
+    tags=["dbt", "fct", "station_status", "prod"],
     doc_md=__doc__,
 ) as dag:
     dbt_build = BashOperator(

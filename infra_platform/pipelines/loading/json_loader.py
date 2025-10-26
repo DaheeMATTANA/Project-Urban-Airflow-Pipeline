@@ -132,6 +132,9 @@ class JsonLoader(BaseLoader):
                         FROM {self.table_name}
                     """).fetchdf()
 
+                    existing["station_id"] = existing["station_id"].astype(str)
+                    df["station_id"] = df["station_id"].astype(str)
+
                     existing_map = dict(
                         zip(
                             existing["station_id"],
