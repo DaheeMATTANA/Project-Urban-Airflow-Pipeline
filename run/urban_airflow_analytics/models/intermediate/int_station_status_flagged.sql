@@ -4,10 +4,12 @@
     
 
     create  table
-      "warehouse_prod"."main_urban_airflow_analytics"."int_station_status_flagged__dbt_tmp"
+      "warehouse_prod"."main_urban_airflow_analytics"."int_station_status_flagged"
   
     as (
-      -- noqa: disable=RF02
+      
+
+-- noqa: disable=RF02
 
 WITH
 
@@ -23,6 +25,7 @@ station_status AS (
         , num_docks_available
     FROM
         "warehouse_prod"."main_urban_airflow_analytics"."stg_gbfs_station_status"
+    
 )
 
 , station_capacity_info AS (
@@ -37,8 +40,8 @@ station_status AS (
     SELECT
         station_status.*
         , station_capacity
-        , coalesce(num_bikes_available = station_capacity, FALSE) AS is_full
-        , coalesce(num_docks_available = station_capacity, FALSE) AS is_empty
+        , COALESCE(num_bikes_available = station_capacity, FALSE) AS is_full
+        , COALESCE(num_docks_available = station_capacity, FALSE) AS is_empty
         , station_capacity - (num_bikes_available + num_docks_available)
             AS num_bikes_in_maintenance
     FROM
@@ -64,5 +67,6 @@ SELECT
 FROM
     create_flags
     );
+  
   
   

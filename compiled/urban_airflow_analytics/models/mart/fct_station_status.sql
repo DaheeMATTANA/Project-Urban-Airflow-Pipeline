@@ -9,18 +9,37 @@ active_station_status AS (
     AND is_installed = TRUE
     AND is_renting = TRUE
     -- filter by the date of pipeline stabilisation
-    AND last_reported_utc >= '2025-09-29'
+    AND last_reported_hourly_cet >= '2025-09-29'
     -- exclude incomplete reporting stations
     AND station_capacity IS NOT NULL
 )
 
+, extract_date_hour AS (
+    SELECT
+        station_id
+        , last_reported_hourly_cet
+        , avg_num_bikes_available
+        , avg_num_docks_available
+        , pct_time_full
+        , pct_time_empty
+        , avg_num_bikes_in_maintenance
+        , CAST(last_reported_hourly_cet AS DATE)
+            AS last_reported_date_cet
+        , HOUR(last_reported_hourly_cet)
+            AS last_reported_hour_cet
+    FROM
+        active_station_status
+)
+
 SELECT
     station_id
-    , last_reported_cet
+    , last_reported_hourly_cet
+    , last_reported_date_cet
+    , last_reported_hour_cet
     , avg_num_bikes_available
     , avg_num_docks_available
     , pct_time_full
     , pct_time_empty
     , avg_num_bikes_in_maintenance
 FROM
-    active_station_status
+    extract_date_hour
