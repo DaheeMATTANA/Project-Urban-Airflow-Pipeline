@@ -10,9 +10,22 @@ models:
         tests:
           - not_null
 
-      - name: last_reported_cet
-        description: "Timestamp of the last reported time in CET/CEST"
+      - name: last_reported_hourly_cet
+        description: "Timestamp of the last reported time in CET/CEST (hourly granularity)"
         data_type: timestamp
+
+      - name: last_reported_date_cet
+        description: "Date of the last reported time in CET/CEST"
+        data_type: date
+
+      - name: last_reported_hour_cet
+        description: "Hour of the last reported time in CET/CEST (0-23)"
+        data_type: integer
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 23        
 
       - name: avg_num_bikes_available
         description: "Number of bikes available at the time of the report"
@@ -49,4 +62,4 @@ models:
           arguments:
             combination_of_columns:
               - station_id
-              - last_reported_cet
+              - last_reported_hourly_cet

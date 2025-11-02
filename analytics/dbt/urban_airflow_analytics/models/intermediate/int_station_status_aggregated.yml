@@ -10,12 +10,12 @@ models:
         tests:
           - not_null
 
-      - name: last_reported_utc
-        description: "Timestamp of the last reported time in UTC"
+      - name: last_reported_hourly_utc
+        description: "Timestamp of the last reported time in UTC (hourly granularity)"
         data_type: timestamp
 
-      - name: last_reported_cet
-        description: "Timestamp of the last reported time in CET/CEST"
+      - name: last_reported_hourly_cet
+        description: "Timestamp of the last reported time in CET/CEST (hourly granularity)"
         data_type: timestamp
 
       - name: is_installed
@@ -57,7 +57,7 @@ models:
     tests:
       - dbt_utils.expression_is_true:
           arguments:
-            expression: "last_reported_utc < last_reported_cet" 
+            expression: "last_reported_hourly_utc < last_reported_hourly_cet" 
             severity: warn
 
       - dbt_utils.expression_is_true:
