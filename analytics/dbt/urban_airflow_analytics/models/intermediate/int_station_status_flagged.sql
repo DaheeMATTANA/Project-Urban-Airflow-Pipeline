@@ -1,3 +1,10 @@
+{{
+    config(
+        materialized = 'incremental'
+        , on_schema_change = 'append_new_columns'
+    )
+}}
+
 -- noqa: disable=RF02
 
 WITH
@@ -14,6 +21,11 @@ station_status AS (
         , num_docks_available
     FROM
         {{ ref('stg_gbfs_station_status') }}
+    {% if is_incremental() %}
+        WHERE
+            last_reported_utc 
+            >= (SELECT MAX(last_reported_utc) - INTERVAL 2 HOURS FROM {{ this }}) -- noqa : RF02, LT05
+    {% endif %}
 )
 
 , station_capacity_info AS (

@@ -1,0 +1,32 @@
+version: 2
+
+models:
+  - name: dim_time
+    description: "Dimension table representing hours of the day with time-related attributes."
+    columns:
+      - name: hour_number
+        description: "Hour of the day from 0 (midnight) to 23 (11 PM)."
+        tests:
+          - unique
+          - not_null
+
+      - name: hour_label
+        description: "Formatted label of the hour, e.g. '08h', '15h'."
+
+      - name: time_format
+        description: "Formatted time string, e.g. '08:00', '15:00'."
+
+      - name: is_morning
+        description: "True if hour is between 06:00 and 11:59."
+
+      - name: is_afternoon
+        description: "True if hour is between 12:00 and 17:59."
+
+      - name: is_evening
+        description: "True if hour is between 18:00 and 23:59."
+
+      - name: is_night
+        description: "True if hour is between 00:00 and 05:59."
+
+      - name: am_pm
+        description: "Indicates whether the hour is in the AM or PM period."

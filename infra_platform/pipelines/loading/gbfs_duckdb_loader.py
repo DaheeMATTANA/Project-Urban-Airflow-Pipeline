@@ -129,7 +129,7 @@ def load_gbfs_to_duckdb(
                             "ingestion_date": date_part,
                             "ingestion_hour": int(hour_part),
                             "file_path": obj.object_name,
-                            "loaded_at": datetime.now(),
+                            "loaded_at": datetime.now(tz=UTC),
                             "is_returning": bool(station.get("is_returning")),
                         }
                     )
@@ -158,14 +158,14 @@ def load_gbfs_to_duckdb(
 
     print(f"[DEBUG] {len(df)} rows before incremental filter")
 
+    cutoff = None
     if last_loaded_at:
-        df = df[df["last_reported"] > last_loaded_at]
-        print(
-            f"[DEBUG] {len(df)} rows after incremental filter > {last_loaded_at}"
-        )
+        cutoff = last_loaded_at - pd.Timedelta(hours=2)
+        df = df[df["last_reported"] > cutoff]
+        print(f"[DEBUG] {len(df)} rows after incremental filter > {cutoff}")
 
     if df.empty:
-        print(f"[DEBUG] Skipping insert, no new rows beyond {last_loaded_at}")
+        print(f"[DEBUG] Skipping insert, no new rows beyond {cutoff}")
         duckdb_conn.close()
         return 0
 

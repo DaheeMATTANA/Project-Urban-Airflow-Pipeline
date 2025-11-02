@@ -44,6 +44,7 @@ platform/airflow/docker/platform/airflow/logs/
 *.duckdb
 *.duckdb.wal
 .duckdb
+*.duckdb.tmp
 
 # DBT build artifacts
 target/
