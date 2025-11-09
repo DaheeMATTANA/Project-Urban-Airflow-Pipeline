@@ -3,7 +3,7 @@ WITH
 french_holidays AS (
     SELECT
         holiday_date
-        , hoilday_name_fr
+        , holiday_name_fr
         , is_national
     FROM
         {{ ref('stg_french_holidays') }}
@@ -11,7 +11,7 @@ french_holidays AS (
 
 SELECT
     holiday_date
-    , hoilday_name_fr
+    , holiday_name_fr
     , is_national
 FROM
     french_holidays
