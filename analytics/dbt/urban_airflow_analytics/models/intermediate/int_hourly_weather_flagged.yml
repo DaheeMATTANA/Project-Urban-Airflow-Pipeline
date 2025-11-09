@@ -38,31 +38,64 @@ models:
         data_type: float
 
       - name: general_weather_condition
-        description: "Categorical weather label derived from temperature, precipitation, and visibility (clear, cloudy, rain, snow, fog)."
+        description: |
+          General weather condition derived from precipitation, temperature, and visibility:
+            - **snow**: precipitation > 0.1 mm and temperature ≤ 1 °C  
+            - **rain**: precipitation > 0.1 mm and temperature > 1 °C  
+            - **fog**: visibility < 1000 m  
+            - **clear**: precipitation = 0 mm and visibility ≥ 10000 m  
+            - **cloudy**: all other cases
         data_type: string
 
       - name: temperature_category
-        description: "Temperature classification bucket (cold, mild, warm, hot)."
+        description: |
+          Temperature classification:
+            - **cold**: < 0 °C  
+            - **mild**: 0 – 14 °C  
+            - **warm**: 15 – 24 °C  
+            - **hot**: ≥ 25 °C
         data_type: string
 
       - name: precipitation_category
-        description: "Precipitation intensity bucket (none, light, moderate, heavy)."
+        description: |
+          Precipitation intensity:
+            - **none**: 0 mm  
+            - **light**: 0 – 1.9 mm  
+            - **moderate**: 2 – 9.9 mm  
+            - **heavy**: ≥ 10 mm
         data_type: string
 
       - name: precipitation_probability_category
-        description: "Precipitation probability level (low, medium, high)."
+        description: |
+          Precipitation probability:
+            - **low**: < 20 %  
+            - **medium**: 20 – 59 %  
+            - **high**: ≥ 60 %
         data_type: string
 
       - name: wind_category
-        description: "Wind speed classification (calm, breezy, windy, storm)."
+        description: |
+          Wind speed classification:
+            - **calm**: < 2 m/s  
+            - **breezy**: 2 – 7.9 m/s  
+            - **windy**: 8 – 16.9 m/s  
+            - **storm**: ≥ 17 m/s
         data_type: string
 
       - name: visibility_category
-        description: "Visibility condition (poor, moderate, good)."
+        description: |
+          Visibility range:
+            - **poor**: < 1000 m  
+            - **moderate**: 1000 – 9999 m  
+            - **good**: ≥ 10000 m
         data_type: string
 
       - name: anormality_category
-        description: "Flag describing anomaly level for weather variables (none, anormal, very anormal)."
+        description: |
+          Anomaly level based on extreme or invalid sensor values:
+            - **none**: all variables within normal ranges  
+            - **anormal**: temperature < –30 °C or > 45 °C, precipitation > 20 mm, windspeed > 25 m/s, or visibility < 100 m / > 100000 m  
+            - **very anormal**: temperature < –40 °C or > 50 °C, precipitation > 50 mm, windspeed > 40 m/s, or visibility < 0 m / > 150000 m
         data_type: string
 
     tests:
