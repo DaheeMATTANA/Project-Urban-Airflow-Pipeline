@@ -1,0 +1,22 @@
+version: 2
+
+models:
+  - name: dim_french_holidays
+    description: "A table which contains information about french holidays."
+    columns:
+      - name: holiday_date
+        description: "Date of the holiday"
+        data_type: date
+        tests:
+          - not_null
+          - unique
+
+      - name: holiday_name_fr
+        description: "Name of the holiday in French"
+        data_type: string
+
+      - name: is_national
+        description: "True if it is a national holiday, false otherwise"
+        data_type: boolean
+        tests:
+          - not_null

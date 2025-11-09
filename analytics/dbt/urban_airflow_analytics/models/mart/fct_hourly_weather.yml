@@ -1,0 +1,85 @@
+version: 2
+
+models:
+  - name: fct_hourly_weather
+    description: "A table which contains hourly weather information."
+    columns:
+      - name: timestamp_cet
+        description: "Timestamp of the weather information in CET/CEST."
+        data_type: timestamp
+        tests:
+          - not_null
+
+      - name: temperature_2m
+        description: "Air temperature at 2m above the surface of land, sea or inland waters (°C)"
+        data_type: float
+
+      - name: precipitation
+        description: "Precipitation in millimeters"
+        data_type: float  
+
+      - name: precipitation_probability
+        description: "Probability of precipitation."
+        data_type: float
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 1
+
+      - name: visibility
+        description: "Viewing distance in meters, influenced by low clouds, humidity and aerosols"
+        data_type: float
+
+      - name: windspeed_10m
+        description: "Wind speed at 10 meters above ground (km/h)"
+        data_type: float
+
+      - name: general_weather_condition
+        description: "Categorical weather label derived from temperature, precipitation, and visibility (clear, cloudy, rain, snow, fog)."
+        data_type: string
+        tests:
+          - accepted_values:
+              values: ['clear', 'cloudy', 'rain', 'snow', 'fog']
+
+      - name: temperature_category
+        description: "Temperature classification bucket (cold, mild, warm, hot)."
+        data_type: string
+        tests:
+          - accepted_values:
+              values: ['cold', 'mild', 'warm', 'hot']
+
+      - name: precipitation_category
+        description: "Precipitation intensity bucket (none, light, moderate, heavy)."
+        data_type: string
+        tests:
+          - accepted_values:
+              values: ['none', 'light', 'moderate', 'heavy']
+
+      - name: precipitation_probability_category
+        description: "Precipitation probability level (low, medium, high)."
+        data_type: string
+        tests:
+          - accepted_values:
+              values: ['low', 'medium', 'high']
+
+      - name: wind_category
+        description: "Wind speed classification (calm, breezy, windy, storm)."
+        data_type: string
+        tests:
+          - accepted_values:
+              values: ['calm', 'breezy', 'windy', 'storm']
+
+      - name: visibility_category
+        description: "Visibility condition (poor, moderate, good)."
+        data_type: string
+        tests:
+          - accepted_values:
+              values: ['poor', 'moderate', 'good']
+
+      - name: anormality_category
+        description: "Flag describing anomaly level for weather variables (none, anormal, very anormal)."
+        data_type: string
+        tests:
+          - accepted_values:
+              values: ['none', 'anormal', 'very anormal']
