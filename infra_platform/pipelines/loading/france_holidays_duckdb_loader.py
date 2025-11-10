@@ -107,5 +107,5 @@ class HolidaysLoader(BaseLoader):
 
 
 if __name__ == "__main__":
-    loader = HolidaysLoader(min_year=2025)
+    loader = HolidaysLoader(min_year=2024)
     loader.load_json_files()

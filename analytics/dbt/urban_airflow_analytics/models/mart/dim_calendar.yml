@@ -59,6 +59,18 @@ models:
       - name: is_weekend
         description: "Flag indicating if the date falls on a weekend."
         data_type: boolean
+        tests:
+          - not_null
+
+      - name: is_holiday
+        description: "Flag indicating if the date is a french national holiday."
+        data_type: boolean
+        tests:
+          - not_null
+
+      - name: holiday_name_fr
+        description: "Name of the holiday in French"
+        data_type: string
 
       - name: iso_week_number
         description: "The ISO week number of the year."

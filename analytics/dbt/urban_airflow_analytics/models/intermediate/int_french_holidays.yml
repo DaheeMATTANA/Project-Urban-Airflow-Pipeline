@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: dim_french_holidays
+  - name: int_french_holidays
     description: "A table which contains information about french holidays."
     columns:
       - name: holiday_date

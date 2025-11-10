@@ -1,0 +1,40 @@
+version: 2
+
+models:
+  - name: int_transport_disruption_aggregated
+    description: "Table summarizing active transport disruptions by date."
+    columns:
+      - name: date_of_day
+        description: "Date of disruption"
+        data_type: date
+        tests:
+          - not_null
+          - unique
+
+      - name: num_active_disruptions
+        description: "Number of distinct disruptions active that day."
+        data_type: integer
+
+      - name: num_planned_disruptions
+        description: "Number of planned disruptions for the given day."
+        data_type: integer
+
+      - name: median_disruption_duration
+        description: "Median duration (in hours or days) of active disruptions that day."
+        data_type: interval
+
+      - name: num_short_disruptions
+        description: "Active disruptions shorter than 1 hour."
+        data_type: integer
+
+      - name: num_medium_disruptions
+        description: "Active disruptions lasting between 1 hour and 23h59."
+        data_type: integer
+
+      - name: num_long_disruptions
+        description: "Active disruptions lasting between 1 and 7 days."
+        data_type: integer
+
+      - name: num_extended_disruptions
+        description: "Active disruptions lasting between 7 and 30 days."
+        data_type: integer

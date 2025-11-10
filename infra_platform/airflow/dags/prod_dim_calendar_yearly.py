@@ -35,7 +35,7 @@ with DAG(
             f"dbt build "
             f"--project-dir {DBT_PROJECT_DIR} "
             f"--target prod "
-            f"--select dim_calendar "
+            f"--select +dim_calendar "
             f"--exclude models/staging"
         ),
         env={
