@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: fct_station_status
+  - name: fct_hourly_station_status
     description: "Fact model of gbfs station status"
     columns:
       - name: station_id
