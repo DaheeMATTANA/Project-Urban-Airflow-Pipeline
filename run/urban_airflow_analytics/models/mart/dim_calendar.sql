@@ -26,6 +26,15 @@ dates_from_2024 AS (
         ) AS t (date_of_day)
 )
 
+, french_holidays AS (
+    SELECT *
+    FROM
+        "warehouse_prod"."main_urban_airflow_analytics"."int_french_holidays"
+    WHERE
+        1 = 1
+        AND is_national = TRUE
+)
+
 , new_dates AS (
     SELECT *
     FROM
@@ -71,6 +80,18 @@ dates_from_2024 AS (
         dates_enriched
 )
 
+, add_french_holidays AS (
+    SELECT
+        dates_comparable_by_week.*
+        , french_holidays.holiday_name_fr
+        , COALESCE(french_holidays.holiday_name_fr IS NOT NULL, FALSE)
+            AS is_holiday
+    FROM
+        dates_comparable_by_week
+    LEFT JOIN french_holidays
+        ON dates_comparable_by_week.date_of_day = french_holidays.holiday_date
+)
+
 SELECT
     date_of_day
     , date_of_day_comparable
@@ -83,12 +104,14 @@ SELECT
     , weekday_name_en
     , iso_day_of_week
     , is_weekend
+    , is_holiday
+    , holiday_name_fr
     , iso_week_number
     , month_number
     , quarter_number
     , created_at_utc
 FROM
-    dates_comparable_by_week
+    add_french_holidays
     );
   
   
