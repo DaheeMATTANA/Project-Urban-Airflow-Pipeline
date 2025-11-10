@@ -15,9 +15,35 @@ models:
         description: "Timestamp of the start of the disruption event in CET/CEST"
         data_type: timestamp
 
+      - name: started_date_cet
+        description: "Date of the reported time in CET/CEST"
+        data_type: date
+
+      - name: started_hour_cet
+        description: "Hour of the reported time in CET/CEST (0-23)"
+        data_type: integer
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 23    
+
       - name: ended_at_cet
         description: "Timestamp of the end of the disruption event in CET/CEST"
         data_type: timestamp
+
+      - name: ended_date_cet
+        description: "Date of the reported time in CET/CEST"
+        data_type: date
+
+      - name: ended_hour_cet
+        description: "Hour of the reported time in CET/CEST (0-23)"
+        data_type: integer
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 23 
 
       - name: disruption_cause_fr
         description: "Reason for disruption in French (Travaux, Perturbation, Information)"

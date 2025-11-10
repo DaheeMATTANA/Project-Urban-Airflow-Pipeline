@@ -35,13 +35,13 @@ with (
     ingest_task = PythonOperator(
         task_id="fetch_and_store_holidays",
         python_callable=run_ingest,
-        op_kwargs={"min_year": 2025},
+        op_kwargs={"min_year": 2024},
     )
 
     load_task = PythonOperator(
         task_id="load_holidays_into_duckdb",
         python_callable=load_into_duckdb,
-        op_kwargs={"min_year": 2025},
+        op_kwargs={"min_year": 2024},
     )
 
     ingest_task >> load_task

@@ -10,6 +10,19 @@ models:
         tests:
           - not_null
 
+      - name: date_cet
+        description: "Date of the reported time in CET/CEST"
+        data_type: date
+
+      - name: hour_cet
+        description: "Hour of the reported time in CET/CEST (0-23)"
+        data_type: integer
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 23        
+
       - name: temperature_2m
         description: "Air temperature at 2m above the surface of land, sea or inland waters (°C)"
         data_type: float
