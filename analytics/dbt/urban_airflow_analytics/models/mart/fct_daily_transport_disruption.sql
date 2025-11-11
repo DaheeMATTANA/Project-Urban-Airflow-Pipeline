@@ -18,4 +18,9 @@ SELECT
     , num_medium_disruptions
     , num_long_disruptions
     , num_extended_disruptions
+    , num_persistent_disruptions
+    , num_construction_disruptions
+    , num_incident_disruptions
+    , num_blocking_disruptions
+    , num_delayed_disruptions
 FROM transport_disruption
