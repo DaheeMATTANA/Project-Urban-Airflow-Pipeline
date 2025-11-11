@@ -7,6 +7,6 @@ app = FastAPI()
 
 @app.get("/query")
 def query(sql: str = Query(...)):
-    con = duckdb.connect(DB, read_only=True)
-    df = con.execute(sql).fetch_df()
+    with duckdb.connect(DB, read_only=True) as con:
+        df = con.execute(sql).fetch_df()
     return df.to_dict(orient="records")

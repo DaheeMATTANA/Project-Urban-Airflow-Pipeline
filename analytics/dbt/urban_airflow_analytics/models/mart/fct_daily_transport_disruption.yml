@@ -4,8 +4,8 @@ models:
   - name: fct_daily_transport_disruption
     description: "Table summarizing active transport disruptions by date."
     columns:
-      - name: date_of_day
-        description: "Date of disruption"
+      - name: date_cet
+        description: "Date of disruption in CET/CEST"
         data_type: date
         tests:
           - not_null
@@ -28,7 +28,9 @@ models:
                 min_value: 0
 
       - name: median_disruption_duration
-        description: "Median duration (in hours or days) of active disruptions that day."
+        description: |
+          Median duration (in hours or days) of active disruptions that day.
+          Excluding disruptions that are persistent.
         data_type: interval
 
       - name: num_short_disruptions
@@ -58,6 +60,38 @@ models:
       - name: num_extended_disruptions
         description: "Active disruptions lasting between 7 and 30 days."
         data_type: integer
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+
+      - name: num_construction_disruptions
+        description: "Number of events caused by construction work."
+        data_type: integer
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+
+      - name: num_incident_disruptions
+        description: "Number of events caused by incidents issues including those classified as 'information'."
+        data_type: integer
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+
+      - name: num_blocking_disruptions
+        description: "Number of events that fully stopped service."
+        data_type: integer
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+
+      - name: num_delayed_disruptions
+        description: "Number of events that caused delays, including those classified as 'information'."
+        data_type: integer        
         tests:
           - dbt_utils.accepted_range:
               arguments:

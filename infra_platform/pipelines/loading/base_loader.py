@@ -163,7 +163,9 @@ class BaseLoader:
             )
 
         s3_path = self.build_s3_path(date_str, hour)
-        return self.load_data(s3_path, date_str, hour)
+        return self.load_data(
+            s3_path, date_str, hour, full_refresh=full_refresh
+        )
 
     def load_forecast_partition(self, date_str=None, full_refresh=False):
         """

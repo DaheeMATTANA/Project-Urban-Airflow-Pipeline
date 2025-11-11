@@ -29,7 +29,7 @@ Owner : Team Buldo
 def load_openmeteo_to_duckdb(**context):
     conf = context["dag_run"].conf or {}
     full_refresh = conf.get("full_refresh", False)
-    date_str = context["ds"]
+    date_str = conf.get("date_filter", context["ds"])
     hour = context["logical_date"].hour
     loader = get_open_meteo_loader()
     count = loader.load_partition(
@@ -45,7 +45,7 @@ def load_openmeteo_to_duckdb(**context):
 def load_openmeteo_forecast_to_duckdb(**context):
     conf = context["dag_run"].conf or {}
     full_refresh = conf.get("full_refresh", False)
-    date_str = context["ds"]
+    date_str = conf.get("date_filter", context["ds"])
     loader = get_open_meteo_forecast_loader()
     count = loader.load_forecast_partition(
         date_str=date_str, full_refresh=full_refresh
@@ -106,18 +106,12 @@ with DAG(
         task_id="load_to_duckdb",
         python_callable=load_openmeteo_to_duckdb,
         provide_context=True,
-        op_kwargs={
-            "date_filter": "{{ ds }}"  # Use Airflow execution date
-        },
     )
 
     duckdb_task_forecast = PythonOperator(
         task_id="load_to_duckdb_forecast",
         python_callable=load_openmeteo_forecast_to_duckdb,
         provide_context=True,
-        op_kwargs={
-            "date_filter": "{{ ds }}"  # Use Airflow execution date
-        },
     )
 
     ingest_task >> [duckdb_task, duckdb_task_forecast]
