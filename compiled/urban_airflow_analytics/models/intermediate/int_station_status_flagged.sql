@@ -1,6 +1,6 @@
 
 
--- noqa: disable=RF02
+-- noqa: disable=RF02, LT05
 
 WITH
 
@@ -19,7 +19,7 @@ station_status AS (
     
         WHERE
             last_reported_utc
-            >= (SELECT MAX(last_reported_utc) - INTERVAL 2 HOUR FROM "warehouse_prod"."main_urban_airflow_analytics"."int_station_status_flagged") -- noqa: RF02, LT05
+            >= (SELECT MAX(last_reported_utc) - INTERVAL 2 HOUR FROM "warehouse_prod"."main_urban_airflow_analytics"."int_station_status_flagged")
     
 )
 

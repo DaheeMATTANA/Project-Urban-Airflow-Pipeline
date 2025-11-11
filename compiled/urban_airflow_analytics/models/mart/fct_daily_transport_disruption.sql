@@ -6,11 +6,11 @@ transport_disruption AS (
         "warehouse_prod"."main_urban_airflow_analytics"."int_transport_disruption_aggregated"
     WHERE 1 = 1
     -- filter by the date of pipeline stabilisation
-    AND date_of_day >= '2025-09-29'
+    AND date_cet >= '2025-09-29'
 )
 
 SELECT
-    date_of_day
+    date_cet
     , num_active_disruptions
     , num_planned_disruptions
     , median_disruption_duration
@@ -18,4 +18,9 @@ SELECT
     , num_medium_disruptions
     , num_long_disruptions
     , num_extended_disruptions
+    , num_persistent_disruptions
+    , num_construction_disruptions
+    , num_incident_disruptions
+    , num_blocking_disruptions
+    , num_delayed_disruptions
 FROM transport_disruption

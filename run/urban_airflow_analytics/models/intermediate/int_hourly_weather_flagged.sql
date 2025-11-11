@@ -4,10 +4,14 @@
     
 
     create  table
-      "warehouse_prod"."main_urban_airflow_analytics"."int_hourly_weather_flagged__dbt_tmp"
+      "warehouse_prod"."main_urban_airflow_analytics"."int_hourly_weather_flagged"
   
     as (
-      WITH
+      
+
+-- noqa: disable=RF02
+
+WITH
 
 open_meteo AS (
     SELECT
@@ -19,6 +23,7 @@ open_meteo AS (
         , windspeed_10m
     FROM
         "warehouse_prod"."main_urban_airflow_analytics"."stg_open_meteo"
+    
 )
 
 , weather_flags AS (
@@ -130,5 +135,6 @@ SELECT
 FROM
     weather_flags
     );
+  
   
   

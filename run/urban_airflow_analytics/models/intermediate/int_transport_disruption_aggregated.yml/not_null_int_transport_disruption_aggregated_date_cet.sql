@@ -10,14 +10,11 @@
     
     
 
-select
-    date_of_day as unique_field,
-    count(*) as n_records
 
+
+select date_cet
 from "warehouse_prod"."main_urban_airflow_analytics"."int_transport_disruption_aggregated"
-where date_of_day is not null
-group by date_of_day
-having count(*) > 1
+where date_cet is null
 
 
 

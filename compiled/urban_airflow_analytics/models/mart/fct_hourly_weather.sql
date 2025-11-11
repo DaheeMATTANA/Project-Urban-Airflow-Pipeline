@@ -1,3 +1,7 @@
+
+
+-- noqa: disable=RF02
+
 WITH
 
 hourly_weather AS (
@@ -17,9 +21,13 @@ hourly_weather AS (
         , precipitation_probability
     FROM
         "warehouse_prod"."main_urban_airflow_analytics"."int_hourly_weather_flagged"
-    WHERE 1 = 1
-    -- filter by the date of pipeline stabilisation
-    AND timestamp_cet >= '2025-09-29'
+    WHERE
+        1 = 1
+        -- filter by the date of pipeline stabilisation
+        AND timestamp_cet >= '2025-09-29'
+        
+            AND timestamp_cet > (SELECT MAX(timestamp_cet) FROM "warehouse_prod"."main_urban_airflow_analytics"."fct_hourly_weather")
+        
 )
 
 , add_date_columns AS (

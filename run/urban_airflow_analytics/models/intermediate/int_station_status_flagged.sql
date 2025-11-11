@@ -9,7 +9,7 @@
     as (
       
 
--- noqa: disable=RF02
+-- noqa: disable=RF02, LT05
 
 WITH
 

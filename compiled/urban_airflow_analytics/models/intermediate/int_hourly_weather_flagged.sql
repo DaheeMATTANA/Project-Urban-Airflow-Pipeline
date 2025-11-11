@@ -1,3 +1,7 @@
+
+
+-- noqa: disable=RF02
+
 WITH
 
 open_meteo AS (
@@ -10,6 +14,9 @@ open_meteo AS (
         , windspeed_10m
     FROM
         "warehouse_prod"."main_urban_airflow_analytics"."stg_open_meteo"
+    
+        WHERE timestamp_utc > (SELECT MAX(timestamp_utc) FROM "warehouse_prod"."main_urban_airflow_analytics"."int_hourly_weather_flagged")
+    
 )
 
 , weather_flags AS (
