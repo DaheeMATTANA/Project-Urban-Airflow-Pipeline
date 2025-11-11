@@ -21,7 +21,7 @@ transport_disruption AS (
 , active_days AS (
     SELECT
         transport_disruption.*
-        , dim_calendar.date_of_day
+        , dim_calendar.date_of_day AS date_cet
     FROM
         dim_calendar
     LEFT JOIN transport_disruption
@@ -33,7 +33,7 @@ transport_disruption AS (
 
 , disruption_daily AS (
     SELECT
-        date_of_day
+        date_cet
         , COUNT(DISTINCT event_id)
             AS num_active_disruptions
         , COUNT(DISTINCT event_id) FILTER (
@@ -72,11 +72,11 @@ transport_disruption AS (
     FROM
         active_days
     GROUP BY
-        date_of_day
+        date_cet
 )
 
 SELECT
-    date_of_day
+    date_cet
     , num_active_disruptions
     , num_planned_disruptions
     , median_disruption_duration

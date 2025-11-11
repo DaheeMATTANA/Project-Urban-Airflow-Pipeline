@@ -1,3 +1,12 @@
+{{
+    config(
+        materialized = 'incremental'
+        , unique_key = 'timestamp_utc'
+    )
+}}
+
+-- noqa: disable=RF02
+
 WITH
 
 open_meteo AS (
@@ -10,6 +19,9 @@ open_meteo AS (
         , windspeed_10m
     FROM
         {{ ref('stg_open_meteo') }}
+    {% if is_incremental() %}
+        WHERE timestamp_utc > (SELECT MAX(timestamp_utc) FROM {{ this }})
+    {% endif %}
 )
 
 , weather_flags AS (

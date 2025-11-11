@@ -4,8 +4,8 @@ models:
   - name: int_transport_disruption_aggregated
     description: "Table summarizing active transport disruptions by date."
     columns:
-      - name: date_of_day
-        description: "Date of disruption"
+      - name: date_cet
+        description: "Date of disruption in CET/CEST"
         data_type: date
         tests:
           - not_null

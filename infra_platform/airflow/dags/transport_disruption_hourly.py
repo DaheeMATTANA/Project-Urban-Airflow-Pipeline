@@ -44,7 +44,7 @@ with DAG(
     dag_id="transport_disruption_hourly",
     default_args=DEFAULT_ARGS,
     description="Ingest and load IDFM disruption data",
-    schedule_interval="@hourly",  # At minute 0
+    schedule_interval="5 * * * *",  # At minute 5
     max_active_runs=1,
     max_active_tasks=2,
     concurrency=1,

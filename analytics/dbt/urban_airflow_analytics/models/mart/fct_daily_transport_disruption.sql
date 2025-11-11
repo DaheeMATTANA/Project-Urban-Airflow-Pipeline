@@ -6,11 +6,11 @@ transport_disruption AS (
         {{ ref('int_transport_disruption_aggregated') }}
     WHERE 1 = 1
     -- filter by the date of pipeline stabilisation
-    AND date_of_day >= '2025-09-29'
+    AND date_cet >= '2025-09-29'
 )
 
 SELECT
-    date_of_day
+    date_cet
     , num_active_disruptions
     , num_planned_disruptions
     , median_disruption_duration

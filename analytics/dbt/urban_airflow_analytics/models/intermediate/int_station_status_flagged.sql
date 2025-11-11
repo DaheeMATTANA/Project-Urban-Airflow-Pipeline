@@ -5,7 +5,7 @@
     )
 }}
 
--- noqa: disable=RF02
+-- noqa: disable=RF02, LT05
 
 WITH
 
@@ -24,7 +24,7 @@ station_status AS (
     {% if is_incremental() %}
         WHERE
             last_reported_utc
-            >= (SELECT MAX(last_reported_utc) - INTERVAL 2 HOUR FROM {{ this }}) -- noqa: RF02, LT05
+            >= (SELECT MAX(last_reported_utc) - INTERVAL 2 HOUR FROM {{ this }})
     {% endif %}
 )
 
