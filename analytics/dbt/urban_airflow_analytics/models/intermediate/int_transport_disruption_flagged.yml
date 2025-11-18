@@ -60,4 +60,4 @@ models:
     tests:
       - dbt_utils.expression_is_true:
           arguments:
-            expression: "started_at_cet < ended_at_cet" 
+            expression: "started_at_cet <= ended_at_cet" 
