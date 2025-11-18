@@ -53,5 +53,5 @@ models:
     tests:
       - dbt_utils.expression_is_true:
           arguments:
-            expression: "valid_from < valid_to"
+            expression: "valid_from <= valid_to"
 
