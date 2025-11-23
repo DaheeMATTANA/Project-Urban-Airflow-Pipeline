@@ -15,14 +15,14 @@ These DAGs manage the automated execution of dbt models across different environ
 | DAG ID | Environment | Schedule | Description |
 |--------|--------------|-----------|--------------|
 | `dbt_ad_hoc_manually` | Manual | None | Runs dbt models on demand. You can specify `dbt_select` and optionally `dbt_exclude` for flexible builds. |
-| `dev_build_stg_models_weekly` | Dev | Every Monday at 01:00 UTC | Refreshes staging models in the dev environment and logs dbt test results. |
-| `preprod_build_stg_models_weekly` | Preprod | Every Monday at 02:00 UTC | Refreshes staging models in preprod and logs dbt test results. |
-| `prod_build_stg_models_daily` | Prod | Everyday at 03:00 UTC | Refreshes staging models in prod and logs dbt test results. |
+| `dev_build_stg_models_weekly` | Dev | Every Monday at 10:30 UTC | Refreshes staging models in the dev environment and logs dbt test results. |
+| `preprod_build_stg_models_weekly` | Preprod | Every Monday at 11:30 UTC | Refreshes staging models in preprod and logs dbt test results. |
+| `prod_build_stg_models_daily` | Prod | Everyday at 12:30 UTC | Refreshes staging models in prod and logs dbt test results. |
 | `prod_dim_calendar_yearly` | Prod | Every January 1st at 00:00 UTC | Rebuilds the `dim_calendar` model and its upstream dependencies yearly. |
-| `prod_station_status_daily` | Prod | Everyday at 04:30 UTC | Refreshes `fct_hourly_station_status` and its upstream dependencies daily. |
+| `prod_station_status_daily` | Prod | Everyday at 13:15 UTC | Refreshes `fct_hourly_station_status` and its upstream dependencies daily. |
 | `prod_dim_station_monthly` | Prod | Every 1st day of month at 02:00 UTC | Refreshes `dim_station` and its upstream dependencies monthly. |
-| `prod_transport_disruption_daily` | Prod | Everyday at 05:00 UTC | Refreshes `fct_daily_transport_disruption` and its upstream dependencies daily. |
-| `prod_weather_daily` | Prod | Everyday at 05:30 UTC | Refreshes `fct_hourly_weather` and its upstream dependencies daily. |
+| `prod_transport_disruption_daily` | Prod | Everyday at 13:30 UTC | Refreshes `fct_daily_transport_disruption` and its upstream dependencies daily. |
+| `prod_weather_daily` | Prod | Everyday at 13:45 UTC | Refreshes `fct_hourly_weather` and its upstream dependencies daily. |
 
 ---
 
