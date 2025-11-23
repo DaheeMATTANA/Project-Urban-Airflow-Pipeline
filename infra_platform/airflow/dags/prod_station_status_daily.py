@@ -22,7 +22,7 @@ DBT_PROFILES_DIR = "/opt/airflow/dbt"
 with DAG(
     dag_id="prod_station_status_daily",
     default_args=DEFAULT_ARGS,
-    schedule_interval="30 4 * * *",  # At 04:30
+    schedule_interval="15 13 * * *",  # At 13:15
     max_active_runs=1,
     max_active_tasks=2,
     concurrency=1,
