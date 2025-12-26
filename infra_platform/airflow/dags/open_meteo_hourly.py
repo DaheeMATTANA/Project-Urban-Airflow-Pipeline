@@ -69,6 +69,7 @@ with DAG(
     concurrency=1,
     tags=["source:openmeteo"],
     doc_md=__doc__,
+    catchup=False,
 ) as dag:
     ingest_task = SparkSubmitOperator(
         task_id="open_meteo_spark_ingest",

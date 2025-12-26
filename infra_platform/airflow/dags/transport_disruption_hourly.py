@@ -50,6 +50,7 @@ with DAG(
     concurrency=1,
     tags=["source:IDFM", "bronze"],
     doc_md=__doc__,
+    catchup=False,
 ) as dag:
     ingest_task = PythonOperator(
         task_id="fetch_and_store_idfm_data",
