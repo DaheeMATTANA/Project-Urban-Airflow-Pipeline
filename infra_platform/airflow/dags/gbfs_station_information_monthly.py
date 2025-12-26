@@ -27,6 +27,7 @@ with DAG(
     concurrency=1,
     tags=["source:gbfs"],
     doc_md=__doc__,
+    catchup=False,
 ) as dag:
     ingest_task = PythonOperator(
         task_id="fetch_and_store",

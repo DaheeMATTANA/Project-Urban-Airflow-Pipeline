@@ -26,6 +26,7 @@ with DAG(
     concurrency=1,
     tags=["dbt", "staging", "preprod"],
     doc_md=__doc__,
+    catchup=False,
 ) as dag:
     dbt_build_stg = BashOperator(
         task_id="dbt_build_stg",

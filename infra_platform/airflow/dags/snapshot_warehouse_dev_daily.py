@@ -44,6 +44,7 @@ with DAG(
     start_date=datetime(2025, 9, 29),
     tags=["snapshot_db"],
     doc_md=__doc__,
+    catchup=False,
 ) as dag:
     upload_task = PythonOperator(
         task_id="upload_duckdb",

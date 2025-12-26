@@ -27,7 +27,7 @@ with (
         max_active_runs=1,
         max_active_tasks=2,
         concurrency=1,
-        catchup=True,
+        catchup=False,
         tags=["holidays", "ingestion"],
         doc_md=__doc__,
     ) as dag

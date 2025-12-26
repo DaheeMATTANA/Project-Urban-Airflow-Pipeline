@@ -49,6 +49,7 @@ with DAG(
     concurrency=1,
     tags=["source:openaq"],
     doc_md=__doc__,
+    catchup=False,
 ) as dag:
     ingest_openaq = SparkSubmitOperator(
         task_id="spark_ingest_openaq",
