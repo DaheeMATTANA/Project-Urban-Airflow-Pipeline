@@ -21,7 +21,7 @@ def compute_record_hash(station: dict) -> str:
     """
     Compute a deterministic md5 hash of station content.
     """
-    exclude = {"ingestion_date", "ingestion_hour"}
+    exclude = {"ingestion_date", "ingestion_hour", "created_at"}
     filtered = {k: v for k, v in station.items() if k not in exclude}
     payload = json.dumps(filtered, sort_keys=True, separators=(",", ":"))
     return hashlib.md5(payload.encode("utf-8")).hexdigest()

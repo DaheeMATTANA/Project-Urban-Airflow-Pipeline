@@ -1,7 +1,6 @@
 import hashlib
 import json
 import os
-from datetime import UTC
 
 from pipelines.common.duckdb_utils import get_duckdb_connection
 from pipelines.common.load_state_utils import (
@@ -125,6 +124,14 @@ class JsonLoader(BaseLoader):
                     )
                     return 0
 
+                from datetime import UTC
+
+                if (
+                    "created_at" not in df.columns
+                    or df["created_at"].isna().any()
+                ):
+                    df["created_at"] = datetime.now(UTC).replace(tzinfo=None)
+
                 # Incremental load based on content hash for staion_information (optional)
                 if "record_hash" in df.columns and "station_id" in df.columns:
                     existing = conn.execute(f"""
@@ -146,63 +153,87 @@ class JsonLoader(BaseLoader):
                             strict=False,
                         )
                     )
+
+                    deleted_ids = existing_ids - new_ids
+                    df = df.drop_duplicates(
+                        subset=["station_id", "record_hash"], keep="last"
+                    )
+
                     before = len(df)
 
                     # Keep only new or changed rows
                     df = df[
-                        df.apply(
-                            lambda r: existing_map.get(r["station_id"])
-                            != r["record_hash"],
-                            axis=1,
-                        )
+                        df["station_id"].map(existing_map) != df["record_hash"]
                     ]
                     after = len(df)
                     self.logger.info(
                         f"[DEBUG] Filtered {before - after} unchanged rows; keeping {after} new/changed"
                     )
 
-                    deleted_ids = existing_ids - new_ids
-
                     if deleted_ids:
+                        existing_deletions = conn.execute(f"""
+                            SELECT DISTINCT station_id
+                            FROM {self.table_name}
+                            WHERE station_opening_hours = 'DELETED'
+                            AND ingestion_date = '{date_str}'
+                            AND ingestion_hour = {hour}
+                        """).fetchdf()
+
+                        existing_deleted_ids = set(
+                            existing_deletions["station_id"].astype(str)
+                        )
+
+                        deleted_ids = deleted_ids - existing_deleted_ids
+
                         self.logger.info(
-                            f"[INFO] Found {len(deleted_ids)} deleted stations: inserting 'DELETED' rows"
-                        )
-                        import pandas as pd
-
-                        deleted_df = pd.DataFrame(
-                            [
-                                {
-                                    "station_id": sid,
-                                    "record_hash": "deleted",
-                                    "station_opening_hours": "DELETED",
-                                    "ingestion_date": date_str,
-                                    "ingestion_hour": hour,
-                                    "created_at": pd.Timestamp.utcnow(),
-                                }
-                                for sid in deleted_ids
-                            ]
+                            f"[INFO] Found {len(deleted_ids)} newly deleted stations"
                         )
 
-                        valid_cols = [
-                            c
-                            for c in deleted_df.columns
-                            if c in self.schema.keys()
-                            or c
-                            in [
-                                "ingestion_date",
-                                "ingestion_hour",
-                                "created_at",
-                            ]
-                        ]
-                        deleted_df = deleted_df[valid_cols]
+                        if deleted_ids:
+                            self.logger.info(
+                                f"[INFO] Inserting {len(deleted_ids)} 'DELETED' rows"
+                            )
 
-                        # Register and insert as new rows (no update)
-                        conn.register("deleted_tmp", deleted_df)
-                        cols = list(deleted_df.columns)
-                        conn.execute(f"""
-                            INSERT INTO {self.table_name} ({",".join(cols)})
-                            SELECT {",".join(cols)} FROM deleted_tmp
-                        """)
+                            import pandas as pd
+
+                            deleted_df = pd.DataFrame(
+                                [
+                                    {
+                                        "station_id": sid,
+                                        "record_hash": "deleted",
+                                        "station_opening_hours": "DELETED",
+                                        "ingestion_date": date_str,
+                                        "ingestion_hour": hour,
+                                        "created_at": pd.Timestamp.utcnow(),
+                                    }
+                                    for sid in deleted_ids
+                                ]
+                            )
+
+                            valid_cols = [
+                                c
+                                for c in deleted_df.columns
+                                if c in self.schema.keys()
+                                or c
+                                in [
+                                    "ingestion_date",
+                                    "ingestion_hour",
+                                    "created_at",
+                                ]
+                            ]
+                            deleted_df = deleted_df[valid_cols]
+
+                            # Register and insert as new rows (no update)
+                            conn.register("deleted_tmp", deleted_df)
+                            cols = list(deleted_df.columns)
+                            conn.execute(f"""
+                                INSERT INTO {self.table_name} ({",".join(cols)})
+                                SELECT {",".join(cols)} FROM deleted_tmp
+                            """)
+                        else:
+                            self.logger.info(
+                                "[DEBUG] No new deleted stations for this partition (all already marked as deleted)"
+                            )
 
                     if df.empty:
                         self.logger.info(
@@ -214,11 +245,11 @@ class JsonLoader(BaseLoader):
                 cols = list(df.columns)
 
                 sql = f"""
-                    INSERT OR REPLACE INTO {self.table_name} ({",".join(cols)})
+                    INSERT INTO {self.table_name} ({",".join(cols)})
                     SELECT {",".join(cols)} FROM tmp_df
                 """
                 self.logger.info(
-                    f"[DEBUG] Executing INSERT OR REPLACE for {self.table_name}"
+                    f"[DEBUG] Executing INSERT for {self.table_name}"
                 )
                 conn.execute(sql)
 
