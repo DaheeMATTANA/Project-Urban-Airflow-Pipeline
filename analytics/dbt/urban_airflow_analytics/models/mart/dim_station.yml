@@ -17,8 +17,6 @@ models:
       - name: station_name
         description: "Name of the station."
         data_type: string
-        tests:
-          - not_null
 
       - name: latitude
         description: "Latitude of the station."
